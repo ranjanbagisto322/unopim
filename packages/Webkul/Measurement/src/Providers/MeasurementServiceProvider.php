@@ -36,6 +36,17 @@ class MeasurementServiceProvider extends ServiceProvider
             }
         );
 
+    
+        Event::listen(
+            'unopim.admin.products.dynamic-attribute-fields.control.measurement.before',
+            function ($viewRenderEventManager) {
+                $viewRenderEventManager->addTemplate(
+                    'measurement::admin.attributes.component-attribute'
+                );
+            }
+        );
+
+
     }
 
     /**

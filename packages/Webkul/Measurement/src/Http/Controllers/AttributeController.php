@@ -24,7 +24,7 @@ class AttributeController extends Controller
                 'label' => $f->name,
 
                 // FIXED 🔥
-                'units' => collect($f->unitsArray ?? [])->map(function ($u) {
+                'units' => collect($f->units ?? [])->map(function ($u) {
                     return [
                         'id'    => $u['code'],
                         'label' => $u['labels']['en_US'] ?? $u['code'],
@@ -32,7 +32,7 @@ class AttributeController extends Controller
                 })->values()->toArray(),
             ];
         })->values()->toArray();
-
+        
         return [
             'familyOptions' => $familyOptions,
         ];

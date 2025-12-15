@@ -49,9 +49,9 @@ class MeasurementFamilyController extends Controller
         $data = [
             'code'          => $request->code,
             'name'          => $request->label,
-            'labels'        => json_encode($labels),
+            'labels'        => $labels,
             'standard_unit' => $request->standard_unit_code,
-            'units'         => json_encode($units),
+            'units'         => $units,
             'symbol'        => $request->symbol,
         ];
 
@@ -67,8 +67,7 @@ class MeasurementFamilyController extends Controller
     public function edit($id)
     {
         $family = $this->measurementFamilyRepository->find($id);
-
-        $labels = $family->labels ? json_decode($family->labels, true) : [];
+        $labels = $family->labels ?? [];
 
         return view('measurement::admin.families.edit', compact('family', 'labels'));
     }
@@ -84,13 +83,15 @@ class MeasurementFamilyController extends Controller
             'labels.*' => 'nullable|string',
         ]);
 
-        $oldLabels = $family->labels ? json_decode($family->labels, true) : [];
+        $oldLabels = $family->labels ?? [];
+
         $newLabels = $request->labels ?? [];
+        
         $mergedLabels = array_merge($oldLabels, $newLabels);
 
         $data = [
             'name'   => $request->name,
-            'labels' => json_encode($mergedLabels),
+            'labels' => $mergedLabels,
         ];
 
         $this->measurementFamilyRepository->update($data, $id);
@@ -104,7 +105,8 @@ class MeasurementFamilyController extends Controller
     {
         $this->measurementFamilyRepository->delete($id);
 
-        return response()->json(['success' => true]);
+        return response()->json(['success' => true,
+        'message' => 'Measurement family deleted successfully.',]);
     }
 
     public function massDelete()
@@ -127,6 +129,8 @@ class MeasurementFamilyController extends Controller
     }
 
     // units modules all functions
+
+
     public function units($id)
     {
         if (request()->ajax()) {
@@ -152,7 +156,7 @@ class MeasurementFamilyController extends Controller
             ], 404);
         }
 
-        $units = json_decode($family->units ?? '[]', true);
+        $units = $family->units ?? [];
 
         $newUnit = [
             'code'   => request('code'),
@@ -165,7 +169,7 @@ class MeasurementFamilyController extends Controller
         $units[] = $newUnit;
 
         $this->measurementFamilyRepository->update([
-            'units' => json_encode($units),
+            'units' => $units,
         ], $id);
 
         return response()->json([
@@ -177,7 +181,7 @@ class MeasurementFamilyController extends Controller
     {
         $family = $this->measurementFamilyRepository->find($family_id);
 
-        $units = json_decode($family->units ?? '[]', true);
+        $units = $family->units;
 
         // Find unit by code
         $unit = collect($units)->firstWhere('code', $code);
@@ -192,7 +196,7 @@ class MeasurementFamilyController extends Controller
     public function updateUnit($family_id, $code)
     {
         $family = $this->measurementFamilyRepository->find($family_id);
-        $units = json_decode($family->units ?? '[]', true);
+        $units = $family->units ?? '[]';
 
         // Get labels array from form
         $labels = request('labels', []);
@@ -214,7 +218,7 @@ class MeasurementFamilyController extends Controller
 
         // Save JSON back to DB
         $this->measurementFamilyRepository->update([
-            'units' => json_encode($units),
+            'units' => $units,
         ], $family_id);
 
         return redirect()
@@ -226,22 +230,17 @@ class MeasurementFamilyController extends Controller
     {
         $family = $this->measurementFamilyRepository->findOrFail($family_id);
 
-        $units = $family->units;
+        // Cast ensures $units is always array
+        $units = $family->units ?? [];
 
-        if (is_string($units)) {
-            $units = json_decode($units, true);
-        }
-        if (! is_array($units)) {
-            $units = [];
-        }
-
+        // Remove the unit with matching code
         $updatedUnits = array_filter($units, function ($unit) use ($code) {
             return isset($unit['code']) && $unit['code'] !== $code;
         });
 
-        // Update DB
+        // Reindex array and save
         $this->measurementFamilyRepository->update([
-            'units' => array_values($updatedUnits),
+            'units' => array_values($updatedUnits), // cast will handle JSON
         ], $family_id);
 
         return response()->json([
@@ -249,6 +248,7 @@ class MeasurementFamilyController extends Controller
             'message' => 'Unit deleted successfully.',
         ]);
     }
+
 
     public function unitmassDelete()
     {
