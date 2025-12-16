@@ -173,13 +173,22 @@ class MeasurementFamilyController extends Controller
         ], $id);
 
         return response()->json([
-            'message' => 'Unit added successfully',
+            'data' => [
+                'redirect_url' => route(
+                    'admin.measurement.families.units.edit',
+                    [
+                        'familyid' => $family->id,
+                        'code'     => request('code'),
+                    ]
+                ),
+            ],
         ]);
+        
     }
 
-    public function editUnit($family_id, $code)
+    public function editUnit($familyid, $code)
     {
-        $family = $this->measurementFamilyRepository->find($family_id);
+        $family = $this->measurementFamilyRepository->find($familyid);
 
         $units = $family->units;
 
@@ -193,9 +202,9 @@ class MeasurementFamilyController extends Controller
         return view('measurement::admin.units.edit', compact('family', 'unit'));
     }
 
-    public function updateUnit($family_id, $code)
+    public function updateUnit($familyid, $code)
     {
-        $family = $this->measurementFamilyRepository->find($family_id);
+        $family = $this->measurementFamilyRepository->find($familyid);
         $units = $family->units ?? '[]';
 
         // Get labels array from form
@@ -219,16 +228,16 @@ class MeasurementFamilyController extends Controller
         // Save JSON back to DB
         $this->measurementFamilyRepository->update([
             'units' => $units,
-        ], $family_id);
+        ], $familyid);
 
         return redirect()
-            ->route('admin.measurement.families.edit', $family_id)
+            ->route('admin.measurement.families.edit', $familyid)
             ->with('success', 'Unit updated successfully');
     }
 
-    public function deleteUnit($family_id, $code)
+    public function deleteUnit($familyid, $code)
     {
-        $family = $this->measurementFamilyRepository->findOrFail($family_id);
+        $family = $this->measurementFamilyRepository->findOrFail($familyid);
 
         // Cast ensures $units is always array
         $units = $family->units ?? [];
@@ -241,7 +250,7 @@ class MeasurementFamilyController extends Controller
         // Reindex array and save
         $this->measurementFamilyRepository->update([
             'units' => array_values($updatedUnits), // cast will handle JSON
-        ], $family_id);
+        ], $familyid);
 
         return response()->json([
             'status'  => true,

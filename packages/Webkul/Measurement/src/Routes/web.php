@@ -20,9 +20,9 @@ Route::group(['middleware' => ['web', 'admin'], 'prefix' => 'admin/measurement']
 
             Route::get('measurement-families/{id}/units', 'units')->name('admin.measurement.families.units');
             Route::post('{id}/units', 'storeUnit')->name('admin.measurement.families.units.store');
-            Route::get('measurement-families/{family_id}/units/{code}/edit', 'editUnit')->name('admin.measurement.families.units.edit');
-            Route::put('measurement-families/{family_id}/units/{code}/update', 'updateUnit')->name('admin.measurement.families.units.update');
-            Route::delete('measurement-families/{family_id}/units/{code}', 'deleteUnit')->name('admin.measurement.families.units.delete');
+            Route::get('measurement-families/{familyid}/units/{code}/edit', 'editUnit')->name('admin.measurement.families.units.edit');
+            Route::put('measurement-families/{familyid}/units/{code}/update', 'updateUnit')->name('admin.measurement.families.units.update');
+            Route::delete('measurement-families/{familyid}/units/{code}', 'deleteUnit')->name('admin.measurement.families.units.delete');
             Route::post('/unitmass-delete', 'unitmassDelete')->name('admin.measurement.families.unitmass_delete');
 
         });

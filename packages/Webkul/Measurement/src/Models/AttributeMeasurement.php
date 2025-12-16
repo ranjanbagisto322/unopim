@@ -15,7 +15,7 @@ class AttributeMeasurement extends Model
     ];
 
     /**
-     * Relation: AttributeMeasurement → Attributes
+     * Attribute relation
      */
     public function attribute()
     {
@@ -23,8 +23,7 @@ class AttributeMeasurement extends Model
     }
 
     /**
-     * Relation: AttributeMeasurement → MeasurementFamily
-     * family_code → code
+     * MeasurementFamily relation
      */
     public function family()
     {
@@ -36,7 +35,7 @@ class AttributeMeasurement extends Model
     }
 
     /**
-     * Get the selected unit object from the family's units JSON
+     * Get selected unit object from family's units JSON
      */
     public function getUnitAttribute()
     {
@@ -44,7 +43,6 @@ class AttributeMeasurement extends Model
             return null;
         }
 
-        // units_array comes from accessor in MeasurementFamily model
         return collect($this->family->units_array)
             ->firstWhere('id', $this->unit_code);
     }

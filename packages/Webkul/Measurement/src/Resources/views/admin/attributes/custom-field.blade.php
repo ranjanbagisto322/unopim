@@ -83,6 +83,10 @@ app.component('v-measurement', {
     async mounted() {
         await this.loadFamilies();
 
+        console.log('Loaded families:', this.familyOptions);
+        console.log('Old family code:', this.oldFamily);
+        console.log('Old unit code:', this.oldUnit);
+        
         if (this.oldFamily) {
             const family = this.familyOptions.find(f => f.id == this.oldFamily);
             if (family) {
@@ -90,9 +94,10 @@ app.component('v-measurement', {
                 this.unitsList = family.units;
                 this.measurementUnit = this.oldUnit;
             }
+            console.log('view:', this.unitsList);
         }
 
-        this.isInitialLoad = false; // done with initial prefill
+        this.isInitialLoad = false;
     },
 
 

@@ -20,4 +20,9 @@ class MeasurementFamily extends Model
         'units'     => 'array',
         'labels' => 'array',
     ];
+
+    public function getUnitsArrayAttribute()
+    {
+        return $this->units ?? [];
+    }
 }

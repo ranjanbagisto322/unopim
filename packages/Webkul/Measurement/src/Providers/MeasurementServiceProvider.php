@@ -31,7 +31,10 @@ class MeasurementServiceProvider extends ServiceProvider
             function ($viewRenderEventManager, $attribute = null) {
 
                 $viewRenderEventManager->addTemplate(
-                    'measurement::admin.attributes.custom-field'
+                    'measurement::admin.attributes.custom-field',
+                    [
+                        'attribute' => $attribute
+                    ]
                 );
             }
         );

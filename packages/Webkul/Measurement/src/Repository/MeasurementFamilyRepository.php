@@ -11,4 +11,18 @@ class MeasurementFamilyRepository extends Repository
     {
         return MeasurementFamily::class;
     }
+
+    /**
+     * Get units by family code
+     */
+    public function getUnitsByFamilyCode(?string $familyCode): array
+    {
+        if (! $familyCode) {
+            return [];
+        }
+
+        $family = $this->findOneWhere(['code' => $familyCode]);
+
+        return $family?->units_array ?? [];
+    }
 }

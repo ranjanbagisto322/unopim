@@ -104,7 +104,7 @@ class UnitDataGrid extends DataGrid
             'method' => 'GET',
             'url'    => function ($row) {
                 return route('admin.measurement.families.units.edit', [
-                    'family_id' => $this->familyId,
+                    'familyid' => $this->familyId,
                     'code'      => $row->code,
                 ]);
             },
@@ -118,7 +118,7 @@ class UnitDataGrid extends DataGrid
             'method' => 'DELETE',
             'url'    => function ($row) {
                 return route('admin.measurement.families.units.delete', [
-                    'family_id' => $this->familyId,
+                    'familyid' => $this->familyId,
                     'code'      => $row->code,
                 ]);
             },
