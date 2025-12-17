@@ -168,7 +168,7 @@
             <!-- Modal -->
             <x-admin::modal ref="addUnitModal">
                 <x-slot:header>
-                    <h2 class="text-lg font-bold">Add Unit</h2>
+                    <h2 class="text-base text-gray-800 dark:text-white font-semibold">Add Unit</h2>
                 </x-slot:header>
 
                 <x-slot:content>

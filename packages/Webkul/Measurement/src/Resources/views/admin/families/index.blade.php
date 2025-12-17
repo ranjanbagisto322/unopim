@@ -36,7 +36,7 @@
                 <!-- Modal -->
                 <x-admin::modal ref="familyCreateModal">
                     <x-slot:header>
-                        <h2 class="text-lg font-bold">{{ __('Create Measurement family') }}</h2>
+                        <h2 class="text-base text-gray-800 dark:text-white font-semibold">{{ __('Create Measurement Family') }}</h2>
                     </x-slot:header>
 
                     <x-slot:content>

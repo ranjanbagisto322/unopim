@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Webkul\Measurement\Http\Controllers\AttributeController;
 use Webkul\Measurement\Http\Controllers\MeasurementFamilyController;
+use Webkul\Measurement\Http\Controllers\Vuejs\MeasurementOptionsController;
 
 Route::group(['middleware' => ['web', 'admin'], 'prefix' => 'admin/measurement'], function () {
 
@@ -28,4 +29,8 @@ Route::group(['middleware' => ['web', 'admin'], 'prefix' => 'admin/measurement']
         });
 
     Route::get('measurement/families', [AttributeController::class, 'customFieldData'])->name('measurement.families');
+
+    Route::get('attribute-units', [MeasurementOptionsController::class, 'getOptions'])
+        ->name('admin.measurement.attribute.units');
+
 });

@@ -76,7 +76,6 @@ class MeasurementFamilyController extends Controller
     {
         $family = $this->measurementFamilyRepository->find($id);
 
-        // Validation
         $request->validate([
             'name'     => 'required|string',
             'labels'   => 'nullable|array',
@@ -128,8 +127,11 @@ class MeasurementFamilyController extends Controller
         return redirect()->back();
     }
 
-    // units modules all functions
 
+
+
+
+    // units modules all functions
 
     public function units($id)
     {
@@ -207,25 +209,21 @@ class MeasurementFamilyController extends Controller
         $family = $this->measurementFamilyRepository->find($familyid);
         $units = $family->units ?? '[]';
 
-        // Get labels array from form
         $labels = request('labels', []);
 
         foreach ($units as &$item) {
 
             if ($item['code'] === $code) {
 
-                // Update labels
                 $item['labels']['en_US'] = $labels['en_US'] ?? null;
                 $item['labels']['es_CA'] = $labels['es_CA'] ?? null;
                 $item['labels']['de_DE'] = $labels['de_DE'] ?? null;
                 $item['labels']['es_ES'] = $labels['es_ES'] ?? null;
 
-                // Update symbol
                 $item['symbol'] = request('symbol');
             }
         }
 
-        // Save JSON back to DB
         $this->measurementFamilyRepository->update([
             'units' => $units,
         ], $familyid);
@@ -239,17 +237,14 @@ class MeasurementFamilyController extends Controller
     {
         $family = $this->measurementFamilyRepository->findOrFail($familyid);
 
-        // Cast ensures $units is always array
         $units = $family->units ?? [];
 
-        // Remove the unit with matching code
         $updatedUnits = array_filter($units, function ($unit) use ($code) {
             return isset($unit['code']) && $unit['code'] !== $code;
         });
 
-        // Reindex array and save
         $this->measurementFamilyRepository->update([
-            'units' => array_values($updatedUnits), // cast will handle JSON
+            'units' => array_values($updatedUnits), 
         ], $familyid);
 
         return response()->json([

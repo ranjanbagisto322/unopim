@@ -116,7 +116,6 @@ app.component('v-measurement', {
     methods: {
         async loadFamilies() {
             const response = await axios.get("{{ route('measurement.families') }}");
-
             this.familyOptions = response.data.familyOptions; 
         }
     }

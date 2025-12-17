@@ -31,23 +31,24 @@ class MeasurementServiceProvider extends ServiceProvider
             function ($viewRenderEventManager, $attribute = null) {
 
                 $viewRenderEventManager->addTemplate(
-                    'measurement::admin.attributes.custom-field',
+                    'measurement::catalog.attributes.edit',
                     [
                         'attribute' => $attribute
                     ]
                 );
             }
         );
-
     
         Event::listen(
             'unopim.admin.products.dynamic-attribute-fields.control.measurement.before',
             function ($viewRenderEventManager) {
                 $viewRenderEventManager->addTemplate(
-                    'measurement::admin.attributes.component-attribute'
+                    'measurement::catalog.products.edit'
                 );
             }
         );
+        
+        
 
 
     }
