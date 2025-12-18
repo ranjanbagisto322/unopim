@@ -15,14 +15,13 @@
     </div>
 
     <!-- Datagrid -->
-
-
-    <x-admin::datagrid ref="datagrid" src="{{ route('admin.measurement.families.index') }}">
+    <x-admin::datagrid
+        ref="datagrid"
+        src="{{ route('admin.measurement.families.index') }}">
     </x-admin::datagrid>
 
-
-    <!-- Create Family Modal -->
     @pushOnce('scripts')
+        <!-- ================= CREATE FAMILY TEMPLATE ================= -->
         <script type="text/x-template" id="v-create-family-form-template">
             <div>
                 <button
@@ -36,80 +35,86 @@
                 <!-- Modal -->
                 <x-admin::modal ref="familyCreateModal">
                     <x-slot:header>
-                        <h2 class="text-base text-gray-800 dark:text-white font-semibold">{{ __('Create Measurement Family') }}</h2>
+                        <h2 class="text-base text-gray-800 dark:text-white font-semibold">
+                            {{ __('Create Measurement Family') }}
+                        </h2>
                     </x-slot:header>
 
                     <x-slot:content>
-                        <x-admin::form.control-group>
-                            <x-admin::form.control-group.label class="required">
-                                {{ __('Code') }}
-                            </x-admin::form.control-group.label>
+                        <!-- Basic Fields -->
+                        <div class="px-4 pb-4 bg-white dark:bg-cherry-900 box-shadow rounded">
+                        
+                            <div class="flex justify-between items-center p-1.5">
+                                <p class="p-2.5 text-gray-800 dark:text-white text-base font-semibold">
+                                   
+                                </p>
+                            </div>
+                        
+                           <!-- Family Code -->
+                            <x-admin::form.control-group>
+                                <x-admin::form.control-group.label class="required">
+                                    {{ __('Family Code') }}
+                                </x-admin::form.control-group.label>
 
-                            <x-admin::form.control-group.control
-                                type="text"
-                                name="code"
-                                v-model="form.code"
-                                rules="required"
-                                placeholder="{{ __('Enter family code') }}"
-                            />
+                                <x-admin::form.control-group.control
+                                    type="text"
+                                    v-model="form.code"
+                                    placeholder="{{ __('Enter family code') }}"
+                                />
+                            </x-admin::form.control-group>
 
-                            <x-admin::form.control-group.error control-name="code" />
-                        </x-admin::form.control-group>
+                            <!-- Standard Unit Code -->
+                            <x-admin::form.control-group>
+                                <x-admin::form.control-group.label class="required">
+                                    {{ __('Standard Unit Code') }}
+                                </x-admin::form.control-group.label>
 
-                        <x-admin::form.control-group>
-                            <x-admin::form.control-group.label>
-                                {{ __('Label') }}
-                            </x-admin::form.control-group.label>
+                                <x-admin::form.control-group.control
+                                    type="text"
+                                    v-model="form.standard_unit_code"
+                                    placeholder="{{ __('Enter standard unit code') }}"
+                                />
+                            </x-admin::form.control-group>
 
-                            <x-admin::form.control-group.control
-                                type="text"
-                                name="label"
-                                v-model="form.label"
-                                placeholder="{{ __('Enter family label') }}"
-                            />
-                        </x-admin::form.control-group>
+                            <!-- Symbol -->
+                            <x-admin::form.control-group>
+                                <x-admin::form.control-group.label>
+                                    {{ __('Symbol') }}
+                                </x-admin::form.control-group.label>
 
-                        <x-admin::form.control-group>
-                            <x-admin::form.control-group.label class="required">
-                                {{ __('Standard Unit Code') }}
-                            </x-admin::form.control-group.label>
+                                <x-admin::form.control-group.control
+                                    type="text"
+                                    v-model="form.symbol"
+                                    placeholder="{{ __('e.g. km, m') }}"
+                                />
+                            </x-admin::form.control-group>
+                        </div>
 
-                            <x-admin::form.control-group.control
-                                type="text"
-                                name="standard_unit_code"
-                                v-model="form.standard_unit_code"
-                                rules="required"
-                                placeholder="{{ __('Enter standard unit code') }}"
-                            />
-                        </x-admin::form.control-group>
+                        <!-- Dynamic Labels -->
+                        <div class="mt-4 bg-white dark:bg-cherry-900 box-shadow rounded">
+                            <div class="flex justify-between items-center p-1.5">
+                                <p class="p-2.5 text-gray-800 dark:text-white text-base font-semibold">
+                                    @lang('admin::app.catalog.attributes.create.label')
+                                </p>
+                            </div>
 
-                        <x-admin::form.control-group>
-                            <x-admin::form.control-group.label>
-                                {{ __('Standard Unit Label') }}
-                            </x-admin::form.control-group.label>
+                            <div class="px-4 pb-4">
+                                @foreach ($locales as $locale)
+                                    <x-admin::form.control-group>
+                                        <x-admin::form.control-group.label>
+                                            {{ $locale->name }}
+                                        </x-admin::form.control-group.label>
 
-                            <x-admin::form.control-group.control
-                                type="text"
-                                name="standard_unit_label"
-                                v-model="form.standard_unit_label"
-                                placeholder="{{ __('Enter standard unit label') }}"
-                            />
-                        </x-admin::form.control-group>
-
-                        <x-admin::form.control-group>
-                            <x-admin::form.control-group.label>
-                                {{ __('Symbol') }}
-                            </x-admin::form.control-group.label>
-
-                            <x-admin::form.control-group.control
-                                type="text"
-                                name="symbol"
-                                v-model="form.symbol"
-                                placeholder="{{ __('e.g. km, m') }}"
-                            />
-                        </x-admin::form.control-group>
+                                        <x-admin::form.control-group.control
+                                            type="text"
+                                            v-model="form.labels['{{ $locale->code }}']"
+                                            placeholder="{{ __('Enter label') }}"
+                                        />
+                                    </x-admin::form.control-group>
+                                @endforeach
+                            </div>
+                        </div>
                     </x-slot:content>
-
 
                     <x-slot:footer>
                         <button
@@ -124,6 +129,7 @@
             </div>
         </script>
 
+        <!-- ================= VUE COMPONENT ================= -->
         <script type="module">
             app.component('v-create-family-form', {
                 template: '#v-create-family-form-template',
@@ -131,32 +137,37 @@
                 data() {
                     return {
                         form: {
-                            name: '',
-                            standard_unit: '',
+                            code: '',
+                            standard_unit_code: '',
+                            symbol: '',
+                            labels: {}
                         }
                     };
                 },
 
                 methods: {
                     save() {
-
                         axios.post(
                             "{{ route('admin.measurement.families.store') }}",
                             this.form
                         )
-                        .then(res => {
+                        .then(response => {
                             this.$refs.familyCreateModal.close();
 
+                            // reset form
+                            this.form = {
+                                code: '',
+                                standard_unit_code: '',
+                                symbol: '',
+                                labels: {}
+                            };
 
-                            this.form.name = '';
-                            this.form.standard_unit = '';
-
-                            if (res.data?.data?.redirect_url) {
-                                window.location.href = res.data.data.redirect_url;
+                            if (response.data?.data?.redirect_url) {
+                                window.location.href = response.data.data.redirect_url;
                             }
                         })
-                        .catch(err => {
-                            console.error(err);
+                        .catch(error => {
+                            console.error(error);
                         });
                     }
                 }

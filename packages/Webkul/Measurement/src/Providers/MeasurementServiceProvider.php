@@ -8,16 +8,12 @@ use Illuminate\Support\ServiceProvider;
 
 class MeasurementServiceProvider extends ServiceProvider
 {
-    /**
-     * Bootstrap any application services.
-     */
+    
     public function boot()
     {
-        // Load migrations, translations, views, routes
         $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
         $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', 'measurement');
 
-        // ✅ FIX: view path folder name should be "views", not "view"
         $this->loadViewsFrom(__DIR__.'/../Resources/views', 'measurement');
 
         $this->loadRoutesFrom(__DIR__.'/../Routes/web.php');
@@ -47,15 +43,18 @@ class MeasurementServiceProvider extends ServiceProvider
                 );
             }
         );
+
+        Event::listen(
+            'catalog.attribute.update.before',
+            'Webkul\Measurement\Listeners\ValidateAttributeMeasurementBeforeUpdate@handle'
+        );
         
         
 
 
     }
 
-    /**
-     * Register any application services.
-     */
+    
     public function register()
     {
         $menu = require dirname(__DIR__).'/Config/menu.php';

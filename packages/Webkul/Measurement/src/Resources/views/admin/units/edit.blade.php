@@ -82,66 +82,34 @@
             </x-admin::form.control-group>
 
 
-            {{-- Label Translations --}}
-            <p class="text-base text-gray-800 dark:text-white font-semibold mt-6 mb-2">
-               Label translations in UI locale
-            </p>
+                        <!-- Labels -->
+                        <div class="bg-white dark:bg-cherry-900 box-shadow rounded">
+                            <div class="flex justify-between items-center p-1.5">
+                                <p class="text-base text-gray-800 dark:text-white font-semibold mb-4">
+                                    @lang('admin::app.catalog.attributes.edit.label')
+                                </p>
+                            </div>
 
-            {{-- English --}}
-            <x-admin::form.control-group>
-                <x-admin::form.control-group.label>
-                    English (en_US)
-                </x-admin::form.control-group.label>
+                            <div class="">
+                                <!-- Locales Inputs -->
+                                @foreach ($locales as $locale)
+                                    <x-admin::form.control-group>
+                                        <x-admin::form.control-group.label>
+                                            {{ $locale->name }}
+                                        </x-admin::form.control-group.label>
 
-                <x-admin::form.control-group.control
-                    type="text"
-                    name="labels[en_US]"
-                    value="{{ old('labels.en_US', $unit['labels']['en_US'] ?? '') }}"
-                    placeholder="Enter English label"
-                />
-            </x-admin::form.control-group>
+                                        <x-admin::form.control-group.control
+                                            type="text"
+                                            name="labels[{{ $locale->code }}]"
+                                            value="{{ old('labels.'.$locale->code, $labels[$locale->code] ?? '') }}"
+                                            placeholder="Enter {{ $locale->name }} label"
+                                        />
+                                    </x-admin::form.control-group>
+                                @endforeach
 
-            {{-- Catalan --}}
-            <x-admin::form.control-group>
-                <x-admin::form.control-group.label>
-                    Catalan (es_CA)
-                </x-admin::form.control-group.label>
+                            </div>
+                        </div>
 
-                <x-admin::form.control-group.control
-                    type="text"
-                    name="labels[es_CA]"
-                    value="{{ old('labels.es_CA', $unit['labels']['es_CA'] ?? '') }}"
-                    placeholder="Enter Catalan label"
-                />
-            </x-admin::form.control-group>
-
-            {{-- German --}}
-            <x-admin::form.control-group>
-                <x-admin::form.control-group.label>
-                    German (de_DE)
-                </x-admin::form.control-group.label>
-
-                <x-admin::form.control-group.control
-                    type="text"
-                    name="labels[de_DE]"
-                    value="{{ old('labels.de_DE', $unit['labels']['de_DE'] ?? '') }}"
-                    placeholder="Enter German label"
-                />
-            </x-admin::form.control-group>
-
-            {{-- Spanish --}}
-            <x-admin::form.control-group>
-                <x-admin::form.control-group.label>
-                    Spanish (es_ES)
-                </x-admin::form.control-group.label>
-
-                <x-admin::form.control-group.control
-                    type="text"
-                    name="labels[es_ES]"
-                    value="{{ old('labels.es_ES', $unit['labels']['es_ES'] ?? '') }}"
-                    placeholder="Enter Spanish label"
-                />
-            </x-admin::form.control-group>
 
         </div>
 

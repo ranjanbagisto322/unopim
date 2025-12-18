@@ -14,7 +14,7 @@ class MeasurementFamilyDataGrid extends DataGrid
         $queryBuilder = DB::table('measurement_families')
             ->addSelect(
                 'measurement_families.id',
-                'measurement_families.name',
+                'measurement_families.code',
                 'measurement_families.standard_unit',
                 'measurement_families.created_at',
                 'measurement_families.updated_at',
@@ -23,7 +23,7 @@ class MeasurementFamilyDataGrid extends DataGrid
 
         // add filters mapping: key => column
         $this->addFilter('id', 'measurement_families.id');
-        $this->addFilter('name', 'measurement_families.name');
+        $this->addFilter('code', 'measurement_families.code');
         $this->addFilter('standard_unit', 'measurement_families.standard_unit');
 
         $this->setQueryBuilder($queryBuilder);
@@ -35,8 +35,8 @@ class MeasurementFamilyDataGrid extends DataGrid
     {
 
         $this->addColumn([
-            'index'      => 'name',
-            'label'      => 'Label',
+            'index'      => 'code',
+            'label'      => 'Code',
             'type'       => 'string',
             'searchable' => true,
             'sortable'   => true,
