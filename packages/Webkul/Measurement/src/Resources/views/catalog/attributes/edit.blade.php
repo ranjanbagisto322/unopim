@@ -1,32 +1,20 @@
-@php
-
- use Webkul\Measurement\Repository\AttributeMeasurementRepository;
-
-    // Get saved measurement for this attribute
-    $measurement = null;
-    if ($attribute) {
-        $measurement = app(AttributeMeasurementRepository::class)
-            ->getByAttributeId($attribute->id);
-    }
-@endphp
-
 @if ($attribute && $attribute->type === 'measurement')
+    
+    <v-measurement
+        :attribute-id="{{ $attribute->id }}"
+        measurement-url="{{ route('measurement.attribute', ['attributeId' => $attribute->id]) }}"
+    ></v-measurement>
 
-<v-measurement
-    old-family="{{ $measurement->family_code ?? '' }}"   
-    old-unit="{{ $measurement->unit_code ?? '' }}"
-></v-measurement>
-
+@endif
 
 @pushOnce('scripts')
 <script type="text/x-template" id="v-measurement-template">
-
     <div class="p-4 bg-white dark:bg-cherry-900 rounded shadow-sm mt-4">
 
         <!-- Measurement Family -->
         <x-admin::form.control-group>
             <x-admin::form.control-group.label class="required">
-                Measurement Family
+                @lang('Measurement Family')
             </x-admin::form.control-group.label>
 
             <x-admin::form.control-group.control
@@ -38,13 +26,15 @@
                 rules="required"
                 track-by="id"
                 label-by="label"
+                placeholder="Select Family"
             />
+            <x-admin::form.control-group.error control-name="measurement_family" />
         </x-admin::form.control-group>
 
         <!-- Measurement Unit -->
         <x-admin::form.control-group class="mt-4">
             <x-admin::form.control-group.label class="required">
-                Measurement Unit
+                @lang('Measurement Unit')
             </x-admin::form.control-group.label>
 
             <x-admin::form.control-group.control
@@ -56,72 +46,98 @@
                 rules="required"
                 track-by="id"
                 label-by="label"
+                placeholder="Select Unit"
             />
+            <x-admin::form.control-group.error control-name="measurement_unit" />
         </x-admin::form.control-group>
 
     </div>
-
 </script>
-
 
 <script type="module">
-app.component('v-measurement', {
-    template: '#v-measurement-template',
+    app.component('v-measurement', {
+        template: '#v-measurement-template',
 
-    props: ['oldFamily', 'oldUnit'],
+        props: ['attributeId', 'measurementUrl'],
 
-    data() {
-        return {
-            familyOptions: [],
-            measurementFamily: "",
-            measurementUnit: "", 
-            unitsList: [],
-            isInitialLoad: true,
-        };
-    },
+        data() {
+            return {
+                familyOptions: [],
+                measurementFamily: null,   
+                measurementUnit: null,     
+                unitsList: [],
+                oldFamily: null,
+                oldUnit: null,
+                isInitialLoad: true,
+            };
+        },
 
-    async mounted() {
-        await this.loadFamilies();
+        async mounted() {
+            try {
+                const response = await axios.get(this.measurementUrl);
+                const data = response.data;
 
-        console.log('Loaded families:', this.familyOptions);
-        console.log('Old family code:', this.oldFamily);
-        console.log('Old unit code:', this.oldUnit);
-        
-        if (this.oldFamily) {
-            const family = this.familyOptions.find(f => f.id == this.oldFamily);
-            if (family) {
-                this.measurementFamily = JSON.stringify(family);
-                this.unitsList = family.units;
-                this.measurementUnit = this.oldUnit;
+                this.familyOptions = data.familyOptions || [];
+                this.oldFamily = data.oldFamily;
+                this.oldUnit = data.oldUnit;
+
+                console.log('faimly:', this.oldFamily);
+                console.log('testunit:', this.oldUnit);
+
+                if (this.oldFamily && this.familyOptions.length > 0) {
+                   
+                    const family = this.familyOptions.find(f => 
+                        f.id.toString().toLowerCase() === this.oldFamily.toString().toLowerCase()
+                    );
+
+                    if (family) {
+                        
+                        this.measurementFamily = JSON.stringify(family);
+                        
+                        this.unitsList = family.units || [];
+
+                        if (this.oldUnit) {
+                            const oldUnitObj = this.unitsList.find(u => u.id === this.oldUnit);
+                            if (oldUnitObj) {
+                                this.$nextTick(() => {
+                                    
+                                    this.measurementUnit = JSON.stringify(oldUnitObj);
+                                });
+                            }
+                        }
+                    }
+                }
+
+                this.isInitialLoad = false;
+            } catch (error) {
+                console.error('Error loading measurement data:', error);
             }
-            console.log('view:', this.unitsList);
-        }
+        },
 
-        this.isInitialLoad = false;
-    },
+        watch: {
+            measurementFamily(newValue) {
+                let selectedFamily = null;
 
+               
+                if (typeof newValue === 'string' && newValue.trim() !== '') {
+                    try {
+                        selectedFamily = JSON.parse(newValue);
+                    } catch (e) {
+                        console.error('JSON parse error in measurementFamily:', e);
+                        return;
+                    }
+                }
+                else if (newValue && typeof newValue === 'object') {
+                    selectedFamily = newValue;
+                }
 
+                this.unitsList = selectedFamily ? (selectedFamily.units || []) : [];
 
-    watch: {
-        measurementFamily(newValue) {
-            const selectedFamily = JSON.parse(newValue);
-            this.unitsList = selectedFamily ? selectedFamily.units : [];
-
-            if (!this.isInitialLoad) {
-                this.measurementUnit = '';
+                if (!this.isInitialLoad) {
+                    this.measurementUnit = null;
+                }
             }
         }
-    },
-
-    methods: {
-        async loadFamilies() {
-            const response = await axios.get("{{ route('measurement.families') }}");
-            this.familyOptions = response.data.familyOptions; 
-        }
-    }
-});
+    });
 </script>
-
 @endpushOnce
-
-@endif

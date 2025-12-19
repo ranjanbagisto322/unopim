@@ -4,26 +4,30 @@ namespace Webkul\Measurement\Http\Controllers;
 
 use Webkul\Admin\Http\Controllers\Controller;
 use Webkul\Measurement\Repository\MeasurementFamilyRepository;
+use Webkul\Measurement\Repository\AttributeMeasurementRepository;
 
 class AttributeController extends Controller
 {
     protected $familyRepository;
+    protected $attributeMeasurementRepository;
 
-    public function __construct(MeasurementFamilyRepository $familyRepository)
-    {
+    public function __construct(
+        MeasurementFamilyRepository $familyRepository,
+        AttributeMeasurementRepository $attributeMeasurementRepository
+    ) {
         $this->familyRepository = $familyRepository;
+        $this->attributeMeasurementRepository = $attributeMeasurementRepository;
     }
 
-    public function customFieldData()
+    public function getAttributeMeasurement($attributeId)
     {
+        // 1️⃣ Load families
         $families = $this->familyRepository->all();
 
         $familyOptions = $families->map(function ($f) {
             return [
                 'id'    => $f->code,
                 'label' => $f->name,
-
-                // FIXED 🔥
                 'units' => collect($f->units ?? [])->map(function ($u) {
                     return [
                         'id'    => $u['code'],
@@ -32,9 +36,16 @@ class AttributeController extends Controller
                 })->values()->toArray(),
             ];
         })->values()->toArray();
-        
-        return [
+
+        // 2️⃣ Get old measurement
+        $measurement = $this->attributeMeasurementRepository
+            ->getByAttributeId($attributeId);
+       
+        // 3️⃣ Return JSON
+        return response()->json([
             'familyOptions' => $familyOptions,
-        ];
+            'oldFamily'     => $measurement->family_code ?? '',
+            'oldUnit'       => $measurement->unit_code ?? '',
+        ]);
     }
 }

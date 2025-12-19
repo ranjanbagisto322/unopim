@@ -3,7 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use Webkul\Measurement\Http\Controllers\AttributeController;
 use Webkul\Measurement\Http\Controllers\MeasurementFamilyController;
-use Webkul\Measurement\Http\Controllers\Vuejs\MeasurementOptionsController;
+use Webkul\Measurement\Http\Controllers\MeasurementOptionsController;
+
 
 Route::group(['middleware' => ['web', 'admin'], 'prefix' => 'admin/measurement'], function () {
 
@@ -19,6 +20,7 @@ Route::group(['middleware' => ['web', 'admin'], 'prefix' => 'admin/measurement']
             Route::delete('/{id}', 'destroy')->name('admin.measurement.families.delete');
             Route::post('/mass-delete', 'massDelete')->name('admin.measurement.families.mass_delete');
 
+            //Units Route
             Route::get('measurement-families/{id}/units', 'units')->name('admin.measurement.families.units');
             Route::post('{id}/units', 'storeUnit')->name('admin.measurement.families.units.store');
             Route::get('measurement-families/{familyid}/units/{code}/edit', 'editUnit')->name('admin.measurement.families.units.edit');
@@ -28,9 +30,11 @@ Route::group(['middleware' => ['web', 'admin'], 'prefix' => 'admin/measurement']
 
         });
 
-    Route::get('measurement/families', [AttributeController::class, 'customFieldData'])->name('measurement.families');
+    // Route::get('measurement/families', [AttributeController::class, 'customFieldData'])->name('measurement.families');
 
+    Route::get('/measurement/attribute/{attributeId}', [AttributeController::class, 'getAttributeMeasurement'])
+    ->name('measurement.attribute');
     Route::get('attribute-units', [MeasurementOptionsController::class, 'getOptions'])
-        ->name('admin.measurement.attribute.units');
+        ->name('admin.measurement.attribute.units');   
 
 });

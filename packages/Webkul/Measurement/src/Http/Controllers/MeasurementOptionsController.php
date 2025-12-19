@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkul\Measurement\Http\Controllers\Vuejs;
+namespace Webkul\Measurement\Http\Controllers;
 
 use Webkul\Admin\Http\Controllers\VueJsSelect\AbstractOptionsController;
 use Webkul\Measurement\Repository\MeasurementFamilyRepository;
@@ -48,8 +48,9 @@ class MeasurementOptionsController extends AbstractOptionsController
 
         // Get measurement info based on attribute id
         $attributeMeasurement = $this->attributeMeasurementRepository->getByAttributeId($attributeId);
-
+            
         $familyCode = $attributeMeasurement?->family_code;
+
 
         // If no family selected yet, return empty list
         if (!$familyCode) {
