@@ -22,6 +22,13 @@ class MeasurementServiceProvider extends ServiceProvider
             'attribute_types'
         );
 
+        // // ProductServiceProvider.php
+        // $this->mergeConfigFrom(
+        //     __DIR__ . '/../Config/importers.php',
+        //     'importers'
+        // );
+
+
         Event::listen(
             'unopim.admin.catalog.attributes.edit.card.label.after',
             function ($viewRenderEventManager, $attribute = null) {

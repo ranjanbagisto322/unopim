@@ -14,6 +14,7 @@ class MeasurementFamilyDataGrid extends DataGrid
         $queryBuilder = DB::table('measurement_families')
             ->addSelect(
                 'measurement_families.id',
+                'measurement_families.labels',
                 'measurement_families.code',
                 'measurement_families.standard_unit',
                 'measurement_families.created_at',
@@ -23,6 +24,7 @@ class MeasurementFamilyDataGrid extends DataGrid
 
         // add filters mapping: key => column
         $this->addFilter('id', 'measurement_families.id');
+        $this->addFilter('labels', 'measurement_families.labels');
         $this->addFilter('code', 'measurement_families.code');
         $this->addFilter('standard_unit', 'measurement_families.standard_unit');
 
@@ -33,6 +35,19 @@ class MeasurementFamilyDataGrid extends DataGrid
 
     public function prepareColumns()
     {
+
+        $this->addColumn([
+            'index'      => 'labels',
+            'label'      => 'Label',
+            'type'       => 'string',
+            'searchable' => true,
+            'sortable'   => true,
+            'filterable' => true,
+            'closure'    => function ($row) {
+                $labels = json_decode($row->labels ?? '{}', true);
+                return $labels['en_US'] ?? '-';
+            },
+        ]);
 
         $this->addColumn([
             'index'      => 'code',

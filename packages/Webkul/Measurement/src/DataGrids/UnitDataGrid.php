@@ -18,38 +18,41 @@ class UnitDataGrid extends DataGrid
 
     public function prepareQueryBuilder()
     {
-
         $family = DB::table('measurement_families')
             ->where('id', $this->familyId)
             ->first();
 
         $units = json_decode($family->units ?? '[]', true);
+        $standardUnit = $family->standard_unit ?? null;
 
         if (empty($units)) {
             $query = DB::table('measurement_families')
-                ->select(DB::raw('NULL as code'), DB::raw('NULL as label'), DB::raw('NULL as symbol'))
+                ->select(
+                    DB::raw('NULL as code'),
+                    DB::raw('NULL as label'),
+                    DB::raw('NULL as symbol'),
+                    DB::raw('0 as is_standard')
+                )
                 ->whereRaw('1 = 0');
 
             $this->setQueryBuilder($query);
-
             return $query;
         }
 
-        /**
-         * Convert unit JSON array to SQL rows using UNION ALL
-         */
         $queryList = [];
 
         foreach ($units as $unit) {
-            $code = $unit['code'] ?? '';
-            $label = $unit['labels']['en_US'] ?? '';
+            $code   = $unit['code'] ?? '';
+            $label  = $unit['labels']['en_US'] ?? '';
             $symbol = $unit['symbol'] ?? '';
+            $isStd  = ($code === $standardUnit) ? 1 : 0;
 
             $queryList[] = DB::table(DB::raw(
-                "(SELECT 
+                "(SELECT
                     '$code'   AS code,
                     '$label'  AS label,
-                    '$symbol' AS symbol
+                    '$symbol' AS symbol,
+                    $isStd    AS is_standard
                 ) temp"
             ));
         }
@@ -61,7 +64,6 @@ class UnitDataGrid extends DataGrid
         }
 
         $this->setQueryBuilder($finalQuery);
-
         return $finalQuery;
     }
 
@@ -85,14 +87,45 @@ class UnitDataGrid extends DataGrid
             'filterable' => true,
         ]);
 
+        // $this->addColumn([
+        //     'index'      => 'symbol',
+        //     'label'      => 'Symbol',
+        //     'type'       => 'string',
+        //     'searchable' => true,
+        //     'sortable'   => true,
+        //     'filterable' => true,
+        // ]);
+
+        // ⭐ Standard Unit column (Akeneo style)
         $this->addColumn([
-            'index'      => 'symbol',
-            'label'      => 'Symbol',
-            'type'       => 'string',
-            'searchable' => true,
+            'index'      => 'is_standard',
+            'label'      => '',
+            'type'       => 'boolean',
+            'searchable' => false,
             'sortable'   => true,
-            'filterable' => true,
+            'filterable' => false,
+            'escape'     => false,
+            'options'    => [
+                'type'   => 'basic',
+                'params' => [
+                    'options' => [
+                        [
+                            'label' => 'Standard',
+                            'value' => 1,
+                        ], [
+                            'label' => '-',
+                            'value' => 0,
+                        ],
+                    ],
+                ],
+            ],
+            'closure' => function ($row) {
+                return $row->is_standard
+                    ? "<span class='label-active'>STANDARD UNIT</span>"
+                    : "";
+            },
         ]);
+
     }
 
     public function prepareActions()
@@ -102,13 +135,13 @@ class UnitDataGrid extends DataGrid
             'icon'   => 'icon-edit',
             'title'  => 'Edit',
             'method' => 'GET',
+            'type'   => 'script',
             'url'    => function ($row) {
                 return route('admin.measurement.families.units.edit', [
                     'familyid' => $this->familyId,
-                    'code'      => $row->code,
+                    'code'     => $row->code,
                 ]);
             },
-            'type' => 'script',
         ]);
 
         // DELETE
@@ -119,7 +152,7 @@ class UnitDataGrid extends DataGrid
             'url'    => function ($row) {
                 return route('admin.measurement.families.units.delete', [
                     'familyid' => $this->familyId,
-                    'code'      => $row->code,
+                    'code'     => $row->code,
                 ]);
             },
         ]);
