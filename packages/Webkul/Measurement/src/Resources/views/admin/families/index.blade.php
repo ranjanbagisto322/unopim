@@ -53,7 +53,7 @@
                            <!-- Family Code -->
                             <x-admin::form.control-group>
                                 <x-admin::form.control-group.label class="required">
-                                    {{ __('Family Code') }}
+                                    {{ __('Code') }}
                                 </x-admin::form.control-group.label>
 
                                 <x-admin::form.control-group.control

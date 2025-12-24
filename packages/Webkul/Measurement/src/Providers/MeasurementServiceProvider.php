@@ -5,6 +5,7 @@ namespace Webkul\Measurement\Providers;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Webkul\Measurement\Helpers\MeasurementHelper;
 
 class MeasurementServiceProvider extends ServiceProvider
 {
@@ -21,12 +22,6 @@ class MeasurementServiceProvider extends ServiceProvider
             __DIR__.'/../Config/attribute_types.php',
             'attribute_types'
         );
-
-        // // ProductServiceProvider.php
-        // $this->mergeConfigFrom(
-        //     __DIR__ . '/../Config/importers.php',
-        //     'importers'
-        // );
 
 
         Event::listen(
@@ -55,8 +50,6 @@ class MeasurementServiceProvider extends ServiceProvider
             'catalog.attribute.update.before',
             'Webkul\Measurement\Listeners\ValidateAttributeMeasurementBeforeUpdate@handle'
         );
-        
-        
 
 
     }
