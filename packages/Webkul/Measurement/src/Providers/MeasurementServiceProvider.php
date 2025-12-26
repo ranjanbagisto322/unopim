@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Webkul\Measurement\Helpers\MeasurementHelper;
+use Webkul\DataTransfer\Helpers\Importers\FieldProcessor as CoreFieldProcessor;
+use Webkul\Measurement\Helpers\Importers\FieldProcessor as MeasurementFieldProcessor;
 
 class MeasurementServiceProvider extends ServiceProvider
 {
@@ -22,6 +24,8 @@ class MeasurementServiceProvider extends ServiceProvider
             __DIR__.'/../Config/attribute_types.php',
             'attribute_types'
         );
+
+        
 
 
         Event::listen(
@@ -57,6 +61,12 @@ class MeasurementServiceProvider extends ServiceProvider
     
     public function register()
     {
+        $this->app->bind(
+            \Webkul\DataTransfer\Helpers\Importers\FieldProcessor::class,
+            \Webkul\Measurement\Helpers\Importers\FieldProcessor::class
+        );
+
+        
         $menu = require dirname(__DIR__).'/Config/menu.php';
 
         config([

@@ -67,7 +67,7 @@ class MeasurementOptionsController extends AbstractOptionsController
         )->map(function ($unit) {
             return (object) [
                 'id'    => $unit['code'],
-                'label' => $unit['label'] ?? $unit['code'],
+                'label' => $unit['labels']['en_US'] ?? $unit['code'],
                 'code'  => $unit['code'],
             ];
         });

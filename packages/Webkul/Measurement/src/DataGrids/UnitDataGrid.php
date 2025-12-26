@@ -99,7 +99,7 @@ class UnitDataGrid extends DataGrid
         // ⭐ Standard Unit column (Akeneo style)
         $this->addColumn([
             'index'      => 'is_standard',
-            'label'      => '',
+            'label'      => 'Mark Standard Units',
             'type'       => 'boolean',
             'searchable' => false,
             'sortable'   => true,
