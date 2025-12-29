@@ -3,6 +3,8 @@
 namespace Webkul\Measurement\Providers;
 
 use Illuminate\Support\Facades\Event;
+use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Webkul\Measurement\Helpers\MeasurementHelper;
@@ -20,6 +22,9 @@ class MeasurementServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../Resources/views', 'measurement');
 
         $this->loadRoutesFrom(__DIR__.'/../Routes/web.php');
+        $this->loadRoutesFrom(__DIR__ . '/../Routes/api.php');
+
+        
         $this->mergeConfigFrom(
             __DIR__.'/../Config/attribute_types.php',
             'attribute_types'
@@ -65,6 +70,10 @@ class MeasurementServiceProvider extends ServiceProvider
             \Webkul\DataTransfer\Helpers\Importers\FieldProcessor::class,
             \Webkul\Measurement\Helpers\Importers\FieldProcessor::class
         );
+        Route::prefix('api')
+            ->middleware('api')
+            ->group(__DIR__.'/../Routes/api.php');
+    
 
         
         $menu = require dirname(__DIR__).'/Config/menu.php';
