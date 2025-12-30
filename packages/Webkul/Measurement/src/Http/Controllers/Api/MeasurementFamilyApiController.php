@@ -11,17 +11,6 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
-use Webkul\DAM\ApiDataSource\AssetDataSource;
-use Webkul\DAM\Filesystem\FileStorer;
-use Webkul\DAM\Helpers\AssetHelper;
-use Webkul\DAM\Models\Asset;
-use Webkul\DAM\Models\Directory;
-use Webkul\DAM\Models\Tag;
-use Webkul\DAM\Repositories\AssetPropertyRepository;
-use Webkul\DAM\Repositories\AssetRepository;
-use Webkul\DAM\Repositories\AssetTagRepository;
-use Webkul\DAM\Repositories\DirectoryRepository;
-use Webkul\DAM\Traits\Directory as DirectoryTrait;
 
 class MeasurementFamilyApiController extends Controller
 {

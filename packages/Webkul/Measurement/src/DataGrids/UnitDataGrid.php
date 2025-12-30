@@ -87,16 +87,6 @@ class UnitDataGrid extends DataGrid
             'filterable' => true,
         ]);
 
-        // $this->addColumn([
-        //     'index'      => 'symbol',
-        //     'label'      => 'Symbol',
-        //     'type'       => 'string',
-        //     'searchable' => true,
-        //     'sortable'   => true,
-        //     'filterable' => true,
-        // ]);
-
-        // ⭐ Standard Unit column (Akeneo style)
         $this->addColumn([
             'index'      => 'is_standard',
             'label'      => 'Mark Standard Units',
