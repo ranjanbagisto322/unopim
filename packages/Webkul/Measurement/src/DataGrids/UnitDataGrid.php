@@ -16,6 +16,9 @@ class UnitDataGrid extends DataGrid
         $this->familyId = $id;
     }
 
+    /**
+     * Prepare Query
+     */
     public function prepareQueryBuilder()
     {
         $family = DB::table('measurement_families')
@@ -25,17 +28,20 @@ class UnitDataGrid extends DataGrid
         $units = json_decode($family->units ?? '[]', true);
         $standardUnit = $family->standard_unit ?? null;
 
+        // Empty result
         if (empty($units)) {
             $query = DB::table('measurement_families')
                 ->select(
                     DB::raw('NULL as code'),
                     DB::raw('NULL as label'),
                     DB::raw('NULL as symbol'),
+                    DB::raw('NULL as labels'),
                     DB::raw('0 as is_standard')
                 )
                 ->whereRaw('1 = 0');
 
             $this->setQueryBuilder($query);
+
             return $query;
         }
 
@@ -45,6 +51,7 @@ class UnitDataGrid extends DataGrid
             $code   = $unit['code'] ?? '';
             $label  = $unit['labels']['en_US'] ?? '';
             $symbol = $unit['symbol'] ?? '';
+            $labels = json_encode($unit['labels'] ?? []);
             $isStd  = ($code === $standardUnit) ? 1 : 0;
 
             $queryList[] = DB::table(DB::raw(
@@ -52,6 +59,7 @@ class UnitDataGrid extends DataGrid
                     '$code'   AS code,
                     '$label'  AS label,
                     '$symbol' AS symbol,
+                    '$labels' AS labels,
                     $isStd    AS is_standard
                 ) temp"
             ));
@@ -64,9 +72,13 @@ class UnitDataGrid extends DataGrid
         }
 
         $this->setQueryBuilder($finalQuery);
+
         return $finalQuery;
     }
 
+    /**
+     * Prepare Columns
+     */
     public function prepareColumns()
     {
         $this->addColumn([
@@ -89,50 +101,58 @@ class UnitDataGrid extends DataGrid
 
         $this->addColumn([
             'index'      => 'is_standard',
-            'label'      => 'Mark Standard Units',
+            'label'      => 'Standard Unit',
             'type'       => 'boolean',
             'searchable' => false,
             'sortable'   => true,
             'filterable' => false,
             'escape'     => false,
-            'options'    => [
-                'type'   => 'basic',
-                'params' => [
-                    'options' => [
-                        [
-                            'label' => 'Standard',
-                            'value' => 1,
-                        ], [
-                            'label' => '-',
-                            'value' => 0,
-                        ],
-                    ],
-                ],
-            ],
             'closure' => function ($row) {
                 return $row->is_standard
-                    ? "<span class='label-active'>STANDARD UNIT</span>"
-                    : "";
+                    ? "<span class='label-active'>STANDARD</span>"
+                    : '';
             },
         ]);
-
     }
 
+    /**
+     * Row Actions
+     */
     public function prepareActions()
     {
-        // EDIT
-        $this->addAction([
-            'icon'   => 'icon-edit',
-            'title'  => 'Edit',
-            'method' => 'GET',
-            'type'   => 'script',
-            'url'    => function ($row) {
-                return route('admin.measurement.families.units.edit', [
-                    'familyid' => $this->familyId,
-                    'code'     => $row->code,
-                ]);
-            },
-        ]);
+            // $this->addAction([
+            //     'index'  => 'edit',
+            //     'icon'   => 'icon-edit',
+            //     'title'  => 'Edit',
+            //     'method' => 'GET',
+            //     'url'    => function ($row) {
+            //         return route('admin.measurement.families.units.edit', [
+            //             'familyId' => $this->familyId,
+            //             'code'     => $row->code,
+            //         ]);
+            //     },
+            // ]);
+
+            $this->addAction([
+                'icon'   => 'icon-edit',
+                'title'  => 'Edit',
+                'method' => 'GET',
+                'type'   => 'script',
+                'url'    => function ($row) { return 'javascript:void(0)'; },
+                'onClick'=> function ($row) {
+                    // Only pass minimal fields to JS
+                    $jsRow = [
+                        'code'   => $row->code,
+                        'labels' => $row->labels ?? '{}',
+                        'symbol' => $row->symbol ?? '',
+                    ];
+                    return 'openEditUnitModal(' . json_encode($jsRow, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) . ')';
+                },
+            ]);
+
+
+
+            
 
         // DELETE
         $this->addAction([
@@ -141,13 +161,16 @@ class UnitDataGrid extends DataGrid
             'method' => 'DELETE',
             'url'    => function ($row) {
                 return route('admin.measurement.families.units.delete', [
-                    'familyid' => $this->familyId,
+                    'familyId' => $this->familyId,
                     'code'     => $row->code,
                 ]);
             },
         ]);
     }
 
+    /**
+     * Mass Actions
+     */
     public function prepareMassActions()
     {
         $this->addMassAction([

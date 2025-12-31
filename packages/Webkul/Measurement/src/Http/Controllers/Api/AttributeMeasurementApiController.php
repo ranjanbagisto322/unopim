@@ -9,6 +9,7 @@ use Webkul\Measurement\Repository\MeasurementFamilyRepository;
 class AttributeMeasurementApiController extends Controller
 {
     protected $attributeRepository;
+
     protected $familyRepository;
 
     public function __construct(
@@ -46,6 +47,7 @@ class AttributeMeasurementApiController extends Controller
     }
 
     // Update attribute measurement
+
     public function update($attributeId)
     {
         $this->attributeRepository->saveAttributeMeasurement($attributeId, [

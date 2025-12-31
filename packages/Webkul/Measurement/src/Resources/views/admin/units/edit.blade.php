@@ -10,7 +10,7 @@
     <x-admin::form
         method="PUT"
         action="{{ route('admin.measurement.families.units.update', [
-            'familyid' => $family->id,
+            'familyId' => $family->id,
             'code'      => $unit['code']
         ]) }}"
     >

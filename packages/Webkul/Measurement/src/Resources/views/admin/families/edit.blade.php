@@ -121,21 +121,26 @@
             Options
         </h2>
 
+        <!-- ADD UNIT BUTTON & MODAL -->
         <v-create-unit-form
             family-id="{{ $family->id }}"
             datagrid="unitDatagrid"
         />
     </div>
 
+    <!-- DATA GRID -->
     <x-admin::datagrid
         ref="unitDatagrid"
         src="{{ route('admin.measurement.families.units', $family->id) }}">
     </x-admin::datagrid>
 
-    <!-- EDIT MODAL -->
-    <x-admin::modal ref="unitEditModal" width="600px"></x-admin::modal>
-
 </div>
+
+<!-- EDIT UNIT MODAL COMPONENT -->
+<v-edit-unit-form
+    family-id="{{ $family->id }}"
+    datagrid="unitDatagrid"
+/>
 
 @pushOnce('scripts')
 
@@ -153,14 +158,12 @@
         <!-- CREATE MODAL -->
         <x-admin::modal ref="addUnitModal">
             <x-slot:header>
-                <h2 class="text-base text-gray-800 dark:text-white font-semibold">
+                <h2 class="text-base font-semibold">
                     Add Unit
                 </h2>
             </x-slot:header>
 
             <x-slot:content>
-
-                <!-- Unit Code -->
                 <x-admin::form.control-group>
                     <x-admin::form.control-group.label class="required">
                         Code
@@ -174,33 +177,22 @@
                     />
                 </x-admin::form.control-group>
 
-                <!-- Dynamic Labels -->
-                <div class="mt-4 bg-white dark:bg-cherry-900 box-shadow rounded">
-                    <div class="flex justify-between items-center p-1.5">
-                        <p class="p-2.5 text-gray-800 dark:text-white text-base font-semibold">
-                            @lang('admin::app.catalog.attributes.create.label')
-                        </p>
-                    </div>
+                <div class="mt-4">
+                    @foreach ($locales as $locale)
+                        <x-admin::form.control-group>
+                            <x-admin::form.control-group.label>
+                                {{ $locale->name }}
+                            </x-admin::form.control-group.label>
 
-                    <div class="px-4 pb-4">
-                        @foreach ($locales as $locale)
-                            <x-admin::form.control-group>
-                                <x-admin::form.control-group.label>
-                                    {{ $locale->name }}
-                                </x-admin::form.control-group.label>
-
-                                <x-admin::form.control-group.control
-                                    type="text"
-                                    v-model="form.labels['{{ $locale->code }}']"
-                                    tell-me
-                                    placeholder="Enter {{ $locale->name }} label"
-                                />
-                            </x-admin::form.control-group>
-                        @endforeach
-                    </div>
+                            <x-admin::form.control-group.control
+                                type="text"
+                                v-model="form.labels['{{ $locale->code }}']"
+                                placeholder="Enter {{ $locale->name }} label"
+                            />
+                        </x-admin::form.control-group>
+                    @endforeach
                 </div>
 
-                <!-- Symbol -->
                 <x-admin::form.control-group class="mt-4">
                     <x-admin::form.control-group.label>
                         Symbol
@@ -212,7 +204,6 @@
                         placeholder="e.g. m, km, g"
                     />
                 </x-admin::form.control-group>
-
             </x-slot:content>
 
             <x-slot:footer>
@@ -228,74 +219,146 @@
     </div>
 </script>
 
-<!-- ================= VUE COMPONENT ================= -->
-<script type="module">
-    app.component('v-create-unit-form', {
-        template: '#v-create-unit-form-template',
+<!-- ================= EDIT UNIT TEMPLATE ================= -->
+<script type="text/x-template" id="v-edit-unit-form-template">
+    <x-admin::modal ref="editUnitModal">
+        <x-slot:header>
+            <h2 class="text-base font-semibold">
+                Edit Unit
+            </h2>
+        </x-slot:header>
 
-        props: ['familyId', 'datagrid'],
+        <x-slot:content>
 
-        data() {
-            return {
-                form: {
-                    code: '',
-                    labels: {}, 
-                    symbol: '',
-                },
-                storeUnitUrl: "{{ route('admin.measurement.families.units.store', ':id') }}",
-            };
-        },
+            <x-admin::form.control-group>
+                <x-admin::form.control-group.label>
+                    Code
+                </x-admin::form.control-group.label>
 
-        methods: {
-            save() {
-                const url = this.storeUnitUrl.replace(':id', this.familyId);
+                <x-admin::form.control-group.control
+                    type="text"
+                    v-model="form.code"
+                    disabled
+                />
+            </x-admin::form.control-group>
 
-                axios.post(url, this.form)
-                    .then(res => {
+            <div class="mt-4">
+                @foreach ($locales as $locale)
+                    <x-admin::form.control-group>
+                        <x-admin::form.control-group.label>
+                            {{ $locale->name }}
+                        </x-admin::form.control-group.label>
 
-                        // close modal
-                        this.$refs.addUnitModal.close();
+                        <x-admin::form.control-group.control
+                            type="text"
+                            v-model="form.labels['{{ $locale->code }}']"
+                        />
+                    </x-admin::form.control-group>
+                @endforeach
+            </div>
 
-                        // reset form
-                        this.form = {
-                            code: '',
-                            labels: {},
-                            symbol: '',
-                        };
+            <x-admin::form.control-group class="mt-4">
+                <x-admin::form.control-group.label>
+                    Symbol
+                </x-admin::form.control-group.label>
 
-                        // 🔥 REDIRECT if backend sends URL
-                        if (res.data?.data?.redirect_url) {
-                            window.location.href = res.data.data.redirect_url;
-                            return;
-                        }
+                <x-admin::form.control-group.control
+                    type="text"
+                    v-model="form.symbol"
+                />
+            </x-admin::form.control-group>
 
-                        // otherwise just reload grid
-                        this.$refs[this.datagrid].reload();
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
-            }
-        }
+        </x-slot:content>
 
-    });
+        <x-slot:footer>
+            <button class="primary-button" @click="update">
+                Update
+            </button>
+        </x-slot:footer>
+    </x-admin::modal>
 </script>
 
-<!-- ================= EDIT UNIT MODAL HANDLER ================= -->
-<script type="text/javascript">
-    function editUnit(url) {
-        const modal = app._instance.refs.unitEditModal;
+<!-- ================= CREATE UNIT COMPONENT ================= -->
+<script type="module">
+app.component('v-create-unit-form', {
+    template: '#v-create-unit-form-template',
 
-        modal.open();
-        modal.loading = true;
+    props: ['familyId', 'datagrid'],
 
-        fetch(url)
-            .then(response => response.text())
-            .then(html => {
-                modal.content = html;
-                modal.loading = false;
-            });
+    data() {
+        return {
+            form: { code: '', labels: {}, symbol: '' },
+            storeUnitUrl: "{{ route('admin.measurement.families.units.store', ':id') }}"
+        };
+    },
+
+    methods: {
+        save() {
+            const url = this.storeUnitUrl.replace(':id', this.familyId);
+
+            axios.post(url, this.form)
+                .then(() => {
+                    this.$refs.addUnitModal.close();
+                    this.form = { code: '', labels: {}, symbol: '' };
+                    this.$refs[this.datagrid].reload();
+                });
+        }
     }
+  });
+</script>
+
+<!-- ================= EDIT UNIT COMPONENT ================= -->
+<script type="module">
+app.component('v-edit-unit-form', {
+    template: '#v-edit-unit-form-template',
+
+    props: ['familyId', 'datagrid'],
+
+    data() {
+        return {
+            unitCode: null,
+            form: { code: '', labels: {}, symbol: '' },
+            updateUrl: "{{ route('admin.measurement.families.units.update', [':family', ':code']) }}"
+        };
+    },
+
+    mounted() {
+        window.addEventListener('edit-unit', e => {
+            this.open(e.detail);
+        });
+    },
+
+    methods: {
+        open(unit) {
+            this.unitCode = unit.code;
+            this.form = {
+                code: unit.code,
+                labels: JSON.parse(unit.labels || '{}'),
+                symbol: unit.symbol,
+            };
+            this.$refs.editUnitModal.toggle();
+        },
+
+        update() {
+            const url = this.updateUrl
+                .replace(':family', this.familyId)
+                .replace(':code', this.unitCode);
+
+            axios.put(url, this.form).then(() => {
+                this.$refs.editUnitModal.close();
+                this.$refs[this.datagrid].reload();
+            });
+        }
+    }
+});
+</script>
+
+<!-- ================= DATAGRID EDIT HANDLER ================= -->
+<script>
+function openEditUnitModal(row) {
+    window.dispatchEvent(new CustomEvent('edit-unit', { detail: row }));
+}
+
 </script>
 
 @endPushOnce

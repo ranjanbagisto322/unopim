@@ -14,7 +14,6 @@ class FieldProcessor extends CoreFieldProcessor
         // 🔹 measurement attribute
         if ($field->type === 'measurement' && ! empty($value)) {
 
-
             if (is_string($value)) {
                 $value = str_replace('|', ',', $value);
                 [$unit, $val] = array_map('trim', explode(',', $value, 2));

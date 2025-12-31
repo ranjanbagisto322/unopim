@@ -6,22 +6,15 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Webkul\Measurement\Repository\MeasurementFamilyRepository;
 
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\URL;
-
 class MeasurementFamilyApiController extends Controller
 {
     public function __construct(
         protected MeasurementFamilyRepository $repository
     ) {}
 
-
     public function index()
     {
-        
+
         $data = $this->repository->all();
 
         return response()->json([
@@ -30,15 +23,29 @@ class MeasurementFamilyApiController extends Controller
             'data'    => $data,
         ]);
     }
-
-
+    
     public function store(Request $request)
     {
+
+        $request->validate([
+            'code'          => 'required|string|max:191',
+            'name'          => 'required|string|max:191',
+            'labels'        => 'required|array',
+            'labels.en_US'  => 'required|string|max:191',
+            'standard_unit' => 'required|string|max:191',
+            'units'         => 'required|array|min:1',
+            'units.*.code'  => 'required|string|max:191',
+            'units.*.labels'=> 'required|array',
+            'units.*.symbol'=> 'nullable|string|max:50',
+            'symbol'        => 'nullable|string|max:50',
+        ]);
+
         $family = $this->repository->create($request->all());
 
         return response()->json([
             'success' => true,
-            'data'    => $family,
+            'message' => 'Measurement Family saved successfully',
+
         ]);
     }
 
@@ -61,7 +68,6 @@ class MeasurementFamilyApiController extends Controller
         ]);
     }
 
-
     public function destroy($id)
     {
         $this->repository->delete($id);
@@ -71,5 +77,4 @@ class MeasurementFamilyApiController extends Controller
             'message' => 'Measurement family deleted successfully',
         ]);
     }
-
 }

@@ -45,6 +45,7 @@ class MeasurementFamilyDataGrid extends DataGrid
             'filterable' => true,
             'closure'    => function ($row) {
                 $labels = json_decode($row->labels ?? '{}', true);
+
                 return $labels['en_US'] ?? '-';
             },
         ]);
@@ -82,6 +83,7 @@ class MeasurementFamilyDataGrid extends DataGrid
     {
         $this->addAction([
             'icon'   => 'icon-edit',
+            'index'  => 'edit',
             'title'  => 'Edit',
             'method' => 'GET',
             'url'    => function ($row) {

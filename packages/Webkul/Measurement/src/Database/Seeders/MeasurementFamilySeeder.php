@@ -80,7 +80,7 @@ class MeasurementFamilySeeder extends Seeder
             ]
         );
 
-         /*
+        /*
         |--------------------------------------------------------------------------
         | WEIGHT / MASS
         |--------------------------------------------------------------------------
@@ -166,7 +166,7 @@ class MeasurementFamilySeeder extends Seeder
             ]
         );
 
-         /*
+        /*
         |--------------------------------------------------------------------------
         | Brightness
         |--------------------------------------------------------------------------
@@ -186,7 +186,7 @@ class MeasurementFamilySeeder extends Seeder
             ]
         );
 
-         /*
+        /*
         |--------------------------------------------------------------------------
         | Capacitance
         |--------------------------------------------------------------------------
@@ -211,8 +211,7 @@ class MeasurementFamilySeeder extends Seeder
             ]
         );
 
-
-         /*
+        /*
         |--------------------------------------------------------------------------
         | Decibel
         |--------------------------------------------------------------------------
@@ -257,7 +256,7 @@ class MeasurementFamilySeeder extends Seeder
             ]
         );
 
-          /*
+        /*
         |--------------------------------------------------------------------------
         | Volume flow
         |--------------------------------------------------------------------------
@@ -397,7 +396,7 @@ class MeasurementFamilySeeder extends Seeder
                     ['code' => 'FOOT_PER_SECOND',      'labels' => ['en_US' => 'Foot per second'],      'symbol' => 'ft/s'],
                     ['code' => 'KNOT',                 'labels' => ['en_US' => 'Knot'],                 'symbol' => 'kn'],
                     ['code' => 'MACH',                 'labels' => ['en_US' => 'Mach'],                 'symbol' => 'Mach'],
-                    ['code' => 'CENTIMETER_PER_SECOND','labels' => ['en_US' => 'Centimeter per second'],'symbol' => 'cm/s'],
+                    ['code' => 'CENTIMETER_PER_SECOND', 'labels' => ['en_US' => 'Centimeter per second'], 'symbol' => 'cm/s'],
                     ['code' => 'KILOMETER_PER_SECOND', 'labels' => ['en_US' => 'Kilometer per second'], 'symbol' => 'km/s'],
                 ],
             ]
@@ -497,13 +496,13 @@ class MeasurementFamilySeeder extends Seeder
                 'units'         => [
                     ['code' => 'PICCOULOMB',  'labels' => ['en_US' => 'Picocoulomb'],  'symbol' => 'pC'],
                     ['code' => 'NANOCOULOMB', 'labels' => ['en_US' => 'Nanocoulomb'],  'symbol' => 'nC'],
-                    ['code' => 'MICROCOULOMB','labels' => ['en_US' => 'Microcoulomb'], 'symbol' => 'µC'],
-                    ['code' => 'MILLICOULOMB','labels' => ['en_US' => 'Millicoulomb'], 'symbol' => 'mC'],
+                    ['code' => 'MICROCOULOMB', 'labels' => ['en_US' => 'Microcoulomb'], 'symbol' => 'µC'],
+                    ['code' => 'MILLICOULOMB', 'labels' => ['en_US' => 'Millicoulomb'], 'symbol' => 'mC'],
                     ['code' => 'COULOMB',     'labels' => ['en_US' => 'Coulomb'],      'symbol' => 'C'],
                     ['code' => 'KILOCOULOMB', 'labels' => ['en_US' => 'Kilocoulomb'],  'symbol' => 'kC'],
                     ['code' => 'MEGACOULOMB', 'labels' => ['en_US' => 'Megacoulomb'],  'symbol' => 'MC'],
                     ['code' => 'AMPERE_HOUR', 'labels' => ['en_US' => 'Ampere hour'],  'symbol' => 'Ah'],
-                    ['code' => 'MILLIAMPERE_HOUR','labels' => ['en_US' => 'Milliampere hour'], 'symbol' => 'mAh'],
+                    ['code' => 'MILLIAMPERE_HOUR', 'labels' => ['en_US' => 'Milliampere hour'], 'symbol' => 'mAh'],
                 ],
             ]
         );

@@ -4,10 +4,10 @@ namespace Webkul\Measurement\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Webkul\Admin\Http\Controllers\Controller;
+use Webkul\Core\Repositories\LocaleRepository;
 use Webkul\Measurement\DataGrids\MeasurementFamilyDataGrid;
 use Webkul\Measurement\DataGrids\UnitDataGrid;
 use Webkul\Measurement\Repository\MeasurementFamilyRepository;
-use Webkul\Core\Repositories\LocaleRepository;
 
 class MeasurementFamilyController extends Controller
 {
@@ -36,7 +36,6 @@ class MeasurementFamilyController extends Controller
             'labels'             => 'required|array',
         ]);
 
-        
         $labels = $request->input('labels', []);
 
         $units = [
@@ -67,7 +66,6 @@ class MeasurementFamilyController extends Controller
             ],
         ]);
     }
-
 
     public function edit($id)
     {
@@ -103,13 +101,12 @@ class MeasurementFamilyController extends Controller
         return redirect()->route('admin.measurement.families.index');
     }
 
-
     public function destroy($id)
     {
         $this->measurementFamilyRepository->delete($id);
 
         return response()->json(['success' => true,
-        'message' => 'Measurement family deleted successfully.',]);
+            'message'                      => 'Measurement family deleted successfully.', ]);
     }
 
     public function massDelete()
@@ -130,10 +127,6 @@ class MeasurementFamilyController extends Controller
 
         return redirect()->back();
     }
-
-
-
-
 
     // units modules all functions
 
@@ -203,29 +196,28 @@ class MeasurementFamilyController extends Controller
         ]);
     }
 
-    public function editUnit($familyid, $code)
+    public function editUnit($familyId, $code)
     {
-        $family = $this->measurementFamilyRepository->find($familyid);
+        $family = $this->measurementFamilyRepository->find($familyId);
 
         $units = $family->units;
 
-        
         // Find unit by code
         $unit = collect($units)->firstWhere('code', $code);
 
         if (! $unit) {
             abort(404, 'Unit not found');
         }
-        
+
         $labels = $unit['labels'] ?? [];
         $locales = $this->localeRepository->getActiveLocales();
 
-        return view('measurement::admin.units.edit', compact('family', 'unit','locales', 'labels'));
+        return view('measurement::admin.units.edit', compact('family', 'unit', 'locales', 'labels'));
     }
 
-    public function updateUnit($familyid, $code)
+    public function updateUnit($familyId, $code)
     {
-        $family = $this->measurementFamilyRepository->find($familyid);
+        $family = $this->measurementFamilyRepository->find($familyId);
 
         if (! $family) {
             abort(404, 'Measurement Family not found');
@@ -259,17 +251,16 @@ class MeasurementFamilyController extends Controller
 
         $this->measurementFamilyRepository->update([
             'units' => $units,
-        ], $familyid);
+        ], $familyId);
 
         return redirect()
-            ->route('admin.measurement.families.edit', $familyid)
+            ->route('admin.measurement.families.edit', $familyId)
             ->with('success', 'Unit updated successfully');
     }
 
-
-    public function deleteUnit($familyid, $code)
+    public function deleteUnit($familyId, $code)
     {
-        $family = $this->measurementFamilyRepository->findOrFail($familyid);
+        $family = $this->measurementFamilyRepository->findOrFail($familyId);
 
         $units = $family->units ?? [];
 
@@ -278,15 +269,14 @@ class MeasurementFamilyController extends Controller
         });
 
         $this->measurementFamilyRepository->update([
-            'units' => array_values($updatedUnits), 
-        ], $familyid);
+            'units' => array_values($updatedUnits),
+        ], $familyId);
 
         return response()->json([
             'status'  => true,
             'message' => 'Unit deleted successfully.',
         ]);
     }
-
 
     public function unitmassDelete()
     {

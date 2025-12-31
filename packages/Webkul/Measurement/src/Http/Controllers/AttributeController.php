@@ -3,12 +3,13 @@
 namespace Webkul\Measurement\Http\Controllers;
 
 use Webkul\Admin\Http\Controllers\Controller;
-use Webkul\Measurement\Repository\MeasurementFamilyRepository;
 use Webkul\Measurement\Repository\AttributeMeasurementRepository;
+use Webkul\Measurement\Repository\MeasurementFamilyRepository;
 
 class AttributeController extends Controller
 {
     protected $familyRepository;
+
     protected $attributeMeasurementRepository;
 
     public function __construct(
@@ -40,7 +41,7 @@ class AttributeController extends Controller
         // 2️⃣ Get old measurement
         $measurement = $this->attributeMeasurementRepository
             ->getByAttributeId($attributeId);
-       
+
         // 3️⃣ Return JSON
         return response()->json([
             'familyOptions' => $familyOptions,

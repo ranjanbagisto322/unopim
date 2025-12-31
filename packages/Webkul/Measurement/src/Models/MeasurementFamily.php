@@ -3,10 +3,12 @@
 namespace Webkul\Measurement\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Webkul\HistoryControl\Interfaces\PresentableHistoryInterface;
+use Webkul\HistoryControl\Presenters\BooleanPresenter;
+use Webkul\HistoryControl\Traits\HistoryTrait;
 
 class MeasurementFamily extends Model
 {
-    
     protected $fillable = [
         'code',
         'name',
@@ -18,7 +20,7 @@ class MeasurementFamily extends Model
 
     protected $casts = [
         'units'     => 'array',
-        'labels' => 'array',
+        'labels'    => 'array',
     ];
 
     public function getUnitsArrayAttribute()

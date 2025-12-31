@@ -19,8 +19,8 @@ class MeasurementProductImport
             return;
         }
 
-        $value = $row[$attribute->code . '_value'] ?? null;
-        $unit  = $row[$attribute->code . '_unit'] ?? null;
+        $value = $row[$attribute->code.'_value'] ?? null;
+        $unit = $row[$attribute->code.'_unit'] ?? null;
 
         if (! $value || ! $unit) {
             return;

@@ -36,8 +36,8 @@ class AttributeMeasurementRepository extends Repository
     public function saveAttributeMeasurementByCode($attributeCode, $data)
     {
         $attribute = app(\Webkul\Attribute\Repositories\AttributeRepository::class)
-        ->findOneByField('code', $attributeCode);
-        
+            ->findOneByField('code', $attributeCode);
+
         if ($attribute) {
             $this->updateOrCreate(
                 ['attribute_id' => $attribute->id],
@@ -48,6 +48,4 @@ class AttributeMeasurementRepository extends Repository
             );
         }
     }
-
-
 }
