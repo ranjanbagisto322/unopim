@@ -11,7 +11,7 @@
         method="PUT"
         action="{{ route('admin.measurement.families.update', $family->id) }}"
     >
-        <!-- Page Header -->
+        
         <div class="grid gap-2.5">
             <div class="flex gap-4 justify-between items-center max-sm:flex-wrap">
                 <div class="grid gap-1.5">
@@ -22,7 +22,7 @@
 
                 <div class="flex gap-x-2.5 items-center">
 
-                    <!-- Back Button -->
+                   
                     <a
                         href="{{ route('admin.measurement.families.index') }}"
                         class="transparent-button"
@@ -30,7 +30,7 @@
                         {{ __('Back') }}
                     </a>
 
-                    <!-- Save Button -->
+                   
                     <button class="primary-button">
                         {{ __('Save') }}
                     </button>
@@ -39,10 +39,10 @@
         </div>
 
 
-        <!-- PAGE BODY -->
+        
         <div class="flex gap-2.5 mt-3.5 max-xl:flex-wrap">
 
-            <!-- LEFT COLUMN (MAIN FORM) -->
+           
             <div class="left-column flex flex-col gap-2 flex-1 max-xl:flex-auto">
 
                 <div class="relative p-4 bg-white dark:bg-cherry-900 rounded box-shadow">
@@ -71,7 +71,7 @@
 
                   
 
-                   <!-- Labels -->
+                  
                         <div class="bg-white dark:bg-cherry-900 box-shadow rounded">
                             <div class="flex justify-between items-center p-1.5">
                                 <p class="text-base text-gray-800 dark:text-white font-semibold mb-4">
@@ -80,7 +80,7 @@
                             </div>
 
                             <div class="">
-                                <!-- Locales Inputs -->
+                               
                                 @foreach ($locales as $locale)
                                     <x-admin::form.control-group>
                                         <x-admin::form.control-group.label>
@@ -103,7 +103,7 @@
                 </div> 
             </div>
 
-        </div> <!-- columns -->
+        </div> 
 
       
 

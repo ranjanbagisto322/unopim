@@ -38,7 +38,7 @@ class ValidateAttributeMeasurementBeforeUpdate
             );
         }
 
-        // Save only when valid
+    
         $this->attributeMeasurementRepository->saveAttributeMeasurement($attributeId, [
             'family_code' => $familyCode,
             'unit_code'   => $unitCode,

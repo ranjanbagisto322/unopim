@@ -3,7 +3,7 @@
         {{ __('Measurement Families') }}
     </x-slot>
 
-    <!-- Page Header -->
+   
     <div class="flex gap-4 justify-between items-center max-sm:flex-wrap mb-4">
         <p class="text-xl text-gray-800 dark:text-white font-bold">
             {{ __('Measurement') }}
@@ -14,14 +14,14 @@
         </div>
     </div>
 
-    <!-- Datagrid -->
+    
     <x-admin::datagrid
         ref="datagrid"
         src="{{ route('admin.measurement.families.index') }}">
     </x-admin::datagrid>
 
     @pushOnce('scripts')
-        <!-- ================= CREATE FAMILY TEMPLATE ================= -->
+        
         <script type="text/x-template" id="v-create-family-form-template">
             <div>
                 <button
@@ -32,7 +32,7 @@
                     {{ __('Create Measurement Family') }}
                 </button>
 
-                <!-- Modal -->
+                
                 <x-admin::modal ref="familyCreateModal">
                     <x-slot:header>
                         <h2 class="text-base text-gray-800 dark:text-white font-semibold">
@@ -41,7 +41,7 @@
                     </x-slot:header>
 
                     <x-slot:content>
-                        <!-- Basic Fields -->
+                       
                         <div class="px-4 pb-4 bg-white dark:bg-cherry-900 box-shadow rounded">
                         
                             <div class="flex justify-between items-center p-1.5">
@@ -50,7 +50,7 @@
                                 </p>
                             </div>
                         
-                           <!-- Family Code -->
+                         
                             <x-admin::form.control-group>
                                 <x-admin::form.control-group.label class="required">
                                     {{ __('Code') }}
@@ -63,7 +63,7 @@
                                 />
                             </x-admin::form.control-group>
 
-                            <!-- Standard Unit Code -->
+                           
                             <x-admin::form.control-group>
                                 <x-admin::form.control-group.label class="required">
                                     {{ __('Standard Unit Code') }}
@@ -76,7 +76,7 @@
                                 />
                             </x-admin::form.control-group>
 
-                            <!-- Symbol -->
+                           
                             <x-admin::form.control-group>
                                 <x-admin::form.control-group.label>
                                     {{ __('Symbol') }}
@@ -90,7 +90,7 @@
                             </x-admin::form.control-group>
                         </div>
 
-                        <!-- Dynamic Labels -->
+                       
                         <div class="mt-4 bg-white dark:bg-cherry-900 box-shadow rounded">
                             <div class="flex justify-between items-center p-1.5">
                                 <p class="p-2.5 text-gray-800 dark:text-white text-base font-semibold">
@@ -129,7 +129,7 @@
             </div>
         </script>
 
-        <!-- ================= VUE COMPONENT ================= -->
+        
         <script type="module">
             app.component('v-create-family-form', {
                 template: '#v-create-family-form-template',
@@ -154,7 +154,7 @@
                         .then(response => {
                             this.$refs.familyCreateModal.close();
 
-                            // reset form
+                            
                             this.form = {
                                 code: '',
                                 standard_unit_code: '',

@@ -22,7 +22,7 @@ class AttributeController extends Controller
 
     public function getAttributeMeasurement($attributeId)
     {
-        // 1️⃣ Load families
+        
         $families = $this->familyRepository->all();
 
         $familyOptions = $families->map(function ($f) {
@@ -38,11 +38,11 @@ class AttributeController extends Controller
             ];
         })->values()->toArray();
 
-        // 2️⃣ Get old measurement
+        
         $measurement = $this->attributeMeasurementRepository
             ->getByAttributeId($attributeId);
 
-        // 3️⃣ Return JSON
+        
         return response()->json([
             'familyOptions' => $familyOptions,
             'oldFamily'     => $measurement->family_code ?? '',

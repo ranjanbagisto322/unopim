@@ -4,7 +4,7 @@ $attributeId = $field->attribute->id ?? $field->id;
 
 <div class="grid gap-4 [grid-template-columns:repeat(auto-fit,_minmax(200px,_1fr))]">
 
-    <!-- Measurement Value -->
+    
     <div class="grid w-full">
         <x-admin::form.control-group.control
             type="text"
@@ -14,7 +14,7 @@ $attributeId = $field->attribute->id ?? $field->id;
         />
     </div>
 
-    <!-- Measurement Unit (ASYNC SELECT) -->
+    
     <div class="grid w-full">
         <x-admin::form.control-group.control
             type="select"

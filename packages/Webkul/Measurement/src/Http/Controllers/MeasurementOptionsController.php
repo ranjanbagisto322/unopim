@@ -47,12 +47,12 @@ class MeasurementOptionsController extends AbstractOptionsController
         $query = request('query', '');
         $queryParams = request('queryParams', []);
 
-        // Get measurement info based on attribute id
+       
         $attributeMeasurement = $this->attributeMeasurementRepository->getByAttributeId($attributeId);
 
         $familyCode = $attributeMeasurement?->family_code;
 
-        // If no family selected yet, return empty list
+        
         if (! $familyCode) {
             return response()->json([
                 'options'  => [],
@@ -61,7 +61,7 @@ class MeasurementOptionsController extends AbstractOptionsController
             ]);
         }
 
-        // Get all units for the family
+       
         $units = collect(
             $this->measurementFamilyRepository->getUnitsByFamilyCode($familyCode)
         )->map(function ($unit) {
@@ -90,14 +90,14 @@ class MeasurementOptionsController extends AbstractOptionsController
         string $query,
         array $queryParams
     ): array {
-        // Put the old selected value on top
+       
         if (isset($queryParams['identifiers']['value'])) {
             $identifier = $queryParams['identifiers']['value'];
 
             $collection = $collection->sortByDesc(fn ($item) => $item->id === $identifier);
         }
 
-        // Paginate
+        
         $paginated = $collection->forPage($page, $limit)->values();
 
         return [

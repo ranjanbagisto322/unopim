@@ -12,7 +12,7 @@ class MeasurementUnitApiController extends Controller
         protected MeasurementFamilyRepository $repository
     ) {}
 
-    // 🔹 GET units
+    
     public function index($familyId)
     {
         $family = $this->repository->find($familyId);
@@ -31,7 +31,7 @@ class MeasurementUnitApiController extends Controller
         ]);
     }
 
-    // 🔹 STORE unit
+    
     public function store(Request $request, $familyId)
     {
         $family = $this->repository->find($familyId);
@@ -72,7 +72,7 @@ class MeasurementUnitApiController extends Controller
         ]);
     }
 
-    // 🔹 UPDATE unit
+    
     public function update(Request $request, $familyId, $code)
     {
         $family = $this->repository->find($familyId);
@@ -116,7 +116,7 @@ class MeasurementUnitApiController extends Controller
         ]);
     }
 
-    // 🔹 DELETE unit
+   
     public function destroy($familyId, $code)
     {
         $family = $this->repository->find($familyId);

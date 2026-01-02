@@ -85,7 +85,7 @@ class MeasurementFamilyController extends Controller
             'labels.*' => 'nullable|string',
         ]);
 
-        // old + new labels merge
+        
         $oldLabels = $family->labels ?? [];
         $newLabels = $request->input('labels', []);
         $mergedLabels = array_merge($oldLabels, $newLabels);
@@ -141,8 +141,9 @@ class MeasurementFamilyController extends Controller
         }
 
         $family = $this->measurementFamilyRepository->find($id);
+        $locales = $this->localeRepository->getActiveLocales();
 
-        return view('measurement::admin.units.index', compact('family'));
+        return view('measurement::admin.families.edit', compact('family', 'locales'));
     }
 
     public function storeUnit($id)
@@ -188,7 +189,7 @@ class MeasurementFamilyController extends Controller
                 'redirect_url' => route(
                     'admin.measurement.families.units.edit',
                     [
-                        'familyid' => $family->id,
+                        'familyId' => $family->id,
                         'code'     => request('code'),
                     ]
                 ),

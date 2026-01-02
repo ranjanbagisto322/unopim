@@ -15,7 +15,7 @@
         ]) }}"
     >
 
-        <!-- PAGE HEADER -->
+        
         <div class="grid gap-2.5 mb-4">
             <div class="flex gap-4 justify-between items-center max-sm:flex-wrap">
 
@@ -25,7 +25,7 @@
 
                 <div class="flex gap-x-2.5 items-center">
 
-                    <!-- BACK BUTTON -->
+                   
                     <a
                         href="{{ route('admin.measurement.families.edit', $family->id) }}"
                         class="transparent-button"
@@ -33,7 +33,7 @@
                         Back
                     </a>
 
-                    <!-- SAVE BUTTON -->
+                    
                     <button class="primary-button">
                         Save
                     </button>
@@ -42,7 +42,7 @@
             </div>
         </div>
 
-        <!-- FORM BODY -->
+        
         <div class="relative p-4 bg-white dark:bg-cherry-900 rounded box-shadow">
 
             <p class="text-base text-gray-800 dark:text-white font-semibold mb-4">
@@ -82,7 +82,7 @@
             </x-admin::form.control-group>
 
 
-                        <!-- Labels -->
+                        
                         <div class="bg-white dark:bg-cherry-900 box-shadow rounded">
                             <div class="flex justify-between items-center p-1.5">
                                 <p class="text-base text-gray-800 dark:text-white font-semibold mb-4">
@@ -91,7 +91,7 @@
                             </div>
 
                             <div class="">
-                                <!-- Locales Inputs -->
+                                
                                 @foreach ($locales as $locale)
                                     <x-admin::form.control-group>
                                         <x-admin::form.control-group.label>

@@ -11,9 +11,7 @@ Route::group([
         'request.locale',
     ],
 ], function () {
-    /**
-     * Measurement API
-     */
+    
     require 'V1/measurement-routes.php';
 
 });

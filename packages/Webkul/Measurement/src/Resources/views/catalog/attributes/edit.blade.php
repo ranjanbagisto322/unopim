@@ -11,7 +11,7 @@
 <script type="text/x-template" id="v-measurement-template">
     <div class="p-4 bg-white dark:bg-cherry-900 rounded shadow-sm mt-4">
 
-        <!-- Measurement Family -->
+       
         <x-admin::form.control-group>
             <x-admin::form.control-group.label class="required">
                 @lang('Measurement Family')
@@ -31,7 +31,7 @@
             <x-admin::form.control-group.error control-name="measurement_family" />
         </x-admin::form.control-group>
 
-        <!-- Measurement Unit -->
+        
         <x-admin::form.control-group class="mt-4">
             <x-admin::form.control-group.label class="required">
                 @lang('Measurement Unit')

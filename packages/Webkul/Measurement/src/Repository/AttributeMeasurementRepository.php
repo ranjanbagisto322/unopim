@@ -11,9 +11,7 @@ class AttributeMeasurementRepository extends Repository
         return 'Webkul\\Measurement\\Models\\AttributeMeasurement';
     }
 
-    /**
-     * Save or update measurement family + unit for an attribute
-     */
+    
     public function saveAttributeMeasurement($attributeId, $data)
     {
         return $this->updateOrCreate(
@@ -25,9 +23,7 @@ class AttributeMeasurementRepository extends Repository
         );
     }
 
-    /**
-     * Get measurement data for an attribute
-     */
+    
     public function getByAttributeId($attributeId)
     {
         return $this->findOneWhere(['attribute_id' => $attributeId]);

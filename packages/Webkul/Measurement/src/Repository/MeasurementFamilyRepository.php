@@ -12,9 +12,7 @@ class MeasurementFamilyRepository extends Repository
         return MeasurementFamily::class;
     }
 
-    /**
-     * Get units by family code
-     */
+    
     public function getUnitsByFamilyCode(?string $familyCode): array
     {
         if (! $familyCode) {
