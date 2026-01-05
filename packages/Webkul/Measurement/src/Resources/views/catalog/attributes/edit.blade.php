@@ -12,7 +12,7 @@
     <div class="p-4 bg-white dark:bg-cherry-900 rounded shadow-sm mt-4">
 
        
-        <x-admin::form.control-group>
+        <x-admin::form.control-group v-if="familyOptions">
             <x-admin::form.control-group.label class="required">
                 @lang('Measurement Family')
             </x-admin::form.control-group.label>
@@ -22,7 +22,8 @@
                 name="measurement_family"
                 id="measurement_family"
                 ::options="familyOptions"
-                v-model="measurementFamily"
+                v-model="oldFamily"
+                ::value="oldFamily"
                 rules="required"
                 track-by="id"
                 label-by="label"
@@ -32,7 +33,7 @@
         </x-admin::form.control-group>
 
         
-        <x-admin::form.control-group class="mt-4">
+        <x-admin::form.control-group class="mt-4" v-if="unitsList">
             <x-admin::form.control-group.label class="required">
                 @lang('Measurement Unit')
             </x-admin::form.control-group.label>
@@ -42,7 +43,8 @@
                 name="measurement_unit"
                 id="measurement_unit"
                 ::options="unitsList"
-                v-model="measurementUnit"
+                v-model="oldUnit"
+                ::value="oldUnit"
                 rules="required"
                 track-by="id"
                 label-by="label"
@@ -62,10 +64,10 @@
 
         data() {
             return {
-                familyOptions: [],
+                familyOptions: null,
                 measurementFamily: null,   
                 measurementUnit: null,     
-                unitsList: [],
+                unitsList: null,
                 oldFamily: null,
                 oldUnit: null,
                 isInitialLoad: true,
@@ -80,9 +82,6 @@
                 this.familyOptions = data.familyOptions || [];
                 this.oldFamily = data.oldFamily;
                 this.oldUnit = data.oldUnit;
-
-                console.log('faimly:', this.oldFamily);
-                console.log('testunit:', this.oldUnit);
 
                 if (this.oldFamily && this.familyOptions.length > 0) {
                    
@@ -115,7 +114,7 @@
         },
 
         watch: {
-            measurementFamily(newValue) {
+            oldFamily(newValue) {
                 let selectedFamily = null;
 
                
@@ -123,7 +122,6 @@
                     try {
                         selectedFamily = JSON.parse(newValue);
                     } catch (e) {
-                        console.error('JSON parse error in measurementFamily:', e);
                         return;
                     }
                 }

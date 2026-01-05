@@ -122,7 +122,7 @@ class UnitDataGrid extends DataGrid
     {
             // $this->addAction([
             //     'index'  => 'edit',
-            //     'icon'   => 'icon-edit',
+            //     'icon'   => 'icon-edit',,
             //     'title'  => 'Edit',
             //     'method' => 'GET',
             //     'url'    => function ($row) {
