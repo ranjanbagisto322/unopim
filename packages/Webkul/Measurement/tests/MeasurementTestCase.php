@@ -9,4 +9,3 @@ class MeasurementTestCase extends TestCase
 {
     use UserAssertions;
 }
-

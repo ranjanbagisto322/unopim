@@ -2,8 +2,8 @@
 
 namespace Webkul\Measurement\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Webkul\Measurement\Database\Factories\MeasurementFamilyFactory;
 
 class MeasurementFamily extends Model

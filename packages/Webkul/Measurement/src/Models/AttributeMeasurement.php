@@ -14,13 +14,11 @@ class AttributeMeasurement extends Model
         'unit_code',
     ];
 
-    
     public function attribute()
     {
         return $this->belongsTo(\Webkul\Attribute\Models\Attribute::class, 'attribute_id');
     }
 
-    
     public function family()
     {
         return $this->belongsTo(
@@ -30,7 +28,6 @@ class AttributeMeasurement extends Model
         );
     }
 
-    
     public function getUnitAttribute()
     {
         if (! $this->family) {

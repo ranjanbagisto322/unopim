@@ -12,7 +12,6 @@ class MeasurementFamilyRepository extends Repository
         return MeasurementFamily::class;
     }
 
-    
     public function getUnitsByFamilyCode(?string $familyCode): array
     {
         if (! $familyCode) {

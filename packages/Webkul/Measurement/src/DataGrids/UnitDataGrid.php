@@ -16,9 +16,6 @@ class UnitDataGrid extends DataGrid
         $this->familyId = $id;
     }
 
-    /**
-     * Prepare Query
-     */
     public function prepareQueryBuilder()
     {
         $family = DB::table('measurement_families')
@@ -28,14 +25,12 @@ class UnitDataGrid extends DataGrid
         $units = json_decode($family->units ?? '[]', true);
         $standardUnit = $family->standard_unit ?? null;
 
-        // Empty result
         if (empty($units)) {
             $query = DB::table('measurement_families')
                 ->select(
                     DB::raw('NULL as code'),
                     DB::raw('NULL as label'),
                     DB::raw('NULL as symbol'),
-                    DB::raw('NULL as labels'),
                     DB::raw('0 as is_standard')
                 )
                 ->whereRaw('1 = 0');
@@ -48,18 +43,16 @@ class UnitDataGrid extends DataGrid
         $queryList = [];
 
         foreach ($units as $unit) {
-            $code   = $unit['code'] ?? '';
-            $label  = $unit['labels']['en_US'] ?? '';
+            $code = $unit['code'] ?? '';
+            $label = $unit['labels']['en_US'] ?? '';
             $symbol = $unit['symbol'] ?? '';
-            $labels = json_encode($unit['labels'] ?? []);
-            $isStd  = ($code === $standardUnit) ? 1 : 0;
+            $isStd = ($code === $standardUnit) ? 1 : 0;
 
             $queryList[] = DB::table(DB::raw(
                 "(SELECT
                     '$code'   AS code,
                     '$label'  AS label,
                     '$symbol' AS symbol,
-                    '$labels' AS labels,
                     $isStd    AS is_standard
                 ) temp"
             ));
@@ -76,9 +69,6 @@ class UnitDataGrid extends DataGrid
         return $finalQuery;
     }
 
-    /**
-     * Prepare Columns
-     */
     public function prepareColumns()
     {
         $this->addColumn([
@@ -99,60 +89,62 @@ class UnitDataGrid extends DataGrid
             'filterable' => true,
         ]);
 
+        // $this->addColumn([
+        //     'index'      => 'symbol',
+        //     'label'      => 'Symbol',
+        //     'type'       => 'string',
+        //     'searchable' => true,
+        //     'sortable'   => true,
+        //     'filterable' => true,
+        // ]);
+
+        // ⭐ Standard Unit column (Akeneo style)
         $this->addColumn([
             'index'      => 'is_standard',
-            'label'      => 'Standard Unit',
+            'label'      => 'Mark Standard Units',
             'type'       => 'boolean',
             'searchable' => false,
             'sortable'   => true,
             'filterable' => false,
             'escape'     => false,
+            'options'    => [
+                'type'   => 'basic',
+                'params' => [
+                    'options' => [
+                        [
+                            'label' => 'Standard',
+                            'value' => 1,
+                        ], [
+                            'label' => '-',
+                            'value' => 0,
+                        ],
+                    ],
+                ],
+            ],
             'closure' => function ($row) {
                 return $row->is_standard
-                    ? "<span class='label-active'>STANDARD</span>"
+                    ? "<span class='label-active'>STANDARD UNIT</span>"
                     : '';
             },
         ]);
+
     }
 
-    /**
-     * Row Actions
-     */
     public function prepareActions()
     {
-            // $this->addAction([
-            //     'index'  => 'edit',
-            //     'icon'   => 'icon-edit',,
-            //     'title'  => 'Edit',
-            //     'method' => 'GET',
-            //     'url'    => function ($row) {
-            //         return route('admin.measurement.families.units.edit', [
-            //             'familyId' => $this->familyId,
-            //             'code'     => $row->code,
-            //         ]);
-            //     },
-            // ]);
-
-            $this->addAction([
-                'icon'   => 'icon-edit',
-                'title'  => 'Edit',
-                'method' => 'GET',
-                'type'   => 'script',
-                'url'    => function ($row) { return 'javascript:void(0)'; },
-                'onClick'=> function ($row) {
-                    // Only pass minimal fields to JS
-                    $jsRow = [
-                        'code'   => $row->code,
-                        'labels' => $row->labels ?? '{}',
-                        'symbol' => $row->symbol ?? '',
-                    ];
-                    return 'openEditUnitModal(' . json_encode($jsRow, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) . ')';
-                },
-            ]);
-
-
-
-            
+        // EDIT
+        $this->addAction([
+            'icon'   => 'icon-edit',
+            'title'  => 'Edit',
+            'method' => 'GET',
+            'type'   => 'script',
+            'url'    => function ($row) {
+                return route('admin.measurement.families.units.edit', [
+                    'familyId' => $this->familyId,
+                    'code'     => $row->code,
+                ]);
+            },
+        ]);
 
         // DELETE
         $this->addAction([
@@ -168,9 +160,6 @@ class UnitDataGrid extends DataGrid
         ]);
     }
 
-    /**
-     * Mass Actions
-     */
     public function prepareMassActions()
     {
         $this->addMassAction([

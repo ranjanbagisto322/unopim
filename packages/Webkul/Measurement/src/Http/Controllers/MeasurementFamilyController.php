@@ -85,7 +85,6 @@ class MeasurementFamilyController extends Controller
             'labels.*' => 'nullable|string',
         ]);
 
-        
         $oldLabels = $family->labels ?? [];
         $newLabels = $request->input('labels', []);
         $mergedLabels = array_merge($oldLabels, $newLabels);

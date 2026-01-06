@@ -1,4 +1,4 @@
-<x-admin::layouts.with-history>
+<x-admin::layouts>
     <x-slot:entityName>
         measurement_unit
     </x-slot:entityName>
@@ -115,4 +115,4 @@
 
     </x-admin::form>
 
-</x-admin::layouts.with-history>
+</x-admin::layouts>

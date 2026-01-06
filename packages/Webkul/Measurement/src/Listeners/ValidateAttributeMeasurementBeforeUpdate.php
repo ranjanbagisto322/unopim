@@ -2,14 +2,15 @@
 
 namespace Webkul\Measurement\Listeners;
 
-use Webkul\Measurement\Repository\AttributeMeasurementRepository;
-use Webkul\Attribute\Repositories\AttributeRepository;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\Session;
+use Webkul\Attribute\Repositories\AttributeRepository;
+use Webkul\Measurement\Repository\AttributeMeasurementRepository;
 
 class ValidateAttributeMeasurementBeforeUpdate
 {
     protected $attributeMeasurementRepository;
+
     protected $attributeRepository;
 
     public function __construct(
@@ -24,12 +25,12 @@ class ValidateAttributeMeasurementBeforeUpdate
     {
 
         $attribute = $this->attributeRepository->find($attributeId);
-        
+
         if (! $attribute || $attribute->type !== 'measurement') {
             return;
         }
         $familyCode = request('measurement_family');
-        $unitCode   = request('measurement_unit');
+        $unitCode = request('measurement_unit');
 
         if (! $familyCode || ! $unitCode) {
             Session::flash('error', 'Measurement Family and Unit are required.');

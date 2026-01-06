@@ -20,7 +20,6 @@ class AttributeMeasurementApiController extends Controller
         $this->familyRepository = $familyRepository;
     }
 
-    
     public function getUnitsByFamily($familyCode)
     {
         $units = $this->familyRepository->getUnitsByFamilyCode($familyCode);
@@ -32,7 +31,6 @@ class AttributeMeasurementApiController extends Controller
         ]);
     }
 
-    
     public function store($attributeId)
     {
         $this->attributeRepository->saveAttributeMeasurement($attributeId, [
@@ -46,7 +44,6 @@ class AttributeMeasurementApiController extends Controller
         ]);
     }
 
-   
     public function update($attributeId)
     {
         $this->attributeRepository->saveAttributeMeasurement($attributeId, [

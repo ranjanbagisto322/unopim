@@ -17,7 +17,6 @@ function familyWithUnits(array $units = [])
     ]);
 }
 
-
 it('should return units index page', function () {
     $family = familyWithUnits();
 
@@ -62,8 +61,8 @@ it('should return validation error when unit code missing', function () {
             'labels' => ['en_US' => 'Meter'],
         ]
     )
-    ->assertStatus(422)
-    ->assertJsonValidationErrors(['code']);
+        ->assertStatus(422)
+        ->assertJsonValidationErrors(['code']);
 });
 
 it('should not allow duplicate unit code', function () {

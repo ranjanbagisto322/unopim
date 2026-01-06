@@ -23,7 +23,7 @@ class MeasurementFamilyApiController extends Controller
             'data'    => $data,
         ]);
     }
-    
+
     public function store(Request $request)
     {
 

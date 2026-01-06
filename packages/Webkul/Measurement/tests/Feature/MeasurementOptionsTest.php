@@ -1,8 +1,8 @@
 <?php
 
 use Webkul\Attribute\Models\Attribute;
-use Webkul\Measurement\Models\MeasurementFamily;
 use Webkul\Measurement\Models\AttributeMeasurement;
+use Webkul\Measurement\Models\MeasurementFamily;
 
 uses(
     Webkul\Measurement\Tests\MeasurementTestCase::class
@@ -12,7 +12,6 @@ beforeEach(function () {
     $this->loginAsAdmin();
 });
 
-
 function measurementFamilyWithUnits(array $units)
 {
     return MeasurementFamily::factory()->create([
@@ -20,7 +19,6 @@ function measurementFamilyWithUnits(array $units)
         'units' => $units,
     ]);
 }
-
 
 it('should return empty options when no measurement family selected', function () {
     $attribute = Attribute::factory()->create();
