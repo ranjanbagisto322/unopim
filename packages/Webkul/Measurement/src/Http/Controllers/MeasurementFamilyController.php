@@ -8,6 +8,7 @@ use Webkul\Core\Repositories\LocaleRepository;
 use Webkul\Measurement\DataGrids\MeasurementFamilyDataGrid;
 use Webkul\Measurement\DataGrids\UnitDataGrid;
 use Webkul\Measurement\Repository\MeasurementFamilyRepository;
+use Illuminate\Http\JsonResponse;
 
 class MeasurementFamilyController extends Controller
 {
@@ -97,7 +98,7 @@ class MeasurementFamilyController extends Controller
 
         session()->flash('success', 'Measurement Family updated successfully.');
 
-        return redirect()->route('admin.measurement.families.index');
+        return redirect()->back();
     }
 
     public function destroy($id)
@@ -196,23 +197,48 @@ class MeasurementFamilyController extends Controller
         ]);
     }
 
-    public function editUnit($familyId, $code)
+    // public function editUnit($familyId, $code)
+    // {
+    //     $family = $this->measurementFamilyRepository->find($familyId);
+
+    //     $units = $family->units;
+
+    //     // Find unit by code
+    //     $unit = collect($units)->firstWhere('code', $code);
+
+    //     if (! $unit) {
+    //         abort(404, 'Unit not found');
+    //     }
+
+    //     $labels = $unit['labels'] ?? [];
+    //     $locales = $this->localeRepository->getActiveLocales();
+
+    //     return view('measurement::admin.units.edit', compact('family', 'unit', 'locales', 'labels'));
+    // }
+
+    public function editUnit(int $familyId, string $code): JsonResponse
     {
-        $family = $this->measurementFamilyRepository->find($familyId);
+        $family = $this->measurementFamilyRepository->findOrFail($familyId);
 
-        $units = $family->units;
-
-        // Find unit by code
-        $unit = collect($units)->firstWhere('code', $code);
+        $unit = collect($family->units)->firstWhere('code', $code);
 
         if (! $unit) {
             abort(404, 'Unit not found');
         }
 
-        $labels = $unit['labels'] ?? [];
-        $locales = $this->localeRepository->getActiveLocales();
 
-        return view('measurement::admin.units.edit', compact('family', 'unit', 'locales', 'labels'));
+        return new JsonResponse([
+            'data' => [
+                ...$unit,
+
+                // safety casts / defaults
+                'status'     => isset($unit['status']) ? (bool) $unit['status'] : true,
+                'labels'     => $unit['labels'] ?? [],
+                'precision'  => $unit['precision'] ?? null,
+                'symbol'     => $unit['symbol'] ?? null,
+                'family_id'  => $familyId,
+            ],
+        ]);
     }
 
     public function updateUnit($familyId, $code)

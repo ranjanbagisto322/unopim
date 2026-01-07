@@ -116,188 +116,348 @@
 <!-- ================= UNITS LIST ================= -->
 <div class="mt-4 p-4 bg-white dark:bg-cherry-900 box-shadow rounded">
 
-    <div class="flex justify-between items-center mb-4">
-        <h2 class="mb-4 text-base text-gray-800 dark:text-white font-semibold">
-            Options
-        </h2>
+    <v-locales>
+        <div class="flex  gap-4 justify-between items-center max-sm:flex-wrap">
+            <p class="text-xl text-gray-800 dark:text-slate-50 font-bold">
+                Units
+            </p>
 
-        <v-create-unit-form
-            family-id="{{ $family->id }}"
-            datagrid="unitDatagrid"
-        />
-    </div>
+            <div class="flex gap-x-2.5 items-center">
+                @if (bouncer()->hasPermission('settings.locales.create'))
+                    <button
+                        type="button"
+                        class="primary-button"
+                    >
+                        Create Units
+                    </button>
+                @endif
+            </div>
+        </div>
 
-    <x-admin::datagrid
-        ref="unitDatagrid"
-        src="{{ route('admin.measurement.families.units', $family->id) }}">
-    </x-admin::datagrid>
+        <!-- DataGrid Shimmer -->
+        <x-admin::shimmer.datagrid />
+    </v-locales>
 
-    <!-- EDIT MODAL -->
-    <x-admin::modal ref="unitEditModal" width="600px"></x-admin::modal>
 
 </div>
 
 @pushOnce('scripts')
 
-<!-- ================= CREATE UNIT TEMPLATE ================= -->
-<script type="text/x-template" id="v-create-unit-form-template">
-    <div>
-        <button
-            type="button"
-            class="secondary-button text-sm"
-            @click="$refs.addUnitModal.toggle()"
-        >
-            Add Unit
-        </button>
 
-        <!-- CREATE MODAL -->
-        <x-admin::modal ref="addUnitModal">
-            <x-slot:header>
-                <h2 class="text-base text-gray-800 dark:text-white font-semibold">
-                    Add Unit
-                </h2>
-            </x-slot:header>
+    <script
+        type="text/x-template"
+        id="v-locales-template"
+    >
+        <div class="flex  gap-4 justify-between items-center max-sm:flex-wrap">
+            <p class="text-xl text-gray-800 dark:text-slate-50 font-bold">
+                Units
+            </p>
 
-            <x-slot:content>
+            <div class="flex gap-x-2.5 items-center">
+                <!-- Locale Create Button -->
+                @if (bouncer()->hasPermission('settings.locales.create'))
+                    <button
+                        type="button"
+                        class="primary-button"
+                        @click="selectedLocales=0;resetForm();$refs.localeUpdateOrCreateModal.toggle()"
+                    >
+                        Create Unit
+                    </button>
+                @endif
+            </div>
+        </div>
 
-                <!-- Unit Code -->
-                <x-admin::form.control-group>
-                    <x-admin::form.control-group.label class="required">
-                        Code
-                    </x-admin::form.control-group.label>
+        @php
+            $hasDeletePermission = bouncer()->hasPermission('settings.locales.delete');
 
-                    <x-admin::form.control-group.control
-                        type="text"
-                        v-model="form.code"
-                        rules="required"
-                        placeholder="Enter unit code"
-                    />
-                </x-admin::form.control-group>
+            $hasEditPermission = bouncer()->hasPermission('settings.locales.edit');
 
-                <!-- Dynamic Labels -->
-                <div class="mt-4 bg-white dark:bg-cherry-900 box-shadow rounded">
-                    <div class="flex justify-between items-center p-1.5">
-                        <p class="p-2.5 text-gray-800 dark:text-white text-base font-semibold">
-                            @lang('admin::app.catalog.attributes.create.label')
-                        </p>
-                    </div>
+            $hasMassActionPermission = bouncer()->hasPermission('settings.locales.mass_update') || bouncer()->hasPermission('settings.locales.mass_delete');
+        @endphp
+        <x-admin::datagrid :src="route('admin.measurement.families.units', $family->id)" ref="datagrid">
+            <!-- DataGrid Body -->
+            <template #body="{ columns, records, performAction, applied, setCurrentSelectionMode }">
+                <div
+                    v-for="record in records"
+                    class="row grid gap-2.5 items-center px-4 py-4 border-b dark:border-cherry-800 text-gray-600 dark:text-gray-300 transition-all hover:bg-violet-50 dark:hover:bg-cherry-800"
+                    :style="`grid-template-columns: repeat(${gridsCount}, minmax(0, 1fr))`"
+                >
+                    <!-- Mass actions -->
+                    @if ($hasMassActionPermission)
+                        <input
+                            type="checkbox"
+                            :name="`mass_action_select_record_${record.code}`"
+                            :id="`mass_action_select_record_${record.code}`"
+                            :value="record.code"
+                            class="hidden peer"
+                            v-model="applied.massActions.indices"
+                            @change="setCurrentSelectionMode"
+                        >
 
-                    <div class="px-4 pb-4">
-                        @foreach ($locales as $locale)
-                            <x-admin::form.control-group>
-                                <x-admin::form.control-group.label>
-                                    {{ $locale->name }}
-                                </x-admin::form.control-group.label>
+                        <label
+                            class="icon-checkbox-normal rounded-md text-2xl cursor-pointer peer-checked:icon-checkbox-check peer-checked:text-violet-700"
+                            :for="`mass_action_select_record_${record.code}`"
+                        ></label>
+                    @endif
 
-                                <x-admin::form.control-group.control
-                                    type="text"
-                                    v-model="form.labels['{{ $locale->code }}']"
-                                    tell-me
-                                    placeholder="Enter {{ $locale->name }} label"
-                                />
-                            </x-admin::form.control-group>
-                        @endforeach
+                    <!-- code -->
+                    <p v-text="record.code"></p>
+
+                    <!-- label -->
+                    <p v-text="record.label"></p>
+
+                    <!-- is_standard -->
+                    <p v-html="record.is_standard"></p>
+
+
+
+                    <!-- Actions -->
+                    <div class="flex justify-end">
+                        @if ($hasEditPermission)
+                            <a @click="selectedLocales=1; editModal(record.actions.find(action => action.index === 'edit')?.url)">
+                                <span
+                                    :class="record.actions.find(action => action.index === 'edit')?.icon"
+                                    title="@lang('admin::app.settings.locales.index.datagrid.edit')"
+                                    class="cursor-pointer rounded-md p-1.5 text-2xl transition-all hover:bg-violet-100 dark:hover:bg-gray-800 max-sm:place-self-center"
+                                >
+                                </span>
+                            </a>
+                        @endif
+
+                        @if ($hasDeletePermission)
+                            <a @click="performAction(record.actions.find(action => action.index === 'delete'))">
+                                <span
+                                    :class="record.actions.find(action => action.index === 'delete')?.icon"
+                                    title="@lang('admin::app.settings.locales.index.datagrid.delete')"
+                                    class="cursor-pointer rounded-md p-1.5 text-2xl transition-all hover:bg-violet-100 dark:hover:bg-gray-800 max-sm:place-self-center"
+                                >
+                                </span>
+                            </a>
+                        @endif
                     </div>
                 </div>
+            </template>
+        </x-admin::datagrid>
 
-                <!-- Symbol -->
-                <x-admin::form.control-group class="mt-4">
-                    <x-admin::form.control-group.label>
-                        Symbol
-                    </x-admin::form.control-group.label>
+        <x-admin::form
+            v-slot="{ meta, errors, handleSubmit }"
+            as="div"
+            ref="modalForm"
+        >
+            <form
+                @submit="handleSubmit($event, updateOrCreate)"
+                ref="createLocaleForm"
+            >
 
-                    <x-admin::form.control-group.control
-                        type="text"
-                        v-model="form.symbol"
-                        placeholder="e.g. m, km, g"
-                    />
-                </x-admin::form.control-group>
+                {!! view_render_event('unopim.admin.settings.locales.create_form_controls.before') !!}
 
-            </x-slot:content>
+                <x-admin::modal ref="localeUpdateOrCreateModal">
+                    <!-- Modal Header -->
+                    <x-slot:header>
+                        <p class="text-lg text-gray-800 dark:text-white font-bold">
+                            <span v-if="selectedLocales">
+                                Update Unit 
+                            </span>
 
-            <x-slot:footer>
-                <button
-                    type="button"
-                    class="primary-button"
-                    @click="save"
-                >
-                    Save
-                </button>
-            </x-slot:footer>
-        </x-admin::modal>
-    </div>
-</script>
+                            <span v-else>
+                                Create Unit
+                            </span>
+                        </p>
+                    </x-slot>
 
-<!-- ================= VUE COMPONENT ================= -->
-<script type="module">
-    app.component('v-create-unit-form', {
-        template: '#v-create-unit-form-template',
+                    <!-- Modal Content -->
+                    <x-slot:content>
+                        {!! view_render_event('unopim.admin.settings.locale.create.before') !!}
 
-        props: ['familyId', 'datagrid'],
+                        <x-admin::form.control-group.control
+                            type="hidden"
+                            name="id"
+                            v-model="locale.id"
+                        />
 
-        data() {
-            return {
-                form: {
-                    code: '',
-                    labels: {}, 
-                    symbol: '',
+                        <x-admin::form.control-group>
+                            <x-admin::form.control-group.label class="required">
+                                @lang('admin::app.settings.locales.index.create.code')
+                            </x-admin::form.control-group.label>
+
+                            <x-admin::form.control-group.control
+                                type="text"
+                                id="code"
+                                name="code"
+                                rules="required"
+                                v-model="locale.code"
+                                :label="trans('admin::app.settings.locales.index.create.code')"
+                                :placeholder="trans('admin::app.settings.locales.index.create.code')"
+                                ::disabled="locale.id"
+                            />
+
+                            <x-admin::form.control-group.error control-name="code" />
+                        </x-admin::form.control-group>
+
+                         <div class="">
+                                <!-- Locales Inputs -->
+                                @foreach ($locales as $locale)
+                                    <x-admin::form.control-group>
+                                        <x-admin::form.control-group.label>
+                                            {{ $locale->name }}
+                                        </x-admin::form.control-group.label>
+
+                                        <x-admin::form.control-group.control
+                                            type="text"
+                                            id="label"
+                                            ::name="`labels[{{ $locale->code }}]`"
+                                            rules="required"
+                                            v-model="locale.label"
+                                            :label="trans('admin::app.settings.locales.index.create.code')"
+                                            :placeholder="trans('admin::app.settings.locales.index.create.code')"
+                                            ::disabled="locale.id"
+                                            
+                                        />
+                                    </x-admin::form.control-group>
+                                @endforeach
+
+                        </div>
+
+                         <x-admin::form.control-group>
+                            <x-admin::form.control-group.label class="required">
+                                symbol
+                            </x-admin::form.control-group.label>
+
+                            <x-admin::form.control-group.control
+                                type="text"
+                                id="symbol"
+                                name="symbol"
+                                rules="required"
+                                v-model="locale.symbol"
+                                :label="trans('admin::app.settings.locales.index.create.code')"
+                                placeholder="Symbol"
+                                ::disabled="locale.id"
+                            />
+
+                            <x-admin::form.control-group.error control-name="code" />
+                        </x-admin::form.control-group>
+
+    
+
+                        {!! view_render_event('unopim.admin.settings.locale.create.after') !!}
+                    </x-slot>
+
+                    <!-- Modal Footer -->
+                    <x-slot:footer>
+                        <div class="flex gap-x-2.5 items-center">
+                            <button
+                                type="submit"
+                                class="primary-button"
+                            >
+                                Save
+                            </button>
+                        </div>
+                    </x-slot>
+                </x-admin::modal>
+
+                {!! view_render_event('unopim.admin.settings.locales.create_form_controls.after') !!}
+
+            </form>
+        </x-admin::form>
+    </script>
+
+    <script type="module">
+        app.component('v-locales', {
+            template: '#v-locales-template',
+
+            data() {
+                return {
+                    locale: {
+                        id: null,
+                        code: null,
+                        name: null,
+                        labels: {},
+                        status: false,
+                    },
+
+                    selectedLocales: 0,
+                }
+            },
+
+            computed: {
+                gridsCount() {
+                    let count = this.$refs.datagrid.available.columns.length;
+
+                    if (this.$refs.datagrid.available.actions.length) {
+                        ++count;
+                    }
+
+                    if (this.$refs.datagrid.available.massActions.length) {
+                        ++count;
+                    }
+
+                    return count;
                 },
-                storeUnitUrl: "{{ route('admin.measurement.families.units.store', ':id') }}",
-            };
-        },
+            },
 
-        methods: {
-            save() {
-                const url = this.storeUnitUrl.replace(':id', this.familyId);
+            methods: {
+                updateOrCreate(params, { resetForm, setErrors }) {
+                    let formData = new FormData(this.$refs.createLocaleForm);
 
-                axios.post(url, this.form)
-                    .then(res => {
+                    let url = "{{ route('admin.measurement.families.units.store', $family->id) }}";
 
-                        // close modal
-                        this.$refs.addUnitModal.close();
+                    // 🔥 UPDATE CASE (edit modal open)
+                    if (this.selectedLocales && this.locale.code) {
+                        url = "{{ route('admin.measurement.families.units.update', ['familyId' => $family->id, 'code' => '__CODE__']) }}"
+                            .replace('__CODE__', this.locale.code);
 
-                        // reset form
-                        this.form = {
-                            code: '',
-                            labels: {},
-                            symbol: '',
-                        };
+                        formData.append('_method', 'PUT');
+                    }
 
-                        // 🔥 REDIRECT if backend sends URL
-                        if (res.data?.data?.redirect_url) {
-                            window.location.href = res.data.data.redirect_url;
-                            return;
+                    this.$axios.post(url, formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
                         }
+                    })
+                    .then((response) => {
+                        this.$refs.localeUpdateOrCreateModal.close();
 
-                        // otherwise just reload grid
-                        this.$refs[this.datagrid].reload();
+                        this.$emitter.emit('add-flash', {
+                            type: 'success',
+                            message: 'Unit saved successfully',
+                        });
+
+                        this.$refs.datagrid.get();
+                        resetForm();
                     })
                     .catch(error => {
-                        console.error(error);
+                        if (error.response?.status === 422) {
+                            setErrors(error.response.data.errors);
+                        }
                     });
+                },
+
+                editModal(url) {
+                    this.$axios.get(url).then((response) => {
+                        this.locale = {
+                            code: response.data.data.code,
+                            labels: response.data.data.labels ?? {},
+                            symbol: response.data.data.symbol ?? null,
+                        };
+
+                        this.selectedLocales = 1; // 👈 UPDATE MODE
+                        this.$refs.localeUpdateOrCreateModal.toggle();
+                    });
+                },
+
+                resetForm() {
+                    this.locale = {
+                        code: null,
+                        labels: {},
+                        symbol: null,
+                    };
+
+                    this.selectedLocales = 0;
+                }
             }
-        }
 
-    });
-</script>
-
-<!-- ================= EDIT UNIT MODAL HANDLER ================= -->
-<script type="text/javascript">
-    function editUnit(url) {
-        const modal = app._instance.refs.unitEditModal;
-
-        modal.open();
-        modal.loading = true;
-
-        fetch(url)
-            .then(response => response.text())
-            .then(html => {
-                modal.content = html;
-                modal.loading = false;
-            });
-    }
-</script>
-
+        });
+    </script>
 @endPushOnce
 
 

@@ -133,11 +133,12 @@ class UnitDataGrid extends DataGrid
     public function prepareActions()
     {
         // EDIT
+        
         $this->addAction([
+            'index'  => 'edit',
             'icon'   => 'icon-edit',
             'title'  => 'Edit',
             'method' => 'GET',
-            'type'   => 'script',
             'url'    => function ($row) {
                 return route('admin.measurement.families.units.edit', [
                     'familyId' => $this->familyId,
@@ -145,9 +146,11 @@ class UnitDataGrid extends DataGrid
                 ]);
             },
         ]);
+        
 
         // DELETE
         $this->addAction([
+            'index'  => 'delete',
             'icon'   => 'icon-delete',
             'title'  => 'Delete',
             'method' => 'DELETE',
