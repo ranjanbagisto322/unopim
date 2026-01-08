@@ -2,13 +2,13 @@
 
 namespace Webkul\Measurement\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Webkul\Admin\Http\Controllers\Controller;
 use Webkul\Core\Repositories\LocaleRepository;
 use Webkul\Measurement\DataGrids\MeasurementFamilyDataGrid;
 use Webkul\Measurement\DataGrids\UnitDataGrid;
 use Webkul\Measurement\Repository\MeasurementFamilyRepository;
-use Illuminate\Http\JsonResponse;
 
 class MeasurementFamilyController extends Controller
 {
@@ -128,8 +128,6 @@ class MeasurementFamilyController extends Controller
         return redirect()->back();
     }
 
-    // units modules all functions
-
     public function units($id)
     {
         if (request()->ajax()) {
@@ -165,7 +163,6 @@ class MeasurementFamilyController extends Controller
 
         $units = $family->units ?? [];
 
-        // Prevent duplicate unit code
         if (collect($units)->contains('code', request('code'))) {
             return response()->json([
                 'message' => 'Unit code already exists',
@@ -174,7 +171,7 @@ class MeasurementFamilyController extends Controller
 
         $newUnit = [
             'code'   => request('code'),
-            'labels' => request('labels'), // 🔥 dynamic labels
+            'labels' => request('labels'),
             'symbol' => request('symbol'),
         ];
 
@@ -197,25 +194,6 @@ class MeasurementFamilyController extends Controller
         ]);
     }
 
-    // public function editUnit($familyId, $code)
-    // {
-    //     $family = $this->measurementFamilyRepository->find($familyId);
-
-    //     $units = $family->units;
-
-    //     // Find unit by code
-    //     $unit = collect($units)->firstWhere('code', $code);
-
-    //     if (! $unit) {
-    //         abort(404, 'Unit not found');
-    //     }
-
-    //     $labels = $unit['labels'] ?? [];
-    //     $locales = $this->localeRepository->getActiveLocales();
-
-    //     return view('measurement::admin.units.edit', compact('family', 'unit', 'locales', 'labels'));
-    // }
-
     public function editUnit(int $familyId, string $code): JsonResponse
     {
         $family = $this->measurementFamilyRepository->findOrFail($familyId);
@@ -226,12 +204,10 @@ class MeasurementFamilyController extends Controller
             abort(404, 'Unit not found');
         }
 
-
         return new JsonResponse([
             'data' => [
                 ...$unit,
 
-                // safety casts / defaults
                 'status'     => isset($unit['status']) ? (bool) $unit['status'] : true,
                 'labels'     => $unit['labels'] ?? [],
                 'precision'  => $unit['precision'] ?? null,
@@ -263,7 +239,6 @@ class MeasurementFamilyController extends Controller
 
             if ($unit['code'] === $code) {
 
-                // Merge old labels with new ones
                 $unit['labels'] = array_merge(
                     $unit['labels'] ?? [],
                     $newLabels

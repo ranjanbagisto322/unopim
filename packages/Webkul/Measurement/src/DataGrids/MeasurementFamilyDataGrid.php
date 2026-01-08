@@ -22,7 +22,6 @@ class MeasurementFamilyDataGrid extends DataGrid
                 DB::raw('JSON_LENGTH(units) as unit_count')
             );
 
-        // add filters mapping: key => column
         $this->addFilter('id', 'measurement_families.id');
         $this->addFilter('labels', 'measurement_families.labels');
         $this->addFilter('code', 'measurement_families.code');

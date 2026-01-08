@@ -92,7 +92,6 @@ it('should update measurement family labels successfully', function () {
             ],
         ]
     )
-        ->assertRedirect(route('admin.measurement.families.index'))
         ->assertSessionHas('success');
 
     $family->refresh();

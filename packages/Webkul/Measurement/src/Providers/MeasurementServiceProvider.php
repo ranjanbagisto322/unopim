@@ -11,6 +11,11 @@ class MeasurementServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
+
+        $this->publishes([
+            __DIR__.'/../Database/Seeders' => database_path('seeders'),
+        ], 'measurement-seeders');
+
         $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', 'measurement');
 
         $this->loadViewsFrom(__DIR__.'/../Resources/views', 'measurement');

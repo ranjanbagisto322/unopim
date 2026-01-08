@@ -29,8 +29,6 @@ Route::group(['middleware' => ['web', 'admin'], 'prefix' => 'admin/measurement']
 
         });
 
-    // Route::get('measurement/families', [AttributeController::class, 'customFieldData'])->name('measurement.families');
-
     Route::get('/measurement/attribute/{attributeId}', [AttributeController::class, 'getAttributeMeasurement'])
         ->name('measurement.attribute');
     Route::get('attribute-units', [MeasurementOptionsController::class, 'getOptions'])

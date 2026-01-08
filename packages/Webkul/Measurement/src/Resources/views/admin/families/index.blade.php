@@ -42,65 +42,55 @@
 
                     <x-slot:content>
                        
-                        <div class="px-4 pb-4 bg-white dark:bg-cherry-900 box-shadow rounded">
-                        
-                            <div class="flex justify-between items-center p-1.5">
-                                <p class="p-2.5 text-gray-800 dark:text-white text-base font-semibold">
-                                   
-                                </p>
-                            </div>
-                        
-                         
-                            <x-admin::form.control-group>
-                                <x-admin::form.control-group.label class="required">
-                                    {{ __('Code') }}
-                                </x-admin::form.control-group.label>
-
-                                <x-admin::form.control-group.control
-                                    type="text"
-                                    v-model="form.code"
-                                    placeholder="{{ __('Enter family code') }}"
-                                />
-                            </x-admin::form.control-group>
-
-                           
-                            <x-admin::form.control-group>
-                                <x-admin::form.control-group.label class="required">
-                                    {{ __('Standard Unit Code') }}
-                                </x-admin::form.control-group.label>
-
-                                <x-admin::form.control-group.control
-                                    type="text"
-                                    v-model="form.standard_unit_code"
-                                    placeholder="{{ __('Enter standard unit code') }}"
-                                />
-                            </x-admin::form.control-group>
-
-                           
-                            <x-admin::form.control-group>
-                                <x-admin::form.control-group.label>
-                                    {{ __('Symbol') }}
-                                </x-admin::form.control-group.label>
-
-                                <x-admin::form.control-group.control
-                                    type="text"
-                                    v-model="form.symbol"
-                                    placeholder="{{ __('e.g. km, m') }}"
-                                />
-                            </x-admin::form.control-group>
-                        </div>
-
-                       
-                        <div class="mt-4 bg-white dark:bg-cherry-900 box-shadow rounded">
-                            <div class="flex justify-between items-center p-1.5">
-                                <p class="p-2.5 text-gray-800 dark:text-white text-base font-semibold">
-                                    @lang('admin::app.catalog.attributes.create.label')
-                                </p>
+                        <div class=""> 
+                            <div class="mb-3">
+                               
                             </div>
 
-                            <div class="px-4 pb-4">
+                            <div class="space-y-2"> <x-admin::form.control-group class="!mb-1">
+                                    <x-admin::form.control-group.label class="required">
+                                        {{ __('Code') }}
+                                    </x-admin::form.control-group.label>
+
+                                    <x-admin::form.control-group.control
+                                        type="text"
+                                        v-model="form.code"
+                                        placeholder="{{ __('Enter family code') }}"
+                                    />
+                                </x-admin::form.control-group>
+
+                                <x-admin::form.control-group class="!mb-1">
+                                    <x-admin::form.control-group.label class="required">
+                                        {{ __('Standard Unit Code') }}
+                                    </x-admin::form.control-group.label>
+
+                                    <x-admin::form.control-group.control
+                                        type="text"
+                                        v-model="form.standard_unit_code"
+                                        placeholder="{{ __('Enter standard unit code') }}"
+                                    />
+                                </x-admin::form.control-group>
+
+                                <x-admin::form.control-group class="!mb-1">
+                                    <x-admin::form.control-group.label>
+                                        {{ __('Symbol') }}
+                                    </x-admin::form.control-group.label>
+
+                                    <x-admin::form.control-group.control
+                                        type="text"
+                                        v-model="form.symbol"
+                                        placeholder="{{ __('e.g. km, m') }}"
+                                    />
+                                </x-admin::form.control-group>
+
+                                <div class="">
+                                    <p class="text-gray-800 dark:text-white text-sm font-semibold mb-2">
+                                        @lang('admin::app.catalog.attributes.create.label')
+                                    </p>
+                                </div>
+
                                 @foreach ($locales as $locale)
-                                    <x-admin::form.control-group>
+                                    <x-admin::form.control-group class="!mb-0">
                                         <x-admin::form.control-group.label>
                                             {{ $locale->name }}
                                         </x-admin::form.control-group.label>
