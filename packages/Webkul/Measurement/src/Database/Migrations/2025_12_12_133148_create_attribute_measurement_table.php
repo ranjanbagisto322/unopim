@@ -6,14 +6,11 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('attribute_measurement', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('attribute_id');  // <-- FIXED
+            $table->unsignedInteger('attribute_id');
             $table->string('family_code');
             $table->string('unit_code');
             $table->timestamps();
@@ -26,9 +23,6 @@ return new class extends Migration
 
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('attribute_measurement');

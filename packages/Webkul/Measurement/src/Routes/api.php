@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 Route::group([
-    'prefix'     => 'v1/rest',
+    'prefix'     => 'rest',
     'middleware' => [
         'auth:api',
         'api.scope',
@@ -12,6 +12,6 @@ Route::group([
     ],
 ], function () {
 
-    require 'V1/measurement-routes.php';
+    require 'measurement-routes.php';
 
 });

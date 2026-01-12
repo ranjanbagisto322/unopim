@@ -23,6 +23,8 @@ class AttributeController extends Controller
     public function getAttributeMeasurement($attributeId)
     {
 
+        $currentLocale = app()->getLocale(); 
+    
         $families = $this->familyRepository->all();
 
         $familyOptions = $families->map(function ($f) {

@@ -37,7 +37,7 @@ class MeasurementFamilyDataGrid extends DataGrid
 
         $this->addColumn([
             'index'      => 'labels',
-            'label'      => 'Label',
+            'label' => trans('measurement::app.datagrid.labels'),
             'type'       => 'string',
             'searchable' => true,
             'sortable'   => true,
@@ -51,7 +51,7 @@ class MeasurementFamilyDataGrid extends DataGrid
 
         $this->addColumn([
             'index'      => 'code',
-            'label'      => 'Code',
+            'label'      => trans('measurement::app.datagrid.code'),
             'type'       => 'string',
             'searchable' => true,
             'sortable'   => true,
@@ -60,7 +60,7 @@ class MeasurementFamilyDataGrid extends DataGrid
 
         $this->addColumn([
             'index'      => 'standard_unit',
-            'label'      => 'Standard Unit',
+            'label'      => trans('measurement::app.datagrid.standard_unit'),
             'type'       => 'string',
             'searchable' => true,
             'sortable'   => false,
@@ -69,7 +69,7 @@ class MeasurementFamilyDataGrid extends DataGrid
 
         $this->addColumn([
             'index'      => 'unit_count',
-            'label'      => 'Number of units',
+            'label'      => trans('measurement::app.datagrid.unit_count'),
             'type'       => 'string',
             'searchable' => false,
             'sortable'   => false,

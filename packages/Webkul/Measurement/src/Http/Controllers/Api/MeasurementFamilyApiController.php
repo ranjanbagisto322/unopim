@@ -14,7 +14,6 @@ class MeasurementFamilyApiController extends Controller
 
     public function index()
     {
-
         $data = $this->repository->all();
 
         return response()->json([
@@ -26,7 +25,6 @@ class MeasurementFamilyApiController extends Controller
 
     public function store(Request $request)
     {
-
         $request->validate([
             'code'          => 'required|string|max:191',
             'name'          => 'required|string|max:191',

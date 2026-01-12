@@ -58,13 +58,32 @@ class MeasurementOptionsController extends AbstractOptionsController
                 'lastPage' => 1,
             ]);
         }
+        
+        $currentLocale = app()->getLocale();  
+        $currentLang   = strtok($currentLocale, '_'); 
 
         $units = collect(
             $this->measurementFamilyRepository->getUnitsByFamilyCode($familyCode)
-        )->map(function ($unit) {
+        )->map(function ($unit) use ($currentLocale, $currentLang) {
+
+            $labels = $unit['labels'] ?? [];
+
+             
+            if (isset($labels[$currentLocale])) {
+                $label = $labels[$currentLocale];
+            }
+          
+            elseif ($firstLangMatch = collect($labels)->first(fn($_, $key) => str_starts_with($key, $currentLang))) {
+                $label = $firstLangMatch;
+            }
+           
+            else {
+                $label = $unit['code'];
+            }
+
             return (object) [
                 'id'    => $unit['code'],
-                'label' => $unit['labels']['en_US'] ?? $unit['code'],
+                'label' => $label,
                 'code'  => $unit['code'],
             ];
         });

@@ -73,7 +73,7 @@ class UnitDataGrid extends DataGrid
     {
         $this->addColumn([
             'index'      => 'code',
-            'label'      => 'Code',
+            'label'      => trans('measurement::app.datagrid.code'),
             'type'       => 'string',
             'searchable' => true,
             'sortable'   => true,
@@ -82,7 +82,7 @@ class UnitDataGrid extends DataGrid
 
         $this->addColumn([
             'index'      => 'label',
-            'label'      => 'Label',
+            'label'      => trans('measurement::app.datagrid.labels'),
             'type'       => 'string',
             'searchable' => true,
             'sortable'   => true,
@@ -91,7 +91,7 @@ class UnitDataGrid extends DataGrid
 
         $this->addColumn([
             'index'      => 'is_standard',
-            'label'      => 'Mark Standard Units',
+            'label'      => trans('measurement::app.datagrid.is_standard'),
             'type'       => 'boolean',
             'searchable' => false,
             'sortable'   => true,

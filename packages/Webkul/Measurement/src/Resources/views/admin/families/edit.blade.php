@@ -239,7 +239,7 @@
                     ref="createLocaleForm"
                 >
 
-                    {!! view_render_event('unopim.admin.settings.locales.create_form_controls.before') !!}
+                  
 
                     <x-admin::modal ref="localeUpdateOrCreateModal">
                         <!-- Modal Header -->
@@ -257,7 +257,7 @@
 
                         <!-- Modal Content -->
                         <x-slot:content>
-                            {!! view_render_event('unopim.admin.settings.locale.create.before') !!}
+                            
 
                             <x-admin::form.control-group.control
                                 type="hidden"
@@ -278,7 +278,7 @@
                                     v-model="locale.code"
                                     :label="trans('admin::app.settings.locales.index.create.code')"
                                     :placeholder="trans('admin::app.settings.locales.index.create.code')"
-                                    ::disabled="locale.id != ''"
+                                    ::readonly="selectedLocales === 1"
                                 />
 
                                 <x-admin::form.control-group.error control-name="code" />
@@ -300,7 +300,6 @@
                                                 v-model="locale.labels['{{ $locale->code }}']"
                                                 :label="trans('admin::app.settings.locales.index.create.code')"
                                                 placeholder="Enter Labels"
-                                                ::disabled="locale.id"
                                                 
                                             />
                                         </x-admin::form.control-group>
@@ -321,7 +320,7 @@
                                     v-model="locale.symbol"
                                     :label="trans('admin::app.settings.locales.index.create.code')"
                                     placeholder="Symbol"
-                                    ::disabled="locale.id"
+                                    
                                 />
 
                                 <x-admin::form.control-group.error control-name="code" />
@@ -329,7 +328,7 @@
 
         
 
-                            {!! view_render_event('unopim.admin.settings.locale.create.after') !!}
+                            
                         </x-slot>
 
                     
@@ -345,8 +344,7 @@
                         </x-slot>
                     </x-admin::modal>
 
-                    {!! view_render_event('unopim.admin.settings.locales.create_form_controls.after') !!}
-
+                   
                 </form>
             </x-admin::form>
         </script>
