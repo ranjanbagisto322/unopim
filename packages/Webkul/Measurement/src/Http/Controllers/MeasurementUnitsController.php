@@ -32,7 +32,7 @@ class MeasurementUnitsController extends Controller
         $family = $this->measurementFamilyRepository->find($id);
         $locales = $this->localeRepository->getActiveLocales();
 
-        return view('measurement::admin.families.edit', compact('family', 'locales'));
+        return view('measurement::measurement-families.edit', compact('family', 'locales'));
     }
 
     public function storeUnit($id)

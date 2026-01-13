@@ -24,7 +24,7 @@ class MeasurementFamilyController extends Controller
         }
         $locales = $this->localeRepository->getActiveLocales();
 
-        return view('measurement::admin.families.index', compact('locales'));
+        return view('measurement::measurement-families.index', compact('locales'));
 
     }
 
@@ -74,7 +74,7 @@ class MeasurementFamilyController extends Controller
         $labels = $family->labels ?? [];
         $locales = $this->localeRepository->getActiveLocales();
 
-        return view('measurement::admin.families.edit', compact('family', 'labels', 'locales'));
+        return view('measurement::measurement-families.edit', compact('family', 'labels', 'locales'));
     }
 
     public function update(Request $request, $id)

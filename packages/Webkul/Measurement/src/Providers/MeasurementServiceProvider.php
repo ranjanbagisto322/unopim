@@ -2,9 +2,10 @@
 
 namespace Webkul\Measurement\Providers;
 
-use Illuminate\Support\Facades\Event;
+
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Webkul\Measurement\Providers\MeasurementEventServiceProvider;
 
 class MeasurementServiceProvider extends ServiceProvider
 {
@@ -19,7 +20,6 @@ class MeasurementServiceProvider extends ServiceProvider
         $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', 'measurement');
 
         $this->loadViewsFrom(__DIR__.'/../Resources/views', 'measurement');
-
         $this->loadRoutesFrom(__DIR__.'/../Routes/web.php');
         $this->loadRoutesFrom(__DIR__.'/../Routes/api.php');
 
@@ -28,37 +28,12 @@ class MeasurementServiceProvider extends ServiceProvider
             'attribute_types'
         );
 
-        Event::listen(
-            'unopim.admin.catalog.attributes.edit.card.label.after',
-            function ($viewRenderEventManager, $attribute = null) {
-
-                $viewRenderEventManager->addTemplate(
-                    'measurement::catalog.attributes.edit',
-                    [
-                        'attribute' => $attribute,
-                    ]
-                );
-            }
-        );
-
-        Event::listen(
-            'unopim.admin.products.dynamic-attribute-fields.control.measurement.before',
-            function ($viewRenderEventManager) {
-                $viewRenderEventManager->addTemplate(
-                    'measurement::catalog.products.edit'
-                );
-            }
-        );
-
-        Event::listen(
-            'catalog.attribute.update.before',
-            'Webkul\Measurement\Listeners\ValidateAttributeMeasurementBeforeUpdate@handle'
-        );
 
     }
 
     public function register()
     {
+        $this->app->register(MeasurementEventServiceProvider::class);
         $this->app->bind(
             \Webkul\DataTransfer\Helpers\Importers\FieldProcessor::class,
             \Webkul\Measurement\Helpers\Importers\FieldProcessor::class
@@ -67,14 +42,6 @@ class MeasurementServiceProvider extends ServiceProvider
             ->middleware('api')
             ->group(__DIR__.'/../Routes/api.php');
 
-        $menu = require dirname(__DIR__).'/Config/menu.php';
-
-        config([
-            'menu.admin' => array_merge(
-                config('menu.admin', []),
-                $menu
-            ),
-        ]);
-
+        $this->mergeConfigFrom(dirname(__DIR__).'/Config/menu.php', 'menu.admin');
     }
 }

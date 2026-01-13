@@ -11,10 +11,13 @@
 <script type="text/x-template" id="v-measurement-template">
     <div class="p-4 bg-white dark:bg-cherry-900 rounded shadow-sm mt-4">
 
+        <p class="mb-4 text-base text-gray-800 dark:text-white font-semibold">
+            @lang('measurement::app.attribute_type.measurement_families')
+        </p>
        
         <x-admin::form.control-group v-if="familyOptions">
             <x-admin::form.control-group.label class="required">
-                @lang('Measurement Family')
+                @lang('measurement::app.attribute_type.measurement_family')
             </x-admin::form.control-group.label>
 
             <x-admin::form.control-group.control
@@ -35,7 +38,7 @@
         
         <x-admin::form.control-group class="mt-4" v-if="unitsList">
             <x-admin::form.control-group.label class="required">
-                @lang('Measurement Unit')
+                @lang('measurement::app.attribute_type.measurement_unit')
             </x-admin::form.control-group.label>
 
             <x-admin::form.control-group.control
