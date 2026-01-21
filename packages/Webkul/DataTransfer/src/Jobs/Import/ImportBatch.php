@@ -16,7 +16,7 @@ class ImportBatch implements ShouldQueue
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
-     * Create a new job instance.
+     * Create a new job instance..
      *
      * @param  mixed  $importBatch
      * @return void

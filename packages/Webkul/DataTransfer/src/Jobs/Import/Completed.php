@@ -23,7 +23,7 @@ class Completed implements ShouldQueue
     public function __construct(protected $import, protected $jobTrackId) {}
 
     /**
-     * Execute the job.
+     * Execute the job..
      *
      * @return void
      */

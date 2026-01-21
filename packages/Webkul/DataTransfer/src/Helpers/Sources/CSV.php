@@ -29,7 +29,9 @@ class CSV extends AbstractSource
         try {
             $this->reader = fopen(Storage::disk('private')->path($filePath), 'r');
 
-            $this->columnNames = fgetcsv($this->reader, 4096, $delimiter);
+            $this->columnNames = fgetcsv($this->reader, 0, $delimiter);
+
+            \Log::info('CSV HEADER COUNT = ' . count($this->columnNames));
 
             $this->totalColumns = count($this->columnNames);
         } catch (\Exception $e) {
@@ -40,6 +42,7 @@ class CSV extends AbstractSource
     /**
      * Determine the separator used in a CSV file.
      */
+
     public static function checkSeparator(string $filePath): ?string
     {
         $handle = fopen($filePath, 'r');
@@ -83,7 +86,7 @@ class CSV extends AbstractSource
      */
     protected function getNextRow(): array
     {
-        $parsed = fgetcsv($this->reader, 4096, $this->delimiter);
+        $parsed = fgetcsv($this->reader, 0, $this->delimiter);
 
         if (is_array($parsed) && count($parsed) != $this->totalColumns) {
             foreach ($parsed as $element) {
