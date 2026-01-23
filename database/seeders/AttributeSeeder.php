@@ -4,15 +4,17 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Event;
-use Webkul\Attribute\Repositories\AttributeRepository;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Model;
 use Webkul\Attribute\Models\AttributeGroup;
 
 class AttributeSeeder extends Seeder
 {
     public function run()
     {
-        $attributeRepo = app(AttributeRepository::class);
+        
+        Model::unsetEventDispatcher();
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
         $group = AttributeGroup::firstOrCreate(
             ['code' => 'general'],
@@ -21,48 +23,74 @@ class AttributeSeeder extends Seeder
 
         $types = ['text', 'textarea', 'boolean', 'price', 'select'];
 
-        for ($i = 1; $i <= 990; $i++) {
+        $total = 2000;     
+        $batchSize = 1000;
 
-            $code = 'auto_attr_' . Str::random(10);
+        $attributes = [];
+        $translations = [];
+        $mappings = [];
 
-            if ($attributeRepo->findOneByField('code', $code)) {
-                continue;
-            }
+        for ($i = 1; $i <= $total; $i++) {
 
-            Event::dispatch('catalog.attribute.create.before');
+            $code = 'auto_attr_' . $i; 
 
-            $attribute = $attributeRepo->create([
+            $type = $types[array_rand($types)];
+
+            $attributes[] = [
                 'code'              => $code,
-                'type'              => $types[array_rand($types)],
+                'type'              => $type,
                 'is_required'       => 0,
                 'is_unique'         => 0,
                 'value_per_locale'  => 0,
                 'value_per_channel' => 0,
-            ]);
+                'created_at'        => now(),
+                'updated_at'        => now(),
+            ];
 
-            $name = ucfirst(str_replace('_', ' ', $code));
+            $translations[] = [
+                'locale'     => 'en_US',
+                'name'       => ucfirst(str_replace('_', ' ', $code)),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
 
-            $attribute->translations()->create([
-                'locale' => 'en_US',
-                'name'   => $name,
-            ]);
+            if (count($attributes) === $batchSize) {
 
-            Event::dispatch('catalog.attribute.create.after', $attribute);
+                // Insert attributes
+                DB::table('attributes')->insert($attributes);
 
-            $exists = \DB::table('attribute_group_mappings')
-                ->where('attribute_id', $attribute->id)
-                ->where('attribute_family_group_id', $group->id)
-                ->exists();
+                // Calculate first inserted ID
+                $lastId  = DB::getPdo()->lastInsertId();
+                $firstId = $lastId - ($batchSize - 1);
 
-            if (! $exists) {
-                \DB::table('attribute_group_mappings')->insert([
-                    'attribute_id'              => $attribute->id,
-                    'attribute_family_group_id' => $group->id,
-                    'position'                  => $i,
-                ]);
+                foreach ($translations as $index => $translation) {
+
+                    $attributeId = $firstId + $index;
+
+                    DB::table('attribute_translations')->insert([
+                        'attribute_id' => $attributeId,
+                        'locale'       => $translation['locale'],
+                        'name'         => $translation['name'],
+                    ]);
+
+                    $mappings[] = [
+                        'attribute_id'              => $attributeId,
+                        'attribute_family_group_id' => $group->id,
+                        'position'                  => $attributeId,
+                    ];
+                }
+
+                DB::table('attribute_group_mappings')->insert($mappings);
+
+                // Reset batch
+                $attributes = [];
+                $translations = [];
+                $mappings = [];
             }
         }
 
-        $this->command->info('990 Attributes created and mapped to General Group!');
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+        $this->command->info("## {$total} attributes seeded FAST **");
     }
 }
