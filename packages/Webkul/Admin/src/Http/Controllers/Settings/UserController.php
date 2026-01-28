@@ -245,13 +245,9 @@ class UserController extends Controller
     private function prepareUserData(UserForm $request, $id)
     {
         $data = $request->validated();
-
         $user = $this->adminRepository->find($id);
         $loggedInAdmin = auth()->guard('admin')->user();
 
-        /**
-         * Only Super Admin (permission_type = all) can change role_id
-         */
         if ($loggedInAdmin->role->permission_type !== 'all') {
             unset($data['role_id']);
         }
@@ -280,10 +276,7 @@ class UserController extends Controller
         ) {
             return $this->cannotChangeRedirectResponse('status');
         }
-
-        /**
-         * Protect last super admin
-         */
+        
         $isRoleChanged =
             isset($data['role_id']) &&
             (int) $data['role_id'] !== $user->role_id &&
