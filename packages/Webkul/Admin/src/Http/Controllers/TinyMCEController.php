@@ -23,7 +23,7 @@ class TinyMCEController extends Controller
     public function __construct(protected FileStorer $fileStorer) {}
 
     /**
-     * Upload file from tinymce.
+     * Upload file from tinymce..
      *
      * @return void
      */
@@ -50,22 +50,7 @@ class TinyMCEController extends Controller
      *
      * @return array
      */
-    // public function storeMedia()
-    // {
-    //     if (! request()->hasFile('file')) {
-    //         return [];
-    //     }
-
-    //     $path = $this->fileStorer->store(file: request()->file('file'), path: $this->storagePath);
-
-    //     return [
-    //         'file'      => $path,
-    //         'file_name' => request()->file('file')->getClientOriginalName(),
-    //         'file_url'  => Storage::url($path),
-    //     ];
-    // }
-
-
+   
     public function storeMedia(Request $request): array
     {
         if (! $request->hasFile('file')) {
