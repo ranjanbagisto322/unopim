@@ -5,8 +5,8 @@ namespace Webkul\Admin\Http\Controllers;
 use Illuminate\Support\Facades\Storage;
 use Webkul\Core\Filesystem\FileStorer;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class TinyMCEController extends Controller
 {
@@ -23,19 +23,19 @@ class TinyMCEController extends Controller
     public function __construct(protected FileStorer $fileStorer) {}
 
     /**
-     * Upload file from tinymce..
+     * Upload file from tinymce.
      *
      * @return void
      */
-    public function upload()
+    public function upload(Request $request)
     {
 
-        if (! auth()->check() || ! auth()->user()->hasRole('admin')) {
+        if (! auth('admin')->check()) {
             abort(403, 'Unauthorized');
         }
 
-        $media = $this->storeMedia();
-
+        $media = $this->storeMedia($request);
+        
         if (! empty($media)) {
             return response()->json([
                 'location' => $media['file_url'],
@@ -50,7 +50,7 @@ class TinyMCEController extends Controller
      *
      * @return array
      */
-   
+    
     public function storeMedia(Request $request): array
     {
         if (! $request->hasFile('file')) {
@@ -94,5 +94,5 @@ class TinyMCEController extends Controller
             'file_url'  => asset('storage/' . $this->storagePath . '/' . $filename),
         ];
     }
-
 }
+
