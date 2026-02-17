@@ -43,7 +43,7 @@ class AccountController extends Controller
             'email'            => 'email|unique:admins,email,'.$user->id,
             'password'         => 'nullable|min:6|confirmed',
             'current_password' => 'required|min:6',
-            'image.*'          => 'nullable|mimes:bmp,jpeg,jpg,png,webp,svg',
+            'image.*'          => 'nullable|image|mimes:jpeg,jpg,png,webp,svg',
             'timezone'         => 'required',
             'ui_locale_id'     => 'required',
         ]);
@@ -74,13 +74,35 @@ class AccountController extends Controller
 
             $data['password'] = bcrypt($data['password']);
         }
-
+        
         if (request()->hasFile('image')) {
+
+            $uploadedFile = current(request()->file('image'));
+
+            
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'svg'];
+
+            if (! in_array(strtolower($uploadedFile->getClientOriginalExtension()), $allowedExtensions)) {
+                return back()->withErrors(['image' => 'Invalid file extension']);
+            }
+
+            
+            $allowedMimeTypes = [
+                'image/jpeg',
+                'image/png',
+                'image/webp',
+                'image/svg+xml'
+            ];
+
+            if (! in_array($uploadedFile->getMimeType(), $allowedMimeTypes)) {
+                return back()->withErrors(['image' => 'Invalid file type']);
+            }
+
             $data['image'] = $this->fileStorer->store(
                 path: 'admins'.DIRECTORY_SEPARATOR.$user->id,
-                file: current(request()->file('image'))
+                file: $uploadedFile
             );
-        } else {
+        }else {
             if (! isset($data['image'])) {
                 if (! empty($data['image'])) {
                     Storage::delete($user->image);
@@ -91,9 +113,9 @@ class AccountController extends Controller
                 $data['image'] = $user->image;
             }
         }
-
+        
         $user->update($data);
-
+        
         if ($isPasswordChanged) {
             Event::dispatch('admin.password.update.after', $user);
         }
