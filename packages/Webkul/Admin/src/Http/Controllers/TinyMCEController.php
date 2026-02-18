@@ -2,11 +2,11 @@
 
 namespace Webkul\Admin\Http\Controllers;
 
-use Illuminate\Support\Facades\Storage;
-use Webkul\Core\Filesystem\FileStorer;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use Webkul\Core\Filesystem\FileStorer;
 
 class TinyMCEController extends Controller
 {
@@ -15,43 +15,53 @@ class TinyMCEController extends Controller
      *
      * @var string
      */
-    private $storagePath = 'tinymce';
+    private string $storagePath = 'tinymce';
 
     /**
-     * Return controller instance
+     * Return controller instance.
      */
     public function __construct(protected FileStorer $fileStorer) {}
 
     /**
-     * Upload file from tinymce.
-     *
-     * @return void
+     * Upload file from TinyMCE.
      */
     public function upload(Request $request)
     {
-
         if (! auth('admin')->check()) {
-            abort(403, 'Unauthorized');
-        }
-
-        $media = $this->storeMedia($request);
-        
-        if (! empty($media)) {
             return response()->json([
-                'location' => $media['file_url'],
-            ]);
+                'error' => 'Unauthorized',
+            ], 403);
         }
 
-        return response()->json([]);
+        try {
+            $media = $this->storeMedia($request);
+
+            if (! empty($media)) {
+                return response()->json([
+                    'location' => $media['file_url'], 
+                ]);
+            }
+
+            return response()->json([], 400);
+
+        } catch (\Throwable $e) {
+
+            Log::error('TinyMCE Upload Error', [
+                'message' => $e->getMessage(),
+                'user_id' => auth('admin')->id(),
+                'ip'      => $request->ip(),
+            ]);
+
+            return response()->json([
+                'error' => 'Upload failed',
+            ], 500);
+        }
     }
 
     /**
-     * Store media.
-     *
-     * @return array
+     * Store media securely.
      */
-    
-    public function storeMedia(Request $request): array
+    private function storeMedia(Request $request): array
     {
         if (! $request->hasFile('file')) {
             return [];
@@ -60,29 +70,30 @@ class TinyMCEController extends Controller
         $request->validate([
             'file' => [
                 'required',
-                'file',
+                'image', 
                 'mimes:jpg,jpeg,png,webp,gif',
-                'max:2048',
+                'max:5120',
             ],
         ]);
 
         $file = $request->file('file');
-        $ext  = strtolower($file->getClientOriginalExtension());
 
-        $blocked = ['php','phtml','php5','phar'];
+        $extension = strtolower($file->getClientOriginalExtension());
 
-        if (in_array($ext, $blocked)) {
+        $blockedExtensions = ['php', 'phtml', 'php5', 'phar'];
+
+        if (in_array($extension, $blockedExtensions)) {
+
             Log::warning('Blocked TinyMCE upload attempt', [
-                'user_id' => auth()->id(),
-                'ip' => $request->ip(),
-                'extension' => $ext,
+                'user_id'   => auth('admin')->id(),
+                'ip'        => $request->ip(),
+                'extension' => $extension,
             ]);
 
             abort(403, 'Invalid file type');
         }
-        
-        $filename = Str::uuid() . '.' . $ext;
 
+        $filename = Str::uuid() . '.' . $extension;
         $path = $file->storeAs(
             'public/' . $this->storagePath,
             $filename
@@ -91,8 +102,7 @@ class TinyMCEController extends Controller
         return [
             'file'      => $path,
             'file_name' => $filename,
-            'file_url'  => asset('storage/' . $this->storagePath . '/' . $filename),
+            'file_url'  => Storage::url($path),
         ];
     }
 }
-
