@@ -12,14 +12,30 @@ class TinyMCEController extends Controller
 {
     /**
      * Storage folder path.
-     *
-     * @var string
      */
     private string $storagePath = 'tinymce';
 
     /**
-     * Return controller instance.
+     * Allowed image extensions (Allow-list approach).
      */
+    private array $allowedExtensions = [
+        'jpg',
+        'jpeg',
+        'png',
+        'webp',
+        'gif',
+    ];
+
+    /**
+     * Allowed MIME types.
+     */
+    private array $allowedMimeTypes = [
+        'image/jpeg',
+        'image/png',
+        'image/webp',
+        'image/gif',
+    ];
+
     public function __construct(protected FileStorer $fileStorer) {}
 
     /**
@@ -36,13 +52,9 @@ class TinyMCEController extends Controller
         try {
             $media = $this->storeMedia($request);
 
-            if (! empty($media)) {
-                return response()->json([
-                    'location' => $media['file_url'], 
-                ]);
-            }
-
-            return response()->json([], 400);
+            return response()->json([
+                'location' => $media['file_url'],
+            ]);
 
         } catch (\Throwable $e) {
 
@@ -59,41 +71,62 @@ class TinyMCEController extends Controller
     }
 
     /**
-     * Store media securely.
+     * Securely store uploaded media.
      */
     private function storeMedia(Request $request): array
     {
         if (! $request->hasFile('file')) {
-            return [];
+            abort(400, 'No file uploaded');
         }
-
-        $request->validate([
-            'file' => [
-                'required',
-                'image', 
-                'mimes:jpg,jpeg,png,webp,gif',
-                'max:5120',
-            ],
-        ]);
 
         $file = $request->file('file');
 
+        if (! $file->isValid()) {
+            abort(400, 'Invalid file upload');
+        }
+
         $extension = strtolower($file->getClientOriginalExtension());
 
-        $blockedExtensions = ['php', 'phtml', 'php5', 'phar'];
+        if (! in_array($extension, $this->allowedExtensions)) {
 
-        if (in_array($extension, $blockedExtensions)) {
-
-            Log::warning('Blocked TinyMCE upload attempt', [
+            Log::warning('Blocked file upload (Invalid Extension)', [
                 'user_id'   => auth('admin')->id(),
-                'ip'        => $request->ip(),
+                'ip'        => request()->ip(),
                 'extension' => $extension,
             ]);
 
             abort(403, 'Invalid file type');
         }
 
-        $filename = Str::uuid() . '.' . $extension;
+        $mimeType = $file->getMimeType();
+
+        if (! in_array($mimeType, $this->allowedMimeTypes)) {
+
+            Log::warning('Blocked file upload (Invalid MIME)', [
+                'user_id'  => auth('admin')->id(),
+                'ip'       => request()->ip(),
+                'mimeType' => $mimeType,
+            ]);
+
+            abort(403, 'Invalid file content');
+        }
+
+        if (preg_match('/\.(php|phtml|php5|phar|html|js)$/i', $file->getClientOriginalName())) {
+
+            Log::warning('Blocked file upload (Double Extension Attempt)', [
+                'user_id' => auth('admin')->id(),
+                'ip'      => request()->ip(),
+                'name'    => $file->getClientOriginalName(),
+            ]);
+
+            abort(403, 'Invalid file name');
+        }
+
+        if ($file->getSize() > 5 * 1024 * 1024) {
+            abort(403, 'File size exceeds limit');
+        }
+
+        $filename = Str::uuid()->toString() . '.' . $extension;
         $path = $file->storeAs(
             'public/' . $this->storagePath,
             $filename
