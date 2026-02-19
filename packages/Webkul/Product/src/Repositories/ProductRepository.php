@@ -237,6 +237,15 @@ class ProductRepository extends Repository
                 $qb->where('products.type', $params['type']);
             }
 
+            if (array_key_exists('parent_id', $params)) {
+
+                if (is_null($params['parent_id']) || $params['parent_id'] === '') {
+                    $qb->whereNull('products.parent_id');
+                } else {
+                    $qb->where('products.parent_id', $params['parent_id']);
+                }
+            }
+
             if (! empty($params['sku'])) {
                 $qb->where('products.sku', 'like', '%'.$params['sku'].'%');
             }

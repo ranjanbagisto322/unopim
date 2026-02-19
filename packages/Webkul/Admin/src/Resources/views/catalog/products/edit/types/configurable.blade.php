@@ -26,12 +26,28 @@
                 <!-- Add Buttons -->
                 <div class="flex gap-x-1 items-center justify-between w-full">
                     <div></div>
+                     
                     <div
                         class="secondary-button"
                         @click="$refs.variantCreateModal.open()"
                     >
                         @lang('admin::app.catalog.products.edit.types.configurable.add-btn')
                     </div>
+
+                    <div
+                        class="secondary-button"
+                        @click="$refs.variantSearch.openDrawer()"
+                    >
+                        Add Product
+                    </div>
+
+                    <x-admin::products.search
+                        ref="variantSearch"
+                        ::added-product-ids="addedVariantIds"
+                        ::queryParams="variantQueryParams"
+                        @onProductAdded="addExistingVariants($event)"
+                    />
+
                 </div>
             </div>
 
@@ -778,11 +794,16 @@
 
                     superAttributes: @json($product->super_attributes()->with(['options', 'options.attribute', 'options.translations'])->get()),
 
-                    selectedVariant: {
-                        id: null,
-                        sku: '',
-                        status: 1,
+                    variantQueryParams: {
+                        type: 'simple',
+                        parent_id: '',
                     },
+                }
+            },
+            
+            computed: {
+                addedVariantIds() {
+                    return this.variants.map(v => v.sku);
                 }
             },
 
@@ -881,6 +902,20 @@
 
                             return false;
                         });
+                },
+
+                addExistingVariants(selectedProducts) {
+                    selectedProducts.forEach(product => {
+                        this.variants.push({
+                            id: product.id,
+                            sku: product.sku,
+                            status: product.status ?? 1,
+                            image: product.image,
+                            values: {
+                                common: product.values?.common ?? {}
+                            }
+                        });
+                    });
                 },
             }
         });
@@ -997,3 +1032,5 @@
         });
     </script>
 @endPushOnce
+
+
