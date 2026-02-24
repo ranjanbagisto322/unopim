@@ -9,6 +9,7 @@
 
 <v-media-images
     name="{{ $name }}"
+    :is-required="true" 
     v-bind:allow-multiple="{{ $allowMultiple ? true : false }}"
     v-bind:show-placeholders="{{ $showPlaceholders ? 'true' : 'false' }}"
     :uploaded-images='{{ json_encode($uploadedImages) }}'
@@ -67,12 +68,20 @@
                                     accept="image/*"
                                     :multiple="allowMultiple"
                                     :ref="$.uid + '_imageInput'"
+                                    :required="isRequired && images.length === 0"
                                     @change="add"
                                 />
                             </div>
                         </label>
                      </div>
                 </template>
+
+                <p
+                    v-if="imageError"
+                    class="text-red-600 text-sm mt-2"
+                >
+                    @{{ imageError }}
+                </p>
 
                 <!-- Uploaded Images -->
                 <draggable
@@ -366,42 +375,40 @@
                             <x-slot:footer>
                                 <div class="flex gap-x-2.5 items-center">
                                     <template v-if="! ai.images.length">
-                                        <button
-                                            class="secondary-button"
-                                            :disabled="isLoading"
-                                            :class="{ 'opacity-50 cursor-not-allowed': isLoading }">
+                                        <button class="secondary-button">
                                             <!-- Spinner -->
                                             <template v-if="isLoading">
                                                 <img
                                                     class="animate-spin h-5 w-5 text-violet-700"
                                                     src="{{ unopim_asset('images/spinner.svg') }}"
                                                 />
-                                                @lang('admin::app.components.tinymce.ai-generation.generating')
+
+                                                @lang('admin::app.components.media.images.ai-generation.generating')
                                             </template>
 
                                             <template v-else>
-                                                <span class="icon-magic text-2xl text-violet-700"></span>
-                                                @lang('admin::app.components.tinymce.ai-generation.generate')
+                                                <span class="icon-magic  text-violet-700"></span>
+
+                                                @lang('admin::app.components.media.images.ai-generation.generate')
                                             </template>
                                         </button>
                                     </template>
 
                                     <template v-else>
-                                         <button
-                                            class="secondary-button"
-                                            :disabled="isLoading"
-                                            :class="{ 'opacity-50 cursor-not-allowed': isLoading }">
+                                        <button class="secondary-button">
                                             <!-- Spinner -->
                                             <template v-if="isLoading">
                                                 <img
                                                     class="animate-spin h-5 w-5 text-violet-700"
                                                     src="{{ unopim_asset('images/spinner.svg') }}"
                                                 />
+
                                                 @lang('admin::app.components.media.images.ai-generation.regenerating')
                                             </template>
 
                                             <template v-else>
                                                 <span class="icon-magic text-2xl text-violet-700"></span>
+
                                                 @lang('admin::app.components.media.images.ai-generation.regenerate')
                                             </template>
                                         </button>
@@ -513,6 +520,11 @@
                     default: false,
                 },
 
+                isRequired: {
+                    type: Boolean,
+                    default: false,
+                },
+
                 uploadedImages: {
                     type: Array,
                     default: () => []
@@ -537,6 +549,7 @@
             data() {
                 return {
                     images: [],
+                    imageError: null,
 
                     placeholders: [
                     ],
@@ -562,7 +575,7 @@
                     aiModels: [],
                     suggestionValues: [],
                     selectedModel: null,
-                    resourceId: "{{ request()->id ?? auth()->id() }}",
+                    resourceId: "{{ request()->id }}",
                     entityName: "{{ $attributes->get('entity-name', 'attribute') }}",
                 }
             },
@@ -593,8 +606,29 @@
                 }
             },
 
-            mounted() {
+           mounted() {
                 this.images = this.uploadedImages;
+
+                this.$nextTick(() => {
+                    const form = this.$el.closest('form');
+
+                    if (form) {
+                        form.addEventListener('submit', (e) => {
+
+                            // reset error
+                            this.imageError = null;
+
+                            if (this.isRequired && this.images.length === 0) {
+                                e.preventDefault();
+                                e.stopImmediatePropagation();
+
+                                this.imageError = 'At least one image is required.';
+
+                                return false;
+                            }
+                        }, true); // 👈 IMPORTANT: useCapture true
+                    }
+                });
             },
 
             methods: {
@@ -608,6 +642,7 @@
                 },
 
                 add() {
+                    this.imageError = null;
                     let imageInput = this.$refs[this.$.uid + '_imageInput'];
 
                     if (imageInput.files == undefined) {
@@ -639,10 +674,26 @@
                     }
                 },
 
+                validateImages() {
+                    if (this.isRequired && this.images.length === 0) {
+                        this.$emitter.emit('add-flash', {
+                            type: 'error',
+                            message: 'At least one image is required.'
+                        });
+
+                        return false;
+                    }
+
+                    return true;
+                },
+
                 remove(image) {
                     let index = this.images.indexOf(image);
-
                     this.images.splice(index, 1);
+
+                    if (this.isRequired && this.images.length === 0) {
+                        this.imageError = 'At least one image is required.';
+                    }
                 },
 
                 toggleImageAIModal() {
@@ -671,7 +722,7 @@
                     try {
                         const response = await axios.get("{{ route('admin.magic_ai.available_model') }}");
 
-                        this.aiModels = response.data.models.filter(model => model.id === 'dall-e-2' || model.id === 'dall-e-3' || model.id === 'gpt-image-1.5' || model.id === 'gpt-image-1' || model.id === 'gpt-image-1-mini' || model.id === 'gemini-2.5-flash-image' || model.id === 'gemini-3-pro-image-preview');
+                        this.aiModels = response.data.models.filter(model => model.id === 'dall-e-2' || model.id === 'dall-e-3');
                         this.ai.model = this.aiModels[0] ? this.aiModels[0].id : '';
                     } catch (error) {
                         console.error("Failed to fetch AI models:", error);
@@ -717,6 +768,7 @@
                     this.isLoading = true;
 
                     let self = this;
+
                     params.resource_id = this.resourceId;
                     params.resource_type = this.getResourceType();
                     params.field_type = 'image';
@@ -742,19 +794,11 @@
                 },
 
                 apply() {
-                    this.selectedAIImages.forEach((image) => {
-                        const mime = image.url.match(/^data:(image\/[^;]+);base64,/)[1];
-
-                        const extension = {
-                            'image/jpeg': 'jpg',
-                            'image/png': 'png',
-                            'image/webp': 'webp',
-                        }[mime] || 'png';
-
+                    this.selectedAIImages.forEach((image, index) => {
                         this.images.push({
                             id: 'image_' + this.images.length,
                             url: '',
-                            file: this.getBase64ToFile(image.url, `temp.${extension}`)
+                            file: this.getBase64ToFile(image.url, 'temp.png')
                         });
                     });
 
