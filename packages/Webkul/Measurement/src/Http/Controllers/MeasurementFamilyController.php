@@ -133,29 +133,6 @@ class MeasurementFamilyController extends Controller
         ]);
     }
 
-    // public function massDelete()
-    // {
-    //     $ids = request()->input('indices');
-
-    //     if (! $ids || count($ids) == 0) {
-    //         session()->flash('error', 'No items selected.');
-
-    //         return redirect()->back();
-    //     }
-
-    //     foreach ($ids as $id) {
-    //         $this->measurementFamilyRepository->delete($id);
-    //     }
-
-    //     return response()->json([
-    //         'success' => true,
-    //         'message' => trans('measurement::app.messages.family.deleted'),
-    //     ]);
-
-    //     return redirect()->back();
-    // }
-
-
     public function massDelete()
     {
         $ids = request()->input('indices');
