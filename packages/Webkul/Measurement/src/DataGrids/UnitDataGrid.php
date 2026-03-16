@@ -159,12 +159,5 @@ class UnitDataGrid extends DataGrid
         ]);
     }
 
-    public function prepareMassActions()
-    {
-        $this->addMassAction([
-            'title'  => 'Delete Selected',
-            'method' => 'POST',
-            'url'    => route('admin.measurement.families.unitmass_delete'),
-        ]);
-    }
+    
 }

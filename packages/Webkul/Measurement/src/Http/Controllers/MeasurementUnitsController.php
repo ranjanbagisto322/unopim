@@ -138,27 +138,6 @@ class MeasurementUnitsController extends Controller
         ], $familyId);
     }
 
-    // public function deleteUnit($familyId, $code)
-    // {
-    //     $family = $this->measurementFamilyRepository->findOrFail($familyId);
-
-    //     $units = $family->units ?? [];
-
-    //     $updatedUnits = array_filter($units, function ($unit) use ($code) {
-    //         return isset($unit['code']) && $unit['code'] !== $code;
-    //     });
-
-    //     $this->measurementFamilyRepository->update([
-    //         'units' => array_values($updatedUnits),
-    //     ], $familyId);
-
-    //     return response()->json([
-    //         'status'  => true,
-    //         'message' => trans('measurement::app.messages.unit.deleted'),
-    //     ]);
-
-    // }
-
     public function deleteUnit($familyId, $code)
     {
         $family = $this->measurementFamilyRepository->findOrFail($familyId);

@@ -133,6 +133,29 @@ class MeasurementFamilyController extends Controller
         ]);
     }
 
+    // public function massDelete()
+    // {
+    //     $ids = request()->input('indices');
+
+    //     if (! $ids || count($ids) == 0) {
+    //         session()->flash('error', 'No items selected.');
+
+    //         return redirect()->back();
+    //     }
+
+    //     foreach ($ids as $id) {
+    //         $this->measurementFamilyRepository->delete($id);
+    //     }
+
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => trans('measurement::app.messages.family.deleted'),
+    //     ]);
+
+    //     return redirect()->back();
+    // }
+
+
     public function massDelete()
     {
         $ids = request()->input('indices');
@@ -143,15 +166,38 @@ class MeasurementFamilyController extends Controller
             return redirect()->back();
         }
 
+        $attributeMeasurementRepository = app(AttributeMeasurementRepository::class);
+
         foreach ($ids as $id) {
+
+            $family = $this->measurementFamilyRepository->find($id);
+
+            if (! $family) {
+                continue;
+            }
+
+            $exists = $attributeMeasurementRepository
+                ->findWhere(['family_code' => $family->code])
+                ->count();
+
+            if ($exists > 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'This measurement family is used in attributes, so it cannot be deleted.',
+                ], 400);
+
+                continue;
+            }
+
             $this->measurementFamilyRepository->delete($id);
         }
 
-        session()->flash(
-            'success',
-            trans('measurement::app.messages.family.mass_deleted')
-        );
+        return response()->json([
+            'success' => true,
+            'message' => trans('measurement::app.messages.family.deleted'),
+        ]);
 
         return redirect()->back();
     }
+
 }

@@ -157,6 +157,7 @@
 
                 $hasMassActionPermission = bouncer()->hasPermission('settings.locales.mass_update') || bouncer()->hasPermission('settings.locales.mass_delete');
             @endphp
+            
             <x-admin::datagrid :src="route('admin.measurement.families.units', $family->id)" ref="datagrid">
                 
                 <template #body="{ columns, records, performAction, applied, setCurrentSelectionMode }">
@@ -165,25 +166,6 @@
                         class="row grid gap-2.5 items-center px-4 py-4 border-b dark:border-cherry-800 text-gray-600 dark:text-gray-300 transition-all hover:bg-violet-50 dark:hover:bg-cherry-800"
                         :style="`grid-template-columns: repeat(${gridsCount}, minmax(0, 1fr))`"
                     >
-                        
-                        @if ($hasMassActionPermission)
-                            <input
-                                type="checkbox"
-                                :name="`mass_action_select_record_${record.code}`"
-                                :id="`mass_action_select_record_${record.code}`"
-                                :value="record.code"
-                                class="hidden peer"
-                                v-model="applied.massActions.indices"
-                                @change="setCurrentSelectionMode"
-                            >
-
-                            <label
-                                class="icon-checkbox-normal rounded-md text-2xl cursor-pointer peer-checked:icon-checkbox-check peer-checked:text-violet-700"
-                                :for="`mass_action_select_record_${record.code}`"
-                            ></label>
-                        @endif
-
-                    
                         <p v-text="record.code"></p>
 
                         
