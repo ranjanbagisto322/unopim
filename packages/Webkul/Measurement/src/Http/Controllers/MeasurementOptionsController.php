@@ -91,29 +91,6 @@ class MeasurementOptionsController extends AbstractOptionsController
             ];
         });
 
-        // $units = collect(
-        //     $this->measurementFamilyRepository->getUnitsByFamilyCode($familyCode)
-        // )->map(function ($unit) use ($currentLocale, $currentLang) {
-
-        //     $labels = $unit['labels'] ?? [];
-
-        //     if (isset($labels[$currentLocale])) {
-        //         $label = $labels[$currentLocale];
-        //     } elseif ($firstLangMatch = collect($labels)->first(fn ($_, $key) => str_starts_with($key, $currentLang))) {
-        //         $label = $firstLangMatch;
-        //     } else {
-        //         $label = $unit['code'];
-        //     }
-
-        //     return (object) [
-        //         'id'        => $unit['code'],
-        //         'label'     => $label,
-        //         'code'      => $unit['code'],
-        //         'attribute' => [
-        //             'swatch_type' => null,
-        //         ],
-        //     ];
-        // });
 
         $options = $this->formatCollection(
             $units,
