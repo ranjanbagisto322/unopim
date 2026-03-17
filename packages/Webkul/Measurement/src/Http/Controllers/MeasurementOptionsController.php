@@ -62,9 +62,13 @@ class MeasurementOptionsController extends AbstractOptionsController
         $currentLocale = app()->getLocale();
         $currentLang = strtok($currentLocale, '_');
 
+
+        $family = $this->measurementFamilyRepository->findOneByField('code', $familyCode);
+        $standardUnit = $family?->standard_unit;
+
         $units = collect(
             $this->measurementFamilyRepository->getUnitsByFamilyCode($familyCode)
-        )->map(function ($unit) use ($currentLocale, $currentLang) {
+        )->map(function ($unit) use ($currentLocale, $currentLang, $standardUnit) {
 
             $labels = $unit['labels'] ?? [];
 
@@ -77,14 +81,39 @@ class MeasurementOptionsController extends AbstractOptionsController
             }
 
             return (object) [
-                'id'        => $unit['code'],
-                'label'     => $label,
-                'code'      => $unit['code'],
-                'attribute' => [
+                'id'         => $unit['code'],
+                'label'      => $label,
+                'code'       => $unit['code'],
+                'is_default' => $unit['code'] === $standardUnit,
+                'attribute'  => [
                     'swatch_type' => null,
                 ],
             ];
         });
+
+        // $units = collect(
+        //     $this->measurementFamilyRepository->getUnitsByFamilyCode($familyCode)
+        // )->map(function ($unit) use ($currentLocale, $currentLang) {
+
+        //     $labels = $unit['labels'] ?? [];
+
+        //     if (isset($labels[$currentLocale])) {
+        //         $label = $labels[$currentLocale];
+        //     } elseif ($firstLangMatch = collect($labels)->first(fn ($_, $key) => str_starts_with($key, $currentLang))) {
+        //         $label = $firstLangMatch;
+        //     } else {
+        //         $label = $unit['code'];
+        //     }
+
+        //     return (object) [
+        //         'id'        => $unit['code'],
+        //         'label'     => $label,
+        //         'code'      => $unit['code'],
+        //         'attribute' => [
+        //             'swatch_type' => null,
+        //         ],
+        //     ];
+        // });
 
         $options = $this->formatCollection(
             $units,
@@ -104,6 +133,10 @@ class MeasurementOptionsController extends AbstractOptionsController
         string $query,
         array $queryParams
     ): array {
+
+        if (! isset($queryParams['identifiers']['value']) || ! $queryParams['identifiers']['value']) {
+            $collection = $collection->sortByDesc(fn ($item) => $item->is_default);
+        }
 
         if (isset($queryParams['identifiers']['value'])) {
             $identifier = $queryParams['identifiers']['value'];
