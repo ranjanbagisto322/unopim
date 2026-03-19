@@ -180,6 +180,38 @@
                                     $filters = $export->filters ?? [];
                                 @endphp
 
+                                <!-- Channel -->
+                                <x-admin::form.control-group>
+                                    <x-admin::form.control-group.label>
+                                        Channel
+                                    </x-admin::form.control-group.label>
+
+                                    <x-admin::form.control-group.control
+                                        type="select"
+                                        name="filters[channel]"
+                                        :value="$filters['channel'] ?? ''"
+                                        ::options="channels"
+                                        track-by="id"
+                                        label-by="label"
+                                    />
+                                </x-admin::form.control-group>
+
+                                <!-- Locale -->
+                                <x-admin::form.control-group class="mt-4">
+                                    <x-admin::form.control-group.label>
+                                        Locale
+                                    </x-admin::form.control-group.label>
+
+                                    <x-admin::form.control-group.control
+                                        type="select"
+                                        name="filters[locale]"
+                                        :value="$filters['locale'] ?? ''"
+                                        ::options="locales"
+                                        track-by="id"
+                                        label-by="label"
+                                    />
+                                </x-admin::form.control-group>
+
                                 <x-admin::data-transfer.filter-fields
                                     :entity-type="$export->entity_type"
                                     :values="$filters"
@@ -205,6 +237,15 @@
                     return {
                         fileFormat: @json($export->filters['file_format'] ?? null),
                         selectedFileFormat: @json($export->filters['file_format'] ?? null),
+
+                        channels: @json($channels).map(c => ({
+                            id: c.code,
+                            label: c.name
+                        })),
+                        locales: @json($locales).map(l => ({
+                            id: l.code,
+                            label: l.name
+                        })),
                     };
                 },
 

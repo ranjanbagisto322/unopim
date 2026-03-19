@@ -141,6 +141,7 @@ class Exporter extends AbstractExporter
     /**
      * Prepare products from current batch
      */
+   
     public function prepareProducts(JobTrackBatchContract $batch, $filePath)
     {
         $products = [];
@@ -148,11 +149,12 @@ class Exporter extends AbstractExporter
 
         $productsByIds = $this->getItemsFromIds($flatIds);
 
+        $filters = $this->getFilters();
+        $selectedChannel = $filters['channel'] ?? null;
+        $selectedLocale  = $filters['locale'] ?? null;
+
         foreach ($productsByIds as $product) {
-            // Build rowData directly from model properties instead of calling toArray().
-            // Calling $product->toArray() triggers attribute_family->toArray() which invokes
-            // Astrotomic Translatable::getTranslation() for every configured locale (~8ms/product).
-            // Direct property access avoids that entirely.
+
             $productValues = $product->values ?? [];
 
             $rowData = [
@@ -174,6 +176,7 @@ class Exporter extends AbstractExporter
             $sku = $product->sku;
             $type = $product->type;
             $status = $product->status ? 'true' : 'false';
+
             $configurableAttributes = $this->getSuperAttributes($rowData);
             $categories = $this->getCategories($rowData);
             $upSells = $this->getAssociations($rowData, 'up_sells');
@@ -184,7 +187,17 @@ class Exporter extends AbstractExporter
             unset($commonFields['sku']);
 
             foreach ($this->channelsAndLocales as $channel => $locales) {
+
+                if ($selectedChannel && $channel !== $selectedChannel) {
+                    continue;
+                }
+
                 foreach ($locales as $locale) {
+
+                    if ($selectedLocale && $locale !== $selectedLocale) {
+                        continue;
+                    }
+
                     $localeSpecificFields = $this->getLocaleSpecificFields($rowData, $locale);
                     $channelSpecificFields = $this->getChannelSpecificFields($rowData, $channel);
                     $channelLocaleSpecificFields = $this->getChannelLocaleSpecificFields($rowData, $channel, $locale);

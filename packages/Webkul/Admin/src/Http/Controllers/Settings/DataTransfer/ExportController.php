@@ -14,6 +14,8 @@ use Webkul\DataTransfer\Jobs\Export\ExportTrackBatch;
 use Webkul\DataTransfer\Repositories\JobInstancesRepository;
 use Webkul\DataTransfer\Repositories\JobTrackRepository;
 use Webkul\DataTransfer\Rules\SeparatorTypes;
+use Webkul\Core\Repositories\LocaleRepository;
+use Webkul\Core\Repositories\ChannelRepository;
 
 class ExportController extends Controller
 {
@@ -27,7 +29,9 @@ class ExportController extends Controller
     public function __construct(
         protected JobInstancesRepository $jobInstancesRepository,
         protected JobTrackRepository $jobTrackRepository,
-        protected Export $jobHelper
+        protected Export $jobHelper,
+        protected LocaleRepository $localeRepository,
+        protected ChannelRepository $ChannelRepository
     ) {}
 
     /**
@@ -52,8 +56,10 @@ class ExportController extends Controller
     public function create()
     {
         $exporterConfig = config('exporters');
-
-        return view('admin::settings.data-transfer.exports.create', compact('exporterConfig'));
+        $locales = $this->localeRepository->getActiveLocales();
+        $channels = app(ChannelRepository::class)->all();
+    
+        return view('admin::settings.data-transfer.exports.create', compact('exporterConfig','locales', 'channels'));
     }
 
     /**
@@ -122,7 +128,10 @@ class ExportController extends Controller
 
         $export = $this->jobInstancesRepository->findOrFail($id);
 
-        return view('admin::settings.data-transfer.exports.edit', compact('export', 'exporterConfig'));
+        $locales  = $this->localeRepository->getActiveLocales();
+        $channels = app(ChannelRepository::class)->all();
+
+        return view('admin::settings.data-transfer.exports.edit', compact('export','locales','channels', 'exporterConfig'));
     }
 
     /**

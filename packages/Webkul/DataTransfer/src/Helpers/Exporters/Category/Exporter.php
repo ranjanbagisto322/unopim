@@ -76,17 +76,28 @@ class Exporter extends AbstractExporter
     /**
      * Prepare categories from current batch
      */
+
     public function prepareCategories(JobTrackBatchContract $batch, mixed $filePath)
     {
         $locales = core()->getAllActiveLocales()->pluck('code');
+
         $categories = [];
+
+        $filters = $this->getFilters();
+        $selectedLocale = $filters['locale'] ?? null;
+
         foreach ($batch->data as $rowData) {
             $productCounts = $this->productCountsByCategory($rowData['code']);
 
             foreach ($locales as $locale) {
+
+                if ($selectedLocale && $locale !== $selectedLocale) {
+                    continue;
+                }
+
                 $commonFields = $this->getCommonFields($rowData);
                 $localeSpecificFields = $this->getLocaleSpecificFields($rowData, $locale);
-                // Merge common and locale-specific fields before array_merge
+
                 $mergedFields = array_merge($commonFields, $localeSpecificFields);
                 $additionalData = $this->setFieldsAdditionalData($mergedFields, $filePath);
 
