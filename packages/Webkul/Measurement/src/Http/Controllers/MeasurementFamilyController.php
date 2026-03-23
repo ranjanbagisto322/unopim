@@ -33,23 +33,23 @@ class MeasurementFamilyController extends Controller
             'code'               => 'required|string|max:191',
             'standard_unit_code' => 'required|string|max:191',
             'symbol'             => 'nullable|string|max:50',
-            'labels'             => 'required|array',
         ]);
 
-        $labels = $request->input('labels', []);
+        
+        $familyLabels = $request->input('labels', []);
+        $unitLabels   = $request->input('unit_labels', []);
 
         $units = [
             [
                 'code'   => $request->standard_unit_code,
-                'labels' => $labels,
+                'labels' => $unitLabels,
                 'symbol' => $request->symbol,
             ],
         ];
 
         $data = [
             'code'          => $request->code,
-            'name'          => reset($labels),
-            'labels'        => $labels,
+            'labels'        => $familyLabels,
             'standard_unit' => $request->standard_unit_code,
             'units'         => $units,
             'symbol'        => $request->symbol,

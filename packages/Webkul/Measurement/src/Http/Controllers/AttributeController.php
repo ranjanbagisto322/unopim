@@ -40,7 +40,7 @@ class AttributeController extends Controller
             $familyOptions = $families->map(function ($f) use ($currentLocale, $currentLang) {
                 return [
                     'id'    => $f->code,
-                    'label' => $f->name,
+                    'label' => $f->code,
                     'units' => collect($f->units ?? [])->map(function ($u) use ($currentLocale, $currentLang) {
 
                         $labels = $u['labels'] ?? [];

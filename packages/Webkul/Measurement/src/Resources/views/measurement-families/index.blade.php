@@ -42,10 +42,15 @@
 
                 <x-slot:content>
 
-                            <div class="space-y-3">
+                        <div class="space-y-3">
 
+                            <div class="">
+                                <h2 class="text-base text-gray-800 dark:text-white font-semibold">
+                                    PROPERTIES
+                                </h2>
+                            </div>
                                 <!-- Code -->
-                                <x-admin::form.control-group>
+                                <x-admin::form.control-group class="mt-2">
                                     <x-admin::form.control-group.label class="required">
                                         @lang('measurement::app.measurement.index.code')
                                     </x-admin::form.control-group.label>
@@ -60,38 +65,6 @@
                                     />
 
                                     <x-admin::form.control-group.error control-name="code" />
-                                </x-admin::form.control-group>
-
-                                <!-- Standard Unit Code -->
-                                <x-admin::form.control-group>
-                                    <x-admin::form.control-group.label class="required">
-                                        @lang('measurement::app.measurement.index.standard')
-                                    </x-admin::form.control-group.label>
-
-                                    <x-admin::form.control-group.control
-                                        type="text"
-                                        name="standard_unit_code"
-                                        v-model="form.standard_unit_code"
-                                        rules="required"
-                                        label="Standard Unit Code"
-                                        placeholder="Enter standard unit code"
-                                    />
-
-                                    <x-admin::form.control-group.error control-name="standard_unit_code" />
-                                </x-admin::form.control-group>
-
-                                <!-- Symbol -->
-                                <x-admin::form.control-group>
-                                    <x-admin::form.control-group.label>
-                                        @lang('measurement::app.measurement.index.symbol')
-                                    </x-admin::form.control-group.label>
-
-                                    <x-admin::form.control-group.control
-                                        type="text"
-                                        name="symbol"
-                                        v-model="form.symbol"
-                                        placeholder="e.g. km, m"
-                                    />
                                 </x-admin::form.control-group>
 
                                 <!-- Labels -->
@@ -109,14 +82,85 @@
 
                                         <x-admin::form.control-group.control
                                             type="text"
-                                            :name="'labels[{{ $locale->code }}]'"
+                                            
+                                            :name="'labels[' . $locale->code . ']'"
                                             v-model="form.labels['{{ $locale->code }}']"
-                                            placeholder="Enter label"
                                         />
                                     </x-admin::form.control-group>
                                 @endforeach
 
+                            
+                            <div class="mt-2 flex items-start gap-2 p-3 rounded-md border border-orange-300 bg-orange-50 dark:bg-orange-900/20">
+
+                                <span class="text-orange-500 text-lg">
+                                    ⚠️
+                                </span>
+                                <p class="text-sm text-orange-600 dark:text-orange-300">
+                                    This standard unit is set once and for all. It will be used to convert the other units.
+                                </p>
+
                             </div>
+
+                            <div class="mt-4">
+                                <h2 class="text-base text-gray-800 dark:text-white font-semibold">
+                                    STANDARD UNIT
+                                </h2>
+                            </div>
+                            
+                                <x-admin::form.control-group class="mt-2">
+                                    <x-admin::form.control-group.label class="required">
+                                        @lang('measurement::app.measurement.index.standard')
+                                    </x-admin::form.control-group.label>
+
+                                    <x-admin::form.control-group.control
+                                        type="text"
+                                        name="standard_unit_code"
+                                        v-model="form.standard_unit_code"
+                                        rules="required"
+                                        label="Standard Unit Code"
+                                        placeholder="Enter standard unit code"
+                                    />
+
+                                    <x-admin::form.control-group.error control-name="standard_unit_code" />
+                                </x-admin::form.control-group>
+
+                                <!-- Labels -->
+                                <div>
+                                    <p class="text-gray-800 dark:text-white text-sm font-semibold mb-2">
+                                        @lang('admin::app.catalog.attributes.create.label')
+                                    </p>
+                                </div>
+
+                                @foreach ($locales as $locale)
+                                    <x-admin::form.control-group>
+                                        <x-admin::form.control-group.label>
+                                            {{ $locale->name }}
+                                        </x-admin::form.control-group.label>
+
+                                        <x-admin::form.control-group.control
+                                            type="text"
+                                           :name="'unit_labels[' . $locale->code . ']'"
+                                           v-model="form.unit_labels['{{ $locale->code }}']"  
+                                        />
+                                    </x-admin::form.control-group>
+                                @endforeach
+
+
+                                 <!-- Symbol -->
+                                <x-admin::form.control-group>
+                                    <x-admin::form.control-group.label>
+                                        @lang('measurement::app.measurement.index.symbol')
+                                    </x-admin::form.control-group.label>
+
+                                    <x-admin::form.control-group.control
+                                        type="text"
+                                        name="symbol"
+                                        v-model="form.symbol"
+                                        placeholder="e.g. km, m"
+                                    />
+                                </x-admin::form.control-group>
+
+                        </div>
                 </x-slot:content>
                 <x-slot:footer>
                     <div class="flex gap-x-2.5 items-center">
@@ -148,9 +192,20 @@
                         code: '',
                         standard_unit_code: '',
                         symbol: '',
-                        labels: {}
+                        labels: {},
+                        unit_labels: {}
                     }
                 };
+            },
+
+            created() {
+                // PHP se locales array ko yahan pass karein ya blade variables use karein
+                const locales = @json($locales); 
+                
+                locales.forEach(locale => {
+                    this.form.labels[locale.code] = '';
+                    this.form.unit_labels[locale.code] = '';
+                });
             },
 
             methods: {
@@ -169,7 +224,8 @@
                             code: '',
                             standard_unit_code: '',
                             symbol: '',
-                            labels: {}
+                            labels: {},
+                            unit_labels: {}
                         };
 
                         if (response.data?.data?.redirect_url) {

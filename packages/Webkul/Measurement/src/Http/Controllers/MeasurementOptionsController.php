@@ -91,7 +91,6 @@ class MeasurementOptionsController extends AbstractOptionsController
             ];
         });
 
-
         $options = $this->formatCollection(
             $units,
             $page,
