@@ -89,6 +89,28 @@ class ExportController extends Controller
             'filters',
         ]);
 
+        // --- CLEANING LOGIC START ---
+        if (isset($data['filters'])) {
+            // Channel cleaning
+            if (isset($data['filters']['channel'])) {
+                // Empty values remove karein aur array ko flat karein
+                $channels = is_array($data['filters']['channel']) 
+                    ? $data['filters']['channel'] 
+                    : explode(',', $data['filters']['channel']);
+
+                $data['filters']['channel'] = array_values(array_filter($channels));
+            }
+
+            // Locale cleaning (Same logic for Locale)
+            if (isset($data['filters']['locale'])) {
+                $locales = is_array($data['filters']['locale']) 
+                    ? $data['filters']['locale'] 
+                    : explode(',', $data['filters']['locale']);
+
+                $data['filters']['locale'] = array_values(array_filter($locales));
+            }
+        }
+
         Event::dispatch('data_transfer.exports.create.validate.before');
 
         $jobValidator = isset($exporterConfig[$data['entity_type']]['validator']) ? app($exporterConfig[$data['entity_type']]['validator']) : null;

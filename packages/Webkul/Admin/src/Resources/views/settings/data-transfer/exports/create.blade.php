@@ -165,13 +165,15 @@
                                     </x-admin::form.control-group.label>
 
                                     <x-admin::form.control-group.control
-                                        type="select"
+                                        type="multiselect"
                                         name="filters[channel]"
                                         v-model="filters.channel"
-                                        ::options="channels"         
+                                        ::options="JSON.stringify(channels)"         
                                         track-by="id"
                                         label-by="label"
+                                        rules="required"
                                     />
+                                    <x-admin::form.control-group.error control-name="filters[channel][]" />
                                 </x-admin::form.control-group>
 
                                 <x-admin::form.control-group class="mt-4">
@@ -180,13 +182,15 @@
                                     </x-admin::form.control-group.label>
 
                                     <x-admin::form.control-group.control
-                                        type="select"
+                                        type="multiselect"
                                         name="filters[locale]"
                                         v-model="filters.locale"
-                                        ::options="locales"
+                                        ::options="JSON.stringify(locales)"
                                         track-by="id"
                                         label-by="label"
+                                        rules="required"
                                     />
+                                    <x-admin::form.control-group.error control-name="filters[locale][]" />
                                 </x-admin::form.control-group>
 
                                 <x-admin::data-transfer.filter-fields
@@ -219,8 +223,8 @@
                         filterFields: @json($exporterConfig['categories']['filters']['fields']),
 
                         filters: {
-                            channel: '',
-                            locale: ''
+                            channel: [],
+                            locale: []
                         },
 
                         channels: @json($channels).map(c => ({
