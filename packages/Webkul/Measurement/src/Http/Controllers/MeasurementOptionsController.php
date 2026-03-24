@@ -64,11 +64,11 @@ class MeasurementOptionsController extends AbstractOptionsController
 
 
         $family = $this->measurementFamilyRepository->findOneByField('code', $familyCode);
-        $standardUnit = $family?->standard_unit;
+        $defaultUnit = $attributeMeasurement?->unit_code;
 
         $units = collect(
             $this->measurementFamilyRepository->getUnitsByFamilyCode($familyCode)
-        )->map(function ($unit) use ($currentLocale, $currentLang, $standardUnit) {
+        )->map(function ($unit) use ($currentLocale, $currentLang, $defaultUnit) {
 
             $labels = $unit['labels'] ?? [];
 
@@ -84,7 +84,7 @@ class MeasurementOptionsController extends AbstractOptionsController
                 'id'         => $unit['code'],
                 'label'      => $label,
                 'code'       => $unit['code'],
-                'is_default' => $unit['code'] === $standardUnit,
+                'is_default' => $unit['code'] === $defaultUnit,
                 'attribute'  => [
                     'swatch_type' => null,
                 ],
@@ -103,21 +103,18 @@ class MeasurementOptionsController extends AbstractOptionsController
     }
 
     protected function formatCollection(
-        Collection $collection,
-        int $page,
-        int $limit,
-        string $query,
-        array $queryParams
+    Collection $collection,
+    int $page,
+    int $limit,
+    string $query,
+    array $queryParams
     ): array {
+        $selectedValue = $queryParams['identifiers']['value'] ?? null;
 
-        if (! isset($queryParams['identifiers']['value']) || ! $queryParams['identifiers']['value']) {
-            $collection = $collection->sortByDesc(fn ($item) => $item->is_default);
-        }
-
-        if (isset($queryParams['identifiers']['value'])) {
-            $identifier = $queryParams['identifiers']['value'];
-
-            $collection = $collection->sortByDesc(fn ($item) => $item->id === $identifier);
+        if (empty($selectedValue) || $selectedValue === '__auto__') {
+            $collection = $collection->sortByDesc('is_default');
+        } else {
+            $collection = $collection->sortByDesc(fn ($item) => $item->id === $selectedValue);
         }
 
         $paginated = $collection->forPage($page, $limit)->values();
@@ -129,3 +126,4 @@ class MeasurementOptionsController extends AbstractOptionsController
         ];
     }
 }
+
