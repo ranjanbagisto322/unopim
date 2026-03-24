@@ -199,7 +199,6 @@
             },
 
             created() {
-                // PHP se locales array ko yahan pass karein ya blade variables use karein
                 const locales = @json($locales); 
                 
                 locales.forEach(locale => {
