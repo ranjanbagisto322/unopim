@@ -31,7 +31,7 @@ class ExportController extends Controller
         protected JobTrackRepository $jobTrackRepository,
         protected Export $jobHelper,
         protected LocaleRepository $localeRepository,
-        protected ChannelRepository $ChannelRepository
+        protected ChannelRepository $channelRepository
     ) {}
 
     /**
@@ -57,7 +57,7 @@ class ExportController extends Controller
     {
         $exporterConfig = config('exporters');
         $locales = $this->localeRepository->getActiveLocales();
-        $channels = app(ChannelRepository::class)->all();
+        $channels = $this->channelRepository->all();
     
         return view('admin::settings.data-transfer.exports.create', compact('exporterConfig','locales', 'channels'));
     }
@@ -89,27 +89,25 @@ class ExportController extends Controller
             'filters',
         ]);
 
-        // --- CLEANING LOGIC START ---
         if (isset($data['filters'])) {
-            // Channel cleaning
-            if (isset($data['filters']['channel'])) {
-                // Empty values remove karein aur array ko flat karein
-                $channels = is_array($data['filters']['channel']) 
-                    ? $data['filters']['channel'] 
-                    : explode(',', $data['filters']['channel']);
+            foreach (['channel', 'locale'] as $field) {
+                if (isset($data['filters'][$field])) {
+                    $rawData = $data['filters'][$field];
 
-                $data['filters']['channel'] = array_values(array_filter($channels));
-            }
+                    if (is_array($rawData)) {
+                        $combined = implode(',', $rawData);
+                        $values = explode(',', $combined);
+                    } else {
+                        $values = explode(',', $rawData);
+                    }
 
-            // Locale cleaning (Same logic for Locale)
-            if (isset($data['filters']['locale'])) {
-                $locales = is_array($data['filters']['locale']) 
-                    ? $data['filters']['locale'] 
-                    : explode(',', $data['filters']['locale']);
+                    $cleaned = array_filter(array_map('trim', $values));
 
-                $data['filters']['locale'] = array_values(array_filter($locales));
+                    $data['filters'][$field] = array_values($cleaned);
+                }
             }
         }
+
 
         Event::dispatch('data_transfer.exports.create.validate.before');
 
@@ -149,9 +147,9 @@ class ExportController extends Controller
         $exporterConfig = config('exporters');
 
         $export = $this->jobInstancesRepository->findOrFail($id);
-
+       
         $locales  = $this->localeRepository->getActiveLocales();
-        $channels = app(ChannelRepository::class)->all();
+        $channels = $this->channelRepository->all();
 
         return view('admin::settings.data-transfer.exports.edit', compact('export','locales','channels', 'exporterConfig'));
     }
@@ -161,10 +159,10 @@ class ExportController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
     public function update(int $id)
     {
         $exporterConfig = config('exporters');
-
         $exporters = array_keys($exporterConfig);
 
         $export = $this->jobInstancesRepository->findOrFail($id);
@@ -175,20 +173,35 @@ class ExportController extends Controller
             'filters'             => 'array',
             'field_separator'     => ['required_if:filters.file_format,Csv', new SeparatorTypes],
         ]);
-
+        
         Event::dispatch('data_transfer.exports.update.before');
 
+        $requestedData = request()->only([
+            'entity_type',
+            'field_separator',
+            'filters',
+        ]);
+
+        if (isset($requestedData['filters'])) {
+            foreach (['channel', 'locale'] as $field) {
+                if (isset($requestedData['filters'][$field])) {
+                    $rawData = $requestedData['filters'][$field];
+
+                    $combined = is_array($rawData) ? implode(',', $rawData) : $rawData;
+                    $values = explode(',', $combined);
+
+                    $cleaned = array_filter(array_map('trim', $values));
+
+                    $requestedData['filters'][$field] = array_values($cleaned);
+                }
+            }
+        }
+        
         $data = array_merge(
-            request()->only([
-                'entity_type',
-                'field_separator',
-                'filters',
-            ]),
+            $requestedData,
             [
                 'action'               => 'fetch',
                 'validation_strategy'  => '',
-                'validation_strategy'  => '',
-                'allowed_errors'       => '',
                 'state'                => 'pending',
                 'processed_rows_count' => 0,
                 'invalid_rows_count'   => 0,

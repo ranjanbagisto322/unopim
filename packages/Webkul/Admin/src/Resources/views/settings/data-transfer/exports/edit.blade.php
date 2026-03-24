@@ -128,29 +128,39 @@
                                 @endphp
 
                                 <x-admin::form.control-group v-if="!isCategory()">
-                                    <x-admin::form.control-group.label>Channel</x-admin::form.control-group.label>
+                                    <x-admin::form.control-group.label class="required">
+                                        @lang('admin::app.settings.channels.create.channels')
+                                    </x-admin::form.control-group.label>
 
                                     <x-admin::form.control-group.control
-                                        type="select"
-                                        name="filters[channel]"
-                                        :value="$filters['channel'] ?? ''"
-                                        ::options="channels"
+                                        type="multiselect"
+                                        name="filters[channel][]"
+                                        v-model="filters.channel"
+                                        ::options="JSON.stringify(channels)"
                                         track-by="id"
                                         label-by="label"
+                                        rules="required"
+                                        label="Channel"
                                     />
+                                    <x-admin::form.control-group.error control-name="filters[channel][]" />
                                 </x-admin::form.control-group>
 
                                 <x-admin::form.control-group class="mt-4">
-                                    <x-admin::form.control-group.label>Locale</x-admin::form.control-group.label>
+                                    <x-admin::form.control-group.label class="required">
+                                        @lang('admin::app.settings.channels.edit.locales')
+                                    </x-admin::form.control-group.label>
 
                                     <x-admin::form.control-group.control
-                                        type="select"
-                                        name="filters[locale]"
-                                        :value="$filters['locale'] ?? ''"
-                                        ::options="locales"
+                                        type="multiselect"
+                                        name="filters[locale][]"
+                                        v-model="filters.locale"
+                                        ::options="JSON.stringify(locales)"
                                         track-by="id"
                                         label-by="label"
+                                        rules="required"
+                                        label="Locale"
                                     />
+                                    <x-admin::form.control-group.error control-name="filters[locale][]" />
                                 </x-admin::form.control-group>
 
                                 <x-admin::data-transfer.filter-fields
@@ -172,9 +182,13 @@
 
                 data() {
                     return {
-                        // Edit mode mein hum seedha value assign karte hain
                         entityType: @json($export->entity_type),
                         selectedFileFormat: @json($export->filters['file_format'] ?? 'Csv'),
+
+                        filters: {
+                            channel: @json($export->filters['channel'] ?? []),
+                            locale: @json($export->filters['locale'] ?? [])
+                        },
 
                         channels: @json($channels).map(c => ({
                             id: c.code,
@@ -193,7 +207,6 @@
 
                 methods: {
                     isCategory() {
-                        // Edit page par entityType hamesha string hoti hai
                         return this.entityType === 'categories';
                     },
 

@@ -150,8 +150,13 @@ class Exporter extends AbstractExporter
         $productsByIds = $this->getItemsFromIds($flatIds);
 
         $filters = $this->getFilters();
-        $selectedChannel = $filters['channel'] ?? null;
-        $selectedLocale  = $filters['locale'] ?? null;
+        $selectedChannels = (isset($filters['channel']) && is_array($filters['channel'])) 
+        ? $filters['channel'] 
+        : [];
+
+        $selectedLocales = (isset($filters['locale']) && is_array($filters['locale'])) 
+        ? $filters['locale'] 
+        : [];
 
         foreach ($productsByIds as $product) {
 
@@ -188,15 +193,15 @@ class Exporter extends AbstractExporter
 
             foreach ($this->channelsAndLocales as $channel => $locales) {
 
-                if ($selectedChannel && $channel !== $selectedChannel) {
+                if (! empty($selectedChannels) && ! in_array($channel, $selectedChannels)) {
                     continue;
                 }
 
                 foreach ($locales as $locale) {
-
-                    if ($selectedLocale && $locale !== $selectedLocale) {
-                        continue;
-                    }
+                    
+                if (! empty($selectedLocales) && ! in_array($locale, $selectedLocales)) {
+                    continue;
+                }
 
                     $localeSpecificFields = $this->getLocaleSpecificFields($rowData, $locale);
                     $channelSpecificFields = $this->getChannelSpecificFields($rowData, $channel);

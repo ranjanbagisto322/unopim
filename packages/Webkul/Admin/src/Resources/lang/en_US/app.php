@@ -1497,6 +1497,7 @@ return [
                 'status'                 => 'Status',
                 'theme'                  => 'Theme',
                 'title'                  => 'Create Channel',
+                'channels'               => 'Channels',
             ],
 
             'edit' => [

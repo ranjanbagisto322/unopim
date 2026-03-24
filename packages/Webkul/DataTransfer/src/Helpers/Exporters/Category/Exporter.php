@@ -84,14 +84,17 @@ class Exporter extends AbstractExporter
         $categories = [];
 
         $filters = $this->getFilters();
-        $selectedLocale = $filters['locale'] ?? null;
+
+        $selectedLocales = (isset($filters['locale']) && is_array($filters['locale'])) 
+        ? $filters['locale'] 
+        : [];
 
         foreach ($batch->data as $rowData) {
             $productCounts = $this->productCountsByCategory($rowData['code']);
 
             foreach ($locales as $locale) {
 
-                if ($selectedLocale && $locale !== $selectedLocale) {
+                if (! empty($selectedLocales) && ! in_array($locale, $selectedLocales)) {
                     continue;
                 }
 
