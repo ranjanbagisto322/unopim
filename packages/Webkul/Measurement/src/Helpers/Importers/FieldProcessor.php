@@ -6,9 +6,10 @@ use Webkul\DataTransfer\Helpers\Importers\FieldProcessor as CoreFieldProcessor;
 
 class FieldProcessor extends CoreFieldProcessor
 {
-    public function handleField($field, mixed $value, string $path)
+    public function handleField($field, mixed $value, ?string $path = null)
     {
-
+        $path = $path ?? '';
+     
         if ($field->type === 'measurement' && ! empty($value)) {
 
             if (is_string($value)) {
@@ -16,7 +17,7 @@ class FieldProcessor extends CoreFieldProcessor
                 [$unit, $val] = array_map('trim', explode(',', $value, 2));
 
                 return [
-                    'unit'  => strtoupper($unit),
+                    'unit'  => $unit,
                     'value' => $val,
                 ];
             }

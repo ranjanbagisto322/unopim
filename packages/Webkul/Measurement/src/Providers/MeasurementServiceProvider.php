@@ -4,6 +4,10 @@ namespace Webkul\Measurement\Providers;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Console\Events\CommandFinished;
+use Illuminate\Support\Facades\Artisan;
+use Webkul\Measurement\Database\Seeders\MeasurementFamilySeeder;
 
 class MeasurementServiceProvider extends ServiceProvider
 {
@@ -16,7 +20,6 @@ class MeasurementServiceProvider extends ServiceProvider
         ], 'measurement-seeders');
 
         $this->loadTranslationsFrom(__DIR__.'/../Resources/lang', 'measurement');
-
         $this->loadViewsFrom(__DIR__.'/../Resources/views', 'measurement');
         $this->loadRoutesFrom(__DIR__.'/../Routes/web.php');
         $this->loadRoutesFrom(__DIR__.'/../Routes/api.php');
@@ -26,15 +29,26 @@ class MeasurementServiceProvider extends ServiceProvider
             'attribute_types'
         );
 
+        if ($this->app->runningInConsole()) {
+            Event::listen(CommandFinished::class, function ($event) {
+                if ($event->command === 'unopim:install') {
+                    Artisan::call('db:seed', [
+                        '--class' => MeasurementFamilySeeder::class
+                    ]);
+                }
+            });
+        }
     }
 
     public function register()
     {
         $this->app->register(MeasurementEventServiceProvider::class);
+        
         $this->app->bind(
             \Webkul\DataTransfer\Helpers\Importers\FieldProcessor::class,
             \Webkul\Measurement\Helpers\Importers\FieldProcessor::class
         );
+
         Route::prefix('api')
             ->middleware('api')
             ->group(__DIR__.'/../Routes/api.php');

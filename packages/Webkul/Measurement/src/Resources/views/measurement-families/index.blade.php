@@ -82,7 +82,6 @@
 
                                         <x-admin::form.control-group.control
                                             type="text"
-                                            
                                             :name="'labels[' . $locale->code . ']'"
                                             v-model="form.labels['{{ $locale->code }}']"
                                         />
@@ -161,7 +160,7 @@
                                 </x-admin::form.control-group>
 
                         </div>
-                </x-slot:content>
+                </x-slot>
                 <x-slot:footer>
                     <div class="flex gap-x-2.5 items-center">
                         <button

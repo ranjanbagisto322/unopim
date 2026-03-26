@@ -19,10 +19,6 @@ return new class extends Migration
             $table->string('symbol')->nullable();
             $table->timestamps();
         });
-
-        Artisan::call('db:seed', [
-            '--class' => 'Webkul\\Measurement\\Database\\Seeders\\MeasurementFamilySeeder'
-        ]);
     }
 
     public function down()

@@ -7,529 +7,591 @@ use Webkul\Measurement\Models\MeasurementFamily;
 
 class MeasurementFamilySeeder extends Seeder
 {
-    public function run()
+    public function run($parameters = [])
     {
+        $parameters     = $parameters ?? [];
+        $defaultLocale  = $parameters['default_locale'] ?? config('app.locale');
+        $locales        = $parameters['allowed_locales'] ?? [$defaultLocale];
+
+        $makeLabels = function ($value) use ($locales) {
+            $labels = [];
+
+            foreach ($locales as $locale) {
+                $labels[$locale] = ucfirst($value);
+            }
+
+            return $labels;
+        };
+
         /*
         |--------------------------------------------------------------------------
-        | LENGTH
+        | 1. LENGTH
         |--------------------------------------------------------------------------
         */
-
         MeasurementFamily::updateOrCreate(
-            ['code' => 'Length'],
+            ['code' => 'length'],
             [
                 'name'          => 'Length',
-                'labels'        => ['en_US' => 'Length'],
-                'standard_unit' => 'METER',
+                'labels'        => $makeLabels('length'),
+                'standard_unit' => 'meter',
                 'symbol'        => 'm',
                 'units'         => [
-                    ['code' => 'METER', 'labels' => ['en_US' => 'Meter'], 'symbol' => 'm'],
-                    ['code' => 'CENTIMETER', 'labels' => ['en_US' => 'Centimeter'], 'symbol' => 'cm'],
-                    ['code' => 'MICROMATER', 'labels' => ['en_US' => 'Micrometer'], 'symbol' => 'um'],
-                    ['code' => 'NAUTICAL MILE', 'labels' => ['en_US' => 'Nautical mile'], 'symbol' => 'nm'],
-                    ['code' => 'MILLIMETER', 'labels' => ['en_US' => 'Millimeter'], 'symbol' => 'mm'],
-                    ['code' => 'DECIMETER', 'labels' => ['en_US' => 'Decimeter'], 'symbol' => 'dm'],
-                    ['code' => 'DEKAMETER', 'labels' => ['en_US' => 'Dekameter'], 'symbol' => 'dam'],
-                    ['code' => 'HECTOMETER', 'labels' => ['en_US' => 'Hectometer'], 'symbol' => 'hm'],
-                    ['code' => 'KILOMETER', 'labels' => ['en_US' => 'Kilometer'], 'symbol' => 'km'],
-                    ['code' => 'MIL', 'labels' => ['en_US' => 'Mil'], 'symbol' => 'mil'],
-                    ['code' => 'INCH', 'labels' => ['en_US' => 'Inch'], 'symbol' => 'cm'],
-                    ['code' => 'FEET', 'labels' => ['en_US' => 'Feet'], 'symbol' => 'ft'],
-                    ['code' => 'YARD', 'labels' => ['en_US' => 'Yard'], 'symbol' => 'yd'],
-                    ['code' => 'CHAIN', 'labels' => ['en_US' => 'Chain'], 'symbol' => 'ch'],
-                    ['code' => 'FURLONG', 'labels' => ['en_US' => 'Furlong'], 'symbol' => 'fur'],
-                    ['code' => 'MILI', 'labels' => ['en_US' => 'Mili'], 'symbol' => 'mi'],
+                    ['code' => 'meter',       'labels' => $makeLabels('meter'),       'symbol' => 'm'],
+                    ['code' => 'centimeter',  'labels' => $makeLabels('centimeter'),  'symbol' => 'cm'],
+                    ['code' => 'millimeter',  'labels' => $makeLabels('millimeter'),  'symbol' => 'mm'],
+                    ['code' => 'kilometer',   'labels' => $makeLabels('kilometer'),   'symbol' => 'km'],
+                    ['code' => 'inch',        'labels' => $makeLabels('inch'),        'symbol' => 'in'],
+                    ['code' => 'foot',        'labels' => $makeLabels('foot'),        'symbol' => 'ft'],
+                    ['code' => 'yard',        'labels' => $makeLabels('yard'),        'symbol' => 'yd'],
+                    ['code' => 'mile',        'labels' => $makeLabels('mile'),        'symbol' => 'mi'],
                 ],
             ]
         );
 
         /*
         |--------------------------------------------------------------------------
-        | AREA
+        | 2. AREA
         |--------------------------------------------------------------------------
         */
-
         MeasurementFamily::updateOrCreate(
-            ['code' => 'Area'],
+            ['code' => 'area'],
             [
                 'name'          => 'Area',
-                'labels'        => ['en_US' => 'Area'],
-                'standard_unit' => 'SQUARE_METER',
+                'labels'        => $makeLabels('area'),
+                'standard_unit' => 'square_meter',
                 'symbol'        => 'm²',
                 'units'         => [
-                    ['code' => 'SQUARE_METER', 'labels' => ['en_US' => 'square Meter'], 'symbol' => 'm²'],
-                    ['code' => 'SQUARE_CENTIMETER', 'labels' => ['en_US' => 'square centimeter'], 'symbol' => 'cm²'],
-                    ['code' => 'SQUARE_MILLIMETER', 'labels' => ['en_US' => 'square millimeter'], 'symbol' => 'mm²'],
-                    ['code' => 'SQUARE_DECIMETER', 'labels' => ['en_US' => 'square deciimeter'], 'symbol' => 'dm²'],
-                    ['code' => 'SQUARE_FEET', 'labels' => ['en_US' => 'square feet'], 'symbol' => 'ft²'],
-                    ['code' => 'SQUARE_YARD', 'labels' => ['en_US' => 'square yard'], 'symbol' => 'yd²'],
-                    ['code' => 'HECTARE', 'labels' => ['en_US' => 'hectare'], 'symbol' => 'ha'],
-                    ['code' => 'CENTRIARE', 'labels' => ['en_US' => 'centriare'], 'symbol' => 'ca'],
-                    ['code' => 'SQUARE_DEKAMETER', 'labels' => ['en_US' => 'square dekameter'], 'symbol' => 'dam²'],
-                    ['code' => 'ARE', 'labels' => ['en_US' => 'are'], 'symbol' => 'a'],
-                    ['code' => 'SQUARE_HECTOMETER', 'labels' => ['en_US' => 'square hectometer'], 'symbol' => 'hm²'],
-                    ['code' => 'SQUARE_KILOMETER', 'labels' => ['en_US' => 'square kilometer'], 'symbol' => 'km²'],
-                    ['code' => 'SQUARE_MIL', 'labels' => ['en_US' => 'square mil'], 'symbol' => 'km²'],
-                    ['code' => 'SQUARE_INCH', 'labels' => ['en_US' => 'square inch'], 'symbol' => 'in²'],
-                    ['code' => 'SQUARE_FOOT', 'labels' => ['en_US' => 'square foot'], 'symbol' => 'ft²'],
-                    ['code' => 'ARPENT', 'labels' => ['en_US' => 'arpent'], 'symbol' => 'arpent'],
-                    ['code' => 'ACRE', 'labels' => ['en_US' => 'Acre'], 'symbol' => 'A'],
-                    ['code' => 'SQUARE_furlog', 'labels' => ['en_US' => 'Square furlog'], 'symbol' => 'fur²'],
-                    ['code' => 'SQUARE_mile', 'labels' => ['en_US' => 'square mile'], 'symbol' => 'mi²'],
+                    ['code' => 'square_meter',      'labels' => $makeLabels('square meter'),      'symbol' => 'm²'],
+                    ['code' => 'square_centimeter', 'labels' => $makeLabels('square centimeter'), 'symbol' => 'cm²'],
+                    ['code' => 'square_kilometer',  'labels' => $makeLabels('square kilometer'),  'symbol' => 'km²'],
+                    ['code' => 'square_foot',       'labels' => $makeLabels('square foot'),       'symbol' => 'ft²'],
+                    ['code' => 'square_inch',       'labels' => $makeLabels('square inch'),       'symbol' => 'in²'],
+                    ['code' => 'square_yard',       'labels' => $makeLabels('square yard'),       'symbol' => 'yd²'],
+                    ['code' => 'hectare',           'labels' => $makeLabels('hectare'),           'symbol' => 'ha'],
+                    ['code' => 'acre',              'labels' => $makeLabels('acre'),              'symbol' => 'ac'],
                 ],
             ]
         );
 
         /*
         |--------------------------------------------------------------------------
-        | WEIGHT / MASS
+        | 3. WEIGHT
         |--------------------------------------------------------------------------
         */
-
         MeasurementFamily::updateOrCreate(
-            ['code' => 'Weight'],
+            ['code' => 'weight'],
             [
                 'name'          => 'Weight',
-                'labels'        => ['en_US' => 'Weight'],
-                'standard_unit' => 'KILOGRAM',
+                'labels'        => $makeLabels('weight'),
+                'standard_unit' => 'kilogram',
                 'symbol'        => 'kg',
                 'units'         => [
-                    ['code' => 'MILLIGRAM', 'labels' => ['en_US' => 'Milligram'], 'symbol' => 'mg'],
-                    ['code' => 'GRAM', 'labels' => ['en_US' => 'Gram'], 'symbol' => 'g'],
-                    ['code' => 'KILOGRAM', 'labels' => ['en_US' => 'Kilogram'], 'symbol' => 'kg'],
-                    ['code' => 'TONNE', 'labels' => ['en_US' => 'Tonne'], 'symbol' => 't'],
-                    ['code' => 'MICROGRAM', 'labels' => ['en_US' => 'microgram'], 'symbol' => 'μg'],
-                    ['code' => 'TON', 'labels' => ['en_US' => 'ton'], 'symbol' => 't'],
-                    ['code' => 'GRAIN', 'labels' => ['en_US' => 'grain'], 'symbol' => 'gr'],
-                    ['code' => 'DENIER', 'labels' => ['en_US' => 'denier'], 'symbol' => 'denier'],
-                    ['code' => 'ONCE', 'labels' => ['en_US' => 'once'], 'symbol' => 'once'],
-                    ['code' => 'Marc', 'labels' => ['en_US' => 'marc'], 'symbol' => 'marc'],
-                    ['code' => 'LIVRE', 'labels' => ['en_US' => 'livre'], 'symbol' => 'livre'],
-                    ['code' => 'OUNCE', 'labels' => ['en_US' => 'ounce'], 'symbol' => 'μg'],
-                    ['code' => 'POUND', 'labels' => ['en_US' => 'pound'], 'symbol' => 'lb'],
+                    ['code' => 'milligram', 'labels' => $makeLabels('milligram'), 'symbol' => 'mg'],
+                    ['code' => 'gram',      'labels' => $makeLabels('gram'),      'symbol' => 'g'],
+                    ['code' => 'kilogram',  'labels' => $makeLabels('kilogram'),  'symbol' => 'kg'],
+                    ['code' => 'tonne',     'labels' => $makeLabels('tonne'),     'symbol' => 't'],
+                    ['code' => 'pound',     'labels' => $makeLabels('pound'),     'symbol' => 'lb'],
+                    ['code' => 'ounce',     'labels' => $makeLabels('ounce'),     'symbol' => 'oz'],
+                    ['code' => 'stone',     'labels' => $makeLabels('stone'),     'symbol' => 'st'],
                 ],
             ]
         );
 
         /*
         |--------------------------------------------------------------------------
-        | ANGLE
-        |--------------------------------------------------------------------------
-        */
-
-        MeasurementFamily::updateOrCreate(
-            ['code' => 'Angle'],
-            [
-                'name'          => 'Angle',
-                'labels'        => ['en_US' => 'Angle'],
-                'standard_unit' => 'Radian',
-                'symbol'        => 'A',
-                'units'         => [
-                    ['code' => 'RADIAN', 'labels' => ['en_US' => 'radian'], 'symbol' => 'rad'],
-                    ['code' => 'MILLIRADIAN', 'labels' => ['en_US' => 'milliradian'], 'symbol' => 'mrad'],
-                    ['code' => 'MICRORADIAN', 'labels' => ['en_US' => 'microradian'], 'symbol' => 'µrad'],
-                    ['code' => 'DEGREE', 'labels' => ['en_US' => 'degree'], 'symbol' => '°'],
-                    ['code' => 'MINUTE', 'labels' => ['en_US' => 'minute'], 'symbol' => 'M'],
-                    ['code' => 'SECOND', 'labels' => ['en_US' => 'second'], 'symbol' => '"'],
-                    ['code' => 'GON', 'labels' => ['en_US' => 'gon'], 'symbol' => 'gon'],
-                    ['code' => 'MIL', 'labels' => ['en_US' => 'mil'], 'symbol' => 'mil'],
-                    ['code' => 'REVOLUTION', 'labels' => ['en_US' => 'revolutin'], 'symbol' => 'rev'],
-                ],
-            ]
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | BINARY
-        |--------------------------------------------------------------------------
-        */
-
-        MeasurementFamily::updateOrCreate(
-            ['code' => 'Binary'],
-            [
-                'name'          => 'Binary',
-                'labels'        => ['en_US' => 'Binary'],
-                'standard_unit' => 'Byte',
-                'symbol'        => 'by',
-                'units'         => [
-                    ['code' => 'BYTE', 'labels' => ['en_US' => 'byte'], 'symbol' => 'B'],
-                    ['code' => 'CHAR', 'labels' => ['en_US' => 'char'], 'symbol' => 'char'],
-                    ['code' => 'KILOBIT', 'labels' => ['en_US' => 'kilobit'], 'symbol' => 'kbit'],
-                    ['code' => 'MEGABIT', 'labels' => ['en_US' => 'megabit'], 'symbol' => 'mbit'],
-                    ['code' => 'GIBABIT', 'labels' => ['en_US' => 'gibabit'], 'symbol' => 'b'],
-                    ['code' => 'BIT', 'labels' => ['en_US' => 'bit'], 'symbol' => '"'],
-                    ['code' => 'KILOBYTE', 'labels' => ['en_US' => 'kilobyte'], 'symbol' => 'kb'],
-                    ['code' => 'MAGABYTE', 'labels' => ['en_US' => 'magabyte'], 'symbol' => 'mb'],
-                    ['code' => 'GIBABYTE', 'labels' => ['en_US' => 'gibabyte'], 'symbol' => 'gb'],
-                    ['code' => 'TERABYTE', 'labels' => ['en_US' => 'terabyte'], 'symbol' => 'tb'],
-                ],
-            ]
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | Brightness
-        |--------------------------------------------------------------------------
-        */
-
-        MeasurementFamily::updateOrCreate(
-            ['code' => 'Brightness'],
-            [
-                'name'          => 'Brightness',
-                'labels'        => ['en_US' => 'Brightness'],
-                'standard_unit' => 'LUMIN',
-                'symbol'        => 'B',
-                'units'         => [
-                    ['code' => 'LUMIN', 'labels' => ['en_US' => 'Lumin'], 'symbol' => 'lm'],
-                    ['code' => 'NIT', 'labels' => ['en_US' => 'Nit'], 'symbol' => 'nits'],
-                ],
-            ]
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | Capacitance
-        |--------------------------------------------------------------------------
-        */
-
-        MeasurementFamily::updateOrCreate(
-            ['code' => 'Capacitance'],
-            [
-                'name'          => 'Capacitance',
-                'labels'        => ['en_US' => 'Capacitance'],
-                'standard_unit' => 'FARAD',
-                'symbol'        => 'CA',
-                'units'         => [
-                    ['code' => 'FARAD', 'labels' => ['en_US' => 'Farad'], 'symbol' => 'F'],
-                    ['code' => 'KILOFARAD', 'labels' => ['en_US' => 'Kilofarad'], 'symbol' => 'kF'],
-                    ['code' => 'ATTOFARAD', 'labels' => ['en_US' => 'Attofarad'], 'symbol' => 'aF'],
-                    ['code' => 'PICOFARAD', 'labels' => ['en_US' => 'Picofarad'], 'symbol' => 'pF'],
-                    ['code' => 'NANOFARAD', 'labels' => ['en_US' => 'Nanofarad'], 'symbol' => 'nF'],
-                    ['code' => 'MICROFARAD', 'labels' => ['en_US' => 'Microfarad'], 'symbol' => 'µF'],
-                    ['code' => 'MILLIFARAD', 'labels' => ['en_US' => 'Millifarad'], 'symbol' => 'mF'],
-                ],
-            ]
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | Decibel
-        |--------------------------------------------------------------------------
-        */
-
-        MeasurementFamily::updateOrCreate(
-            ['code' => 'Decibel'],
-            [
-                'name'          => 'Decibel',
-                'labels'        => ['en_US' => 'Decibel'],
-                'standard_unit' => 'DECIBEL',
-                'symbol'        => 'DE',
-                'units'         => [
-                    ['code' => 'DECIBEL', 'labels' => ['en_US' => 'Decibel'], 'symbol' => 'D'],
-                ],
-            ]
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | Duration
-        |--------------------------------------------------------------------------
-        */
-
-        MeasurementFamily::updateOrCreate(
-            ['code' => 'Duration'],
-            [
-                'name'          => 'Duration',
-                'labels'        => ['en_US' => 'Duration'],
-                'standard_unit' => 'SECOND',
-                'symbol'        => 'D',
-                'units'         => [
-                    ['code' => 'SECOND', 'labels' => ['en_US' => 'Second'], 'symbol' => 'S'],
-                    ['code' => 'MILLISECOND', 'labels' => ['en_US' => 'Millisecond'], 'symbol' => 'ms'],
-                    ['code' => 'MINUTE', 'labels' => ['en_US' => 'Minute'], 'symbol' => 'M'],
-                    ['code' => 'HOUR', 'labels' => ['en_US' => 'Hour'], 'symbol' => 'H'],
-                    ['code' => 'DAY', 'labels' => ['en_US' => 'Day'], 'symbol' => 'd'],
-                    ['code' => 'WEEK', 'labels' => ['en_US' => 'Week'], 'symbol' => 'week'],
-                    ['code' => 'MONTH', 'labels' => ['en_US' => 'Month'], 'symbol' => 'month'],
-                    ['code' => 'YEAR', 'labels' => ['en_US' => 'Year'], 'symbol' => 'year'],
-                ],
-            ]
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | Volume flow
-        |--------------------------------------------------------------------------
-        */
-
-        MeasurementFamily::updateOrCreate(
-            ['code' => 'Volume flow'],
-            [
-                'name'          => 'Volume flow',
-                'labels'        => ['en_US' => 'Volume flow'],
-                'standard_unit' => 'CUBIC_METER_PER_SECOND',
-                'symbol'        => 'm³',
-                'units'         => [
-                    ['code' => 'CUBIC_METER_PER_SECOND', 'labels' => ['en_US' => 'Cubic meter per second'], 'symbol' => 'm³/s'],
-                    ['code' => 'CUBIC_METER_PER_MINUTE', 'labels' => ['en_US' => 'Cubic meter per minute'], 'symbol' => 'm³/min'],
-                    ['code' => 'CUBIC_METER_PER_HOUR', 'labels' => ['en_US' => 'Cubic meter per hour'], 'symbol' => 'm³/h'],
-                    ['code' => 'CUBIC_METER_PER_DAY', 'labels' => ['en_US' => 'Cubic meter per day'], 'symbol' => 'm³/d'],
-                    ['code' => 'MILLILITER_PER_SECOND', 'labels' => ['en_US' => 'Milliliter per second'], 'symbol' => 'ml/s'],
-                    ['code' => 'MILLILITER_PER_MINUTE', 'labels' => ['en_US' => 'Milliliter per minute'], 'symbol' => 'ml/min'],
-                    ['code' => 'MILLILITER_PER_HOUR', 'labels' => ['en_US' => 'Milliliter per hour'], 'symbol' => 'ml/h'],
-                    ['code' => 'MILLILITER_PER_DAY', 'labels' => ['en_US' => 'Milliliter per day'], 'symbol' => 'ml/d'],
-                    ['code' => 'CUBIC_CENTIMETER_PER_SECOND', 'labels' => ['en_US' => 'Cubic centimeter per second'], 'symbol' => 'cm³/s'],
-                    ['code' => 'CUBIC_CENTIMETER_PER_MINUTE', 'labels' => ['en_US' => 'Cubic centimeter per minute'], 'symbol' => 'cm³/min'],
-                    ['code' => 'CUBIC_CENTIMETER_PER_HOUR', 'labels' => ['en_US' => 'Cubic centimeter per hour'], 'symbol' => 'cm³/h'],
-                    ['code' => 'CUBIC_CENTIMETER_PER_DAY', 'labels' => ['en_US' => 'Cubic centimeter per day'], 'symbol' => 'cm³/d'],
-                    ['code' => 'CUBIC_DECIMETER_PER_MINUTE', 'labels' => ['en_US' => 'Cubic decimeter per minute'], 'symbol' => 'dm³/min'],
-                    ['code' => 'CUBIC_DECIMETER_PER_HOUR', 'labels' => ['en_US' => 'Cubic decimeter per hour'], 'symbol' => 'dm³/h'],
-                    ['code' => 'LITER_PER_SECOND', 'labels' => ['en_US' => 'Liter per second'], 'symbol' => 'l/s'],
-                    ['code' => 'LITER_PER_MINUTE', 'labels' => ['en_US' => 'Liter per minute'], 'symbol' => 'l/min'],
-                    ['code' => 'LITER_PER_HOUR', 'labels' => ['en_US' => 'Liter per hour'], 'symbol' => 'l/h'],
-                    ['code' => 'LITER_PER_DAY', 'labels' => ['en_US' => 'Liter per day'], 'symbol' => 'l/d'],
-                    ['code' => 'KILOLITER_PER_HOUR', 'labels' => ['en_US' => 'Kiloliter per hour'], 'symbol' => 'kl/h'],
-                ],
-            ]
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | VOLUME
+        | 4. VOLUME
         |--------------------------------------------------------------------------
         */
         MeasurementFamily::updateOrCreate(
             ['code' => 'volume'],
             [
                 'name'          => 'Volume',
-                'labels'        => ['en_US' => 'Volume'],
-                'standard_unit' => 'LITER',
+                'labels'        => $makeLabels('volume'),
+                'standard_unit' => 'liter',
                 'symbol'        => 'L',
                 'units'         => [
-                    ['code' => 'CUBIC_METER',        'labels' => ['en_US' => 'Cubic meter'],        'symbol' => 'm³'],
-                    ['code' => 'LITER',               'labels' => ['en_US' => 'Liter'],              'symbol' => 'L'],
-                    ['code' => 'DECILITER',           'labels' => ['en_US' => 'Deciliter'],          'symbol' => 'dl'],
-                    ['code' => 'CENTILITER',          'labels' => ['en_US' => 'Centiliter'],         'symbol' => 'cl'],
-                    ['code' => 'MILLILITER',          'labels' => ['en_US' => 'Milliliter'],         'symbol' => 'ml'],
-
-                    ['code' => 'CUBIC_DECIMETER',     'labels' => ['en_US' => 'Cubic decimeter'],    'symbol' => 'dm³'],
-                    ['code' => 'CUBIC_CENTIMETER',    'labels' => ['en_US' => 'Cubic centimeter'],   'symbol' => 'cm³'],
-                    ['code' => 'CUBIC_MILLIMETER',    'labels' => ['en_US' => 'Cubic millimeter'],   'symbol' => 'mm³'],
-
-                    ['code' => 'GALLON',              'labels' => ['en_US' => 'Gallon'],             'symbol' => 'gal'],
-                    ['code' => 'QUART',               'labels' => ['en_US' => 'Quart'],              'symbol' => 'qt'],
-                    ['code' => 'PINT',                'labels' => ['en_US' => 'Pint'],               'symbol' => 'pt'],
-                    ['code' => 'CUP',                 'labels' => ['en_US' => 'Cup'],                'symbol' => 'cup'],
-
-                    ['code' => 'FLUID_OUNCE',          'labels' => ['en_US' => 'Fluid ounce'],        'symbol' => 'fl oz'],
-                    ['code' => 'TABLESPOON',           'labels' => ['en_US' => 'Tablespoon'],         'symbol' => 'tbsp'],
-                    ['code' => 'TEASPOON',             'labels' => ['en_US' => 'Teaspoon'],           'symbol' => 'tsp'],
-
-                    ['code' => 'KILOLITER',            'labels' => ['en_US' => 'Kiloliter'],          'symbol' => 'kL'],
-                    ['code' => 'HECTOLITER',           'labels' => ['en_US' => 'Hectoliter'],         'symbol' => 'hL'],
+                    ['code' => 'milliliter',  'labels' => $makeLabels('milliliter'),  'symbol' => 'ml'],
+                    ['code' => 'centiliter',  'labels' => $makeLabels('centiliter'),  'symbol' => 'cl'],
+                    ['code' => 'liter',       'labels' => $makeLabels('liter'),       'symbol' => 'L'],
+                    ['code' => 'cubic_meter', 'labels' => $makeLabels('cubic meter'), 'symbol' => 'm³'],
+                    ['code' => 'cubic_inch',  'labels' => $makeLabels('cubic inch'),  'symbol' => 'in³'],
+                    ['code' => 'cubic_foot',  'labels' => $makeLabels('cubic foot'),  'symbol' => 'ft³'],
+                    ['code' => 'gallon',      'labels' => $makeLabels('gallon'),      'symbol' => 'gal'],
+                    ['code' => 'fluid_ounce', 'labels' => $makeLabels('fluid ounce'), 'symbol' => 'fl oz'],
+                    ['code' => 'pint',        'labels' => $makeLabels('pint'),        'symbol' => 'pt'],
+                    ['code' => 'quart',       'labels' => $makeLabels('quart'),       'symbol' => 'qt'],
                 ],
             ]
         );
 
         /*
         |--------------------------------------------------------------------------
-        | VOLTAGE
-        |--------------------------------------------------------------------------
-        */
-        MeasurementFamily::updateOrCreate(
-            ['code' => 'voltage'],
-            [
-                'name'          => 'Voltage',
-                'labels'        => ['en_US' => 'Voltage'],
-                'standard_unit' => 'VOLT',
-                'symbol'        => 'V',
-                'units'         => [
-                    ['code' => 'MICROVOLT', 'labels' => ['en_US' => 'Microvolt'], 'symbol' => 'µV'],
-                    ['code' => 'MILLIVOLT', 'labels' => ['en_US' => 'Millivolt'], 'symbol' => 'mV'],
-                    ['code' => 'VOLT',      'labels' => ['en_US' => 'Volt'],      'symbol' => 'V'],
-                    ['code' => 'KILOVOLT',  'labels' => ['en_US' => 'Kilovolt'],  'symbol' => 'kV'],
-                    ['code' => 'MEGAVOLT',  'labels' => ['en_US' => 'Megavolt'],  'symbol' => 'MV'],
-                    ['code' => 'GIGAVOLT',  'labels' => ['en_US' => 'Gigavolt'],  'symbol' => 'GV'],
-                    ['code' => 'TERAVOLT',  'labels' => ['en_US' => 'Teravolt'],  'symbol' => 'TV'],
-                ],
-            ]
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | TEMPERATURE
+        | 5. TEMPERATURE
         |--------------------------------------------------------------------------
         */
         MeasurementFamily::updateOrCreate(
             ['code' => 'temperature'],
             [
                 'name'          => 'Temperature',
-                'labels'        => ['en_US' => 'Temperature'],
-                'standard_unit' => 'CELSIUS',
+                'labels'        => $makeLabels('temperature'),
+                'standard_unit' => 'celsius',
                 'symbol'        => '°C',
                 'units'         => [
-                    ['code' => 'CELSIUS',    'labels' => ['en_US' => 'Celsius'],    'symbol' => '°C'],
-                    ['code' => 'FAHRENHEIT', 'labels' => ['en_US' => 'Fahrenheit'], 'symbol' => '°F'],
-                    ['code' => 'KELVIN',     'labels' => ['en_US' => 'Kelvin'],     'symbol' => 'K'],
-                    ['code' => 'RANKINE',    'labels' => ['en_US' => 'Rankine'],    'symbol' => '°R'],
-                    ['code' => 'REAUMUR',    'labels' => ['en_US' => 'Réaumur'],    'symbol' => '°Ré'],
+                    ['code' => 'celsius',    'labels' => $makeLabels('celsius'),    'symbol' => '°C'],
+                    ['code' => 'fahrenheit', 'labels' => $makeLabels('fahrenheit'), 'symbol' => '°F'],
+                    ['code' => 'kelvin',     'labels' => $makeLabels('kelvin'),     'symbol' => 'K'],
                 ],
             ]
         );
 
         /*
         |--------------------------------------------------------------------------
-        | SPEED
+        | 6. SPEED
         |--------------------------------------------------------------------------
         */
         MeasurementFamily::updateOrCreate(
             ['code' => 'speed'],
             [
                 'name'          => 'Speed',
-                'labels'        => ['en_US' => 'Speed'],
-                'standard_unit' => 'METER_PER_SECOND',
+                'labels'        => $makeLabels('speed'),
+                'standard_unit' => 'meter_per_second',
                 'symbol'        => 'm/s',
                 'units'         => [
-                    ['code' => 'METER_PER_SECOND',     'labels' => ['en_US' => 'Meter per second'],     'symbol' => 'm/s'],
-                    ['code' => 'KILOMETER_PER_HOUR',   'labels' => ['en_US' => 'Kilometer per hour'],   'symbol' => 'km/h'],
-                    ['code' => 'MILE_PER_HOUR',        'labels' => ['en_US' => 'Mile per hour'],        'symbol' => 'mph'],
-                    ['code' => 'FOOT_PER_SECOND',      'labels' => ['en_US' => 'Foot per second'],      'symbol' => 'ft/s'],
-                    ['code' => 'KNOT',                 'labels' => ['en_US' => 'Knot'],                 'symbol' => 'kn'],
-                    ['code' => 'MACH',                 'labels' => ['en_US' => 'Mach'],                 'symbol' => 'Mach'],
-                    ['code' => 'CENTIMETER_PER_SECOND', 'labels' => ['en_US' => 'Centimeter per second'], 'symbol' => 'cm/s'],
-                    ['code' => 'KILOMETER_PER_SECOND', 'labels' => ['en_US' => 'Kilometer per second'], 'symbol' => 'km/s'],
+                    ['code' => 'meter_per_second',     'labels' => $makeLabels('meter per second'),     'symbol' => 'm/s'],
+                    ['code' => 'kilometer_per_hour',   'labels' => $makeLabels('kilometer per hour'),   'symbol' => 'km/h'],
+                    ['code' => 'mile_per_hour',        'labels' => $makeLabels('mile per hour'),        'symbol' => 'mph'],
+                    ['code' => 'knot',                 'labels' => $makeLabels('knot'),                 'symbol' => 'kn'],
+                    ['code' => 'foot_per_second',      'labels' => $makeLabels('foot per second'),      'symbol' => 'ft/s'],
                 ],
             ]
         );
 
         /*
         |--------------------------------------------------------------------------
-        | RESISTANCE
+        | 7. TIME
         |--------------------------------------------------------------------------
         */
         MeasurementFamily::updateOrCreate(
-            ['code' => 'resistance'],
+            ['code' => 'time'],
             [
-                'name'          => 'Resistance',
-                'labels'        => ['en_US' => 'Resistance'],
-                'standard_unit' => 'OHM',
-                'symbol'        => 'Ω',
+                'name'          => 'Time',
+                'labels'        => $makeLabels('time'),
+                'standard_unit' => 'second',
+                'symbol'        => 's',
                 'units'         => [
-                    ['code' => 'MICROOHM', 'labels' => ['en_US' => 'Microohm'], 'symbol' => 'µΩ'],
-                    ['code' => 'MILLIOHM', 'labels' => ['en_US' => 'Milliohm'], 'symbol' => 'mΩ'],
-                    ['code' => 'OHM',      'labels' => ['en_US' => 'Ohm'],      'symbol' => 'Ω'],
-                    ['code' => 'KILOOHM',  'labels' => ['en_US' => 'Kiloohm'],  'symbol' => 'kΩ'],
-                    ['code' => 'MEGAOHM',  'labels' => ['en_US' => 'Megaohm'],  'symbol' => 'MΩ'],
-                    ['code' => 'GIGAOHM',  'labels' => ['en_US' => 'Gigaohm'],  'symbol' => 'GΩ'],
-                    ['code' => 'TERAOHM',  'labels' => ['en_US' => 'Teraohm'],  'symbol' => 'TΩ'],
-                    ['code' => 'NANOOHM',  'labels' => ['en_US' => 'Nanoohm'],  'symbol' => 'nΩ'],
+                    ['code' => 'millisecond', 'labels' => $makeLabels('millisecond'), 'symbol' => 'ms'],
+                    ['code' => 'second',      'labels' => $makeLabels('second'),      'symbol' => 's'],
+                    ['code' => 'minute',      'labels' => $makeLabels('minute'),      'symbol' => 'min'],
+                    ['code' => 'hour',        'labels' => $makeLabels('hour'),        'symbol' => 'h'],
+                    ['code' => 'day',         'labels' => $makeLabels('day'),         'symbol' => 'd'],
+                    ['code' => 'week',        'labels' => $makeLabels('week'),        'symbol' => 'wk'],
+                    ['code' => 'month',       'labels' => $makeLabels('month'),       'symbol' => 'mo'],
+                    ['code' => 'year',        'labels' => $makeLabels('year'),        'symbol' => 'yr'],
                 ],
             ]
         );
 
         /*
         |--------------------------------------------------------------------------
-        | PRESSURE
+        | 8. PRESSURE
         |--------------------------------------------------------------------------
         */
         MeasurementFamily::updateOrCreate(
             ['code' => 'pressure'],
             [
                 'name'          => 'Pressure',
-                'labels'        => ['en_US' => 'Pressure'],
-                'standard_unit' => 'PASCAL',
+                'labels'        => $makeLabels('pressure'),
+                'standard_unit' => 'pascal',
                 'symbol'        => 'Pa',
                 'units'         => [
-                    ['code' => 'PASCAL',          'labels' => ['en_US' => 'Pascal'],           'symbol' => 'Pa'],
-                    ['code' => 'HECTOPASCAL',     'labels' => ['en_US' => 'Hectopascal'],      'symbol' => 'hPa'],
-                    ['code' => 'KILOPASCAL',      'labels' => ['en_US' => 'Kilopascal'],       'symbol' => 'kPa'],
-                    ['code' => 'MEGAPASCAL',      'labels' => ['en_US' => 'Megapascal'],       'symbol' => 'MPa'],
-                    ['code' => 'BAR',             'labels' => ['en_US' => 'Bar'],              'symbol' => 'bar'],
-                    ['code' => 'MILLIBAR',        'labels' => ['en_US' => 'Millibar'],         'symbol' => 'mbar'],
-                    ['code' => 'ATMOSPHERE',      'labels' => ['en_US' => 'Atmosphere'],       'symbol' => 'atm'],
-                    ['code' => 'TORR',            'labels' => ['en_US' => 'Torr'],             'symbol' => 'Torr'],
-                    ['code' => 'PSI',             'labels' => ['en_US' => 'Pound per square inch'], 'symbol' => 'psi'],
-                    ['code' => 'MMHG',            'labels' => ['en_US' => 'Millimeter of mercury'],  'symbol' => 'mmHg'],
-                    ['code' => 'INHG',            'labels' => ['en_US' => 'Inch of mercury'],  'symbol' => 'inHg'],
-                    ['code' => 'KGF_PER_CM2',     'labels' => ['en_US' => 'Kilogram-force per square centimeter'], 'symbol' => 'kgf/cm²'],
-                    ['code' => 'KGF_PER_M2',      'labels' => ['en_US' => 'Kilogram-force per square meter'],      'symbol' => 'kgf/m²'],
-                    ['code' => 'DYNE_PER_CM2',    'labels' => ['en_US' => 'Dyne per square centimeter'],           'symbol' => 'dyn/cm²'],
-                    ['code' => 'FOOT_WATER',      'labels' => ['en_US' => 'Foot of water'],     'symbol' => 'ftH₂O'],
+                    ['code' => 'pascal',      'labels' => $makeLabels('pascal'),      'symbol' => 'Pa'],
+                    ['code' => 'kilopascal',  'labels' => $makeLabels('kilopascal'),  'symbol' => 'kPa'],
+                    ['code' => 'megapascal',  'labels' => $makeLabels('megapascal'),  'symbol' => 'MPa'],
+                    ['code' => 'bar',         'labels' => $makeLabels('bar'),         'symbol' => 'bar'],
+                    ['code' => 'millibar',    'labels' => $makeLabels('millibar'),    'symbol' => 'mbar'],
+                    ['code' => 'atmosphere',  'labels' => $makeLabels('atmosphere'),  'symbol' => 'atm'],
+                    ['code' => 'psi',         'labels' => $makeLabels('psi'),         'symbol' => 'psi'],
+                    ['code' => 'torr',        'labels' => $makeLabels('torr'),        'symbol' => 'Torr'],
                 ],
             ]
         );
 
         /*
         |--------------------------------------------------------------------------
-        | POWER
+        | 9. ENERGY
+        |--------------------------------------------------------------------------
+        */
+        MeasurementFamily::updateOrCreate(
+            ['code' => 'energy'],
+            [
+                'name'          => 'Energy',
+                'labels'        => $makeLabels('energy'),
+                'standard_unit' => 'joule',
+                'symbol'        => 'J',
+                'units'         => [
+                    ['code' => 'joule',           'labels' => $makeLabels('joule'),           'symbol' => 'J'],
+                    ['code' => 'kilojoule',       'labels' => $makeLabels('kilojoule'),       'symbol' => 'kJ'],
+                    ['code' => 'calorie',         'labels' => $makeLabels('calorie'),         'symbol' => 'cal'],
+                    ['code' => 'kilocalorie',     'labels' => $makeLabels('kilocalorie'),     'symbol' => 'kcal'],
+                    ['code' => 'watt_hour',       'labels' => $makeLabels('watt hour'),       'symbol' => 'Wh'],
+                    ['code' => 'kilowatt_hour',   'labels' => $makeLabels('kilowatt hour'),   'symbol' => 'kWh'],
+                    ['code' => 'electronvolt',    'labels' => $makeLabels('electronvolt'),    'symbol' => 'eV'],
+                    ['code' => 'british_thermal_unit', 'labels' => $makeLabels('british thermal unit'), 'symbol' => 'BTU'],
+                ],
+            ]
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | 10. POWER
         |--------------------------------------------------------------------------
         */
         MeasurementFamily::updateOrCreate(
             ['code' => 'power'],
             [
                 'name'          => 'Power',
-                'labels'        => ['en_US' => 'Power'],
-                'standard_unit' => 'WATT',
+                'labels'        => $makeLabels('power'),
+                'standard_unit' => 'watt',
                 'symbol'        => 'W',
                 'units'         => [
-                    ['code' => 'MILLIWATT', 'labels' => ['en_US' => 'Milliwatt'], 'symbol' => 'mW'],
-                    ['code' => 'WATT',      'labels' => ['en_US' => 'Watt'],      'symbol' => 'W'],
-                    ['code' => 'KILOWATT',  'labels' => ['en_US' => 'Kilowatt'],  'symbol' => 'kW'],
-                    ['code' => 'MEGAWATT',  'labels' => ['en_US' => 'Megawatt'],  'symbol' => 'MW'],
-                    ['code' => 'GIGAWATT',  'labels' => ['en_US' => 'Gigawatt'],  'symbol' => 'GW'],
+                    ['code' => 'milliwatt',  'labels' => $makeLabels('milliwatt'),  'symbol' => 'mW'],
+                    ['code' => 'watt',       'labels' => $makeLabels('watt'),       'symbol' => 'W'],
+                    ['code' => 'kilowatt',   'labels' => $makeLabels('kilowatt'),   'symbol' => 'kW'],
+                    ['code' => 'megawatt',   'labels' => $makeLabels('megawatt'),   'symbol' => 'MW'],
+                    ['code' => 'gigawatt',   'labels' => $makeLabels('gigawatt'),   'symbol' => 'GW'],
+                    ['code' => 'horsepower', 'labels' => $makeLabels('horsepower'), 'symbol' => 'hp'],
                 ],
             ]
         );
 
         /*
         |--------------------------------------------------------------------------
-        | ELECTRIC CHARGE
+        | 11. FREQUENCY
         |--------------------------------------------------------------------------
         */
         MeasurementFamily::updateOrCreate(
-            ['code' => 'electric_charge'],
+            ['code' => 'frequency'],
             [
-                'name'          => 'Electric Charge',
-                'labels'        => ['en_US' => 'Electric Charge'],
-                'standard_unit' => 'COULOMB',
-                'symbol'        => 'C',
+                'name'          => 'Frequency',
+                'labels'        => $makeLabels('frequency'),
+                'standard_unit' => 'hertz',
+                'symbol'        => 'Hz',
                 'units'         => [
-                    ['code' => 'PICCOULOMB',  'labels' => ['en_US' => 'Picocoulomb'],  'symbol' => 'pC'],
-                    ['code' => 'NANOCOULOMB', 'labels' => ['en_US' => 'Nanocoulomb'],  'symbol' => 'nC'],
-                    ['code' => 'MICROCOULOMB', 'labels' => ['en_US' => 'Microcoulomb'], 'symbol' => 'µC'],
-                    ['code' => 'MILLICOULOMB', 'labels' => ['en_US' => 'Millicoulomb'], 'symbol' => 'mC'],
-                    ['code' => 'COULOMB',     'labels' => ['en_US' => 'Coulomb'],      'symbol' => 'C'],
-                    ['code' => 'KILOCOULOMB', 'labels' => ['en_US' => 'Kilocoulomb'],  'symbol' => 'kC'],
-                    ['code' => 'MEGACOULOMB', 'labels' => ['en_US' => 'Megacoulomb'],  'symbol' => 'MC'],
-                    ['code' => 'AMPERE_HOUR', 'labels' => ['en_US' => 'Ampere hour'],  'symbol' => 'Ah'],
-                    ['code' => 'MILLIAMPERE_HOUR', 'labels' => ['en_US' => 'Milliampere hour'], 'symbol' => 'mAh'],
+                    ['code' => 'hertz',     'labels' => $makeLabels('hertz'),     'symbol' => 'Hz'],
+                    ['code' => 'kilohertz', 'labels' => $makeLabels('kilohertz'), 'symbol' => 'kHz'],
+                    ['code' => 'megahertz', 'labels' => $makeLabels('megahertz'), 'symbol' => 'MHz'],
+                    ['code' => 'gigahertz', 'labels' => $makeLabels('gigahertz'), 'symbol' => 'GHz'],
                 ],
             ]
         );
 
         /*
         |--------------------------------------------------------------------------
-        | INTENSITY
+        | 12. DIGITAL STORAGE
         |--------------------------------------------------------------------------
         */
         MeasurementFamily::updateOrCreate(
-            ['code' => 'intensity'],
+            ['code' => 'digital_storage'],
             [
-                'name'          => 'Intensity',
-                'labels'        => ['en_US' => 'Intensity'],
-                'standard_unit' => 'CANDELA',
+                'name'          => 'Digital Storage',
+                'labels'        => $makeLabels('digital storage'),
+                'standard_unit' => 'byte',
+                'symbol'        => 'B',
+                'units'         => [
+                    ['code' => 'bit',      'labels' => $makeLabels('bit'),      'symbol' => 'b'],
+                    ['code' => 'byte',     'labels' => $makeLabels('byte'),     'symbol' => 'B'],
+                    ['code' => 'kilobyte', 'labels' => $makeLabels('kilobyte'), 'symbol' => 'KB'],
+                    ['code' => 'megabyte', 'labels' => $makeLabels('megabyte'), 'symbol' => 'MB'],
+                    ['code' => 'gigabyte', 'labels' => $makeLabels('gigabyte'), 'symbol' => 'GB'],
+                    ['code' => 'terabyte', 'labels' => $makeLabels('terabyte'), 'symbol' => 'TB'],
+                    ['code' => 'petabyte', 'labels' => $makeLabels('petabyte'), 'symbol' => 'PB'],
+                ],
+            ]
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | 13. ANGLE
+        |--------------------------------------------------------------------------
+        */
+        MeasurementFamily::updateOrCreate(
+            ['code' => 'angle'],
+            [
+                'name'          => 'Angle',
+                'labels'        => $makeLabels('angle'),
+                'standard_unit' => 'degree',
+                'symbol'        => '°',
+                'units'         => [
+                    ['code' => 'degree',     'labels' => $makeLabels('degree'),     'symbol' => '°'],
+                    ['code' => 'radian',     'labels' => $makeLabels('radian'),     'symbol' => 'rad'],
+                    ['code' => 'gradian',    'labels' => $makeLabels('gradian'),    'symbol' => 'grad'],
+                    ['code' => 'arcminute',  'labels' => $makeLabels('arcminute'),  'symbol' => '\''],
+                    ['code' => 'arcsecond',  'labels' => $makeLabels('arcsecond'),  'symbol' => '"'],
+                ],
+            ]
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | 14. ELECTRIC CURRENT
+        |--------------------------------------------------------------------------
+        */
+        MeasurementFamily::updateOrCreate(
+            ['code' => 'electric_current'],
+            [
+                'name'          => 'Electric Current',
+                'labels'        => $makeLabels('electric current'),
+                'standard_unit' => 'ampere',
+                'symbol'        => 'A',
+                'units'         => [
+                    ['code' => 'microampere', 'labels' => $makeLabels('microampere'), 'symbol' => 'µA'],
+                    ['code' => 'milliampere', 'labels' => $makeLabels('milliampere'), 'symbol' => 'mA'],
+                    ['code' => 'ampere',      'labels' => $makeLabels('ampere'),      'symbol' => 'A'],
+                    ['code' => 'kiloampere',  'labels' => $makeLabels('kiloampere'),  'symbol' => 'kA'],
+                ],
+            ]
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | 15. VOLTAGE
+        |--------------------------------------------------------------------------
+        */
+        MeasurementFamily::updateOrCreate(
+            ['code' => 'voltage'],
+            [
+                'name'          => 'Voltage',
+                'labels'        => $makeLabels('voltage'),
+                'standard_unit' => 'volt',
+                'symbol'        => 'V',
+                'units'         => [
+                    ['code' => 'microvolt',  'labels' => $makeLabels('microvolt'),  'symbol' => 'µV'],
+                    ['code' => 'millivolt',  'labels' => $makeLabels('millivolt'),  'symbol' => 'mV'],
+                    ['code' => 'volt',       'labels' => $makeLabels('volt'),       'symbol' => 'V'],
+                    ['code' => 'kilovolt',   'labels' => $makeLabels('kilovolt'),   'symbol' => 'kV'],
+                    ['code' => 'megavolt',   'labels' => $makeLabels('megavolt'),   'symbol' => 'MV'],
+                ],
+            ]
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | 16. RESISTANCE
+        |--------------------------------------------------------------------------
+        */
+        MeasurementFamily::updateOrCreate(
+            ['code' => 'resistance'],
+            [
+                'name'          => 'Resistance',
+                'labels'        => $makeLabels('resistance'),
+                'standard_unit' => 'ohm',
+                'symbol'        => 'Ω',
+                'units'         => [
+                    ['code' => 'milliohm', 'labels' => $makeLabels('milliohm'), 'symbol' => 'mΩ'],
+                    ['code' => 'ohm',      'labels' => $makeLabels('ohm'),      'symbol' => 'Ω'],
+                    ['code' => 'kilohm',   'labels' => $makeLabels('kilohm'),   'symbol' => 'kΩ'],
+                    ['code' => 'megaohm',  'labels' => $makeLabels('megaohm'),  'symbol' => 'MΩ'],
+                ],
+            ]
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | 17. FORCE
+        |--------------------------------------------------------------------------
+        */
+        MeasurementFamily::updateOrCreate(
+            ['code' => 'force'],
+            [
+                'name'          => 'Force',
+                'labels'        => $makeLabels('force'),
+                'standard_unit' => 'newton',
+                'symbol'        => 'N',
+                'units'         => [
+                    ['code' => 'newton',      'labels' => $makeLabels('newton'),      'symbol' => 'N'],
+                    ['code' => 'kilonewton',  'labels' => $makeLabels('kilonewton'),  'symbol' => 'kN'],
+                    ['code' => 'meganewton',  'labels' => $makeLabels('meganewton'),  'symbol' => 'MN'],
+                    ['code' => 'dyne',        'labels' => $makeLabels('dyne'),        'symbol' => 'dyn'],
+                    ['code' => 'pound_force', 'labels' => $makeLabels('pound force'), 'symbol' => 'lbf'],
+                    ['code' => 'kilogram_force', 'labels' => $makeLabels('kilogram force'), 'symbol' => 'kgf'],
+                ],
+            ]
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | 18. DENSITY
+        |--------------------------------------------------------------------------
+        */
+        MeasurementFamily::updateOrCreate(
+            ['code' => 'density'],
+            [
+                'name'          => 'Density',
+                'labels'        => $makeLabels('density'),
+                'standard_unit' => 'kilogram_per_cubic_meter',
+                'symbol'        => 'kg/m³',
+                'units'         => [
+                    ['code' => 'kilogram_per_cubic_meter', 'labels' => $makeLabels('kilogram per cubic meter'), 'symbol' => 'kg/m³'],
+                    ['code' => 'gram_per_cubic_centimeter', 'labels' => $makeLabels('gram per cubic centimeter'), 'symbol' => 'g/cm³'],
+                    ['code' => 'gram_per_liter',           'labels' => $makeLabels('gram per liter'),           'symbol' => 'g/L'],
+                    ['code' => 'kilogram_per_liter',       'labels' => $makeLabels('kilogram per liter'),       'symbol' => 'kg/L'],
+                    ['code' => 'pound_per_cubic_foot',     'labels' => $makeLabels('pound per cubic foot'),     'symbol' => 'lb/ft³'],
+                ],
+            ]
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | 19. LUMINANCE / ILLUMINANCE
+        |--------------------------------------------------------------------------
+        */
+        MeasurementFamily::updateOrCreate(
+            ['code' => 'illuminance'],
+            [
+                'name'          => 'Illuminance',
+                'labels'        => $makeLabels('illuminance'),
+                'standard_unit' => 'lux',
+                'symbol'        => 'lx',
+                'units'         => [
+                    ['code' => 'lux',       'labels' => $makeLabels('lux'),       'symbol' => 'lx'],
+                    ['code' => 'footcandle', 'labels' => $makeLabels('footcandle'), 'symbol' => 'fc'],
+                    ['code' => 'phot',      'labels' => $makeLabels('phot'),      'symbol' => 'ph'],
+                ],
+            ]
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | 20. RADIOACTIVITY
+        |--------------------------------------------------------------------------
+        */
+        MeasurementFamily::updateOrCreate(
+            ['code' => 'radioactivity'],
+            [
+                'name'          => 'Radioactivity',
+                'labels'        => $makeLabels('radioactivity'),
+                'standard_unit' => 'becquerel',
+                'symbol'        => 'Bq',
+                'units'         => [
+                    ['code' => 'becquerel',  'labels' => $makeLabels('becquerel'),  'symbol' => 'Bq'],
+                    ['code' => 'kilobecquerel', 'labels' => $makeLabels('kilobecquerel'), 'symbol' => 'kBq'],
+                    ['code' => 'megabecquerel', 'labels' => $makeLabels('megabecquerel'), 'symbol' => 'MBq'],
+                    ['code' => 'curie',      'labels' => $makeLabels('curie'),      'symbol' => 'Ci'],
+                    ['code' => 'millicurie', 'labels' => $makeLabels('millicurie'), 'symbol' => 'mCi'],
+                ],
+            ]
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | 21. FUEL CONSUMPTION
+        |--------------------------------------------------------------------------
+        */
+        MeasurementFamily::updateOrCreate(
+            ['code' => 'fuel_consumption'],
+            [
+                'name'          => 'Fuel Consumption',
+                'labels'        => $makeLabels('fuel consumption'),
+                'standard_unit' => 'liter_per_100km',
+                'symbol'        => 'L/100km',
+                'units'         => [
+                    ['code' => 'liter_per_100km',      'labels' => $makeLabels('liter per 100km'),      'symbol' => 'L/100km'],
+                    ['code' => 'kilometer_per_liter',  'labels' => $makeLabels('kilometer per liter'),  'symbol' => 'km/L'],
+                    ['code' => 'mile_per_gallon',      'labels' => $makeLabels('mile per gallon'),      'symbol' => 'mpg'],
+                    ['code' => 'mile_per_liter',       'labels' => $makeLabels('mile per liter'),       'symbol' => 'mi/L'],
+                ],
+            ]
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | 22. CONCENTRATION
+        |--------------------------------------------------------------------------
+        */
+        MeasurementFamily::updateOrCreate(
+            ['code' => 'concentration'],
+            [
+                'name'          => 'Concentration',
+                'labels'        => $makeLabels('concentration'),
+                'standard_unit' => 'mole_per_liter',
+                'symbol'        => 'mol/L',
+                'units'         => [
+                    ['code' => 'mole_per_liter',        'labels' => $makeLabels('mole per liter'),        'symbol' => 'mol/L'],
+                    ['code' => 'millimole_per_liter',   'labels' => $makeLabels('millimole per liter'),   'symbol' => 'mmol/L'],
+                    ['code' => 'microgram_per_liter',   'labels' => $makeLabels('microgram per liter'),   'symbol' => 'µg/L'],
+                    ['code' => 'milligram_per_liter',   'labels' => $makeLabels('milligram per liter'),   'symbol' => 'mg/L'],
+                    ['code' => 'gram_per_liter_conc',   'labels' => $makeLabels('gram per liter'),        'symbol' => 'g/L'],
+                    ['code' => 'parts_per_million',     'labels' => $makeLabels('parts per million'),     'symbol' => 'ppm'],
+                    ['code' => 'parts_per_billion',     'labels' => $makeLabels('parts per billion'),     'symbol' => 'ppb'],
+                ],
+            ]
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | 23. TORQUE
+        |--------------------------------------------------------------------------
+        */
+        MeasurementFamily::updateOrCreate(
+            ['code' => 'torque'],
+            [
+                'name'          => 'Torque',
+                'labels'        => $makeLabels('torque'),
+                'standard_unit' => 'newton_meter',
+                'symbol'        => 'N·m',
+                'units'         => [
+                    ['code' => 'newton_meter',         'labels' => $makeLabels('newton meter'),         'symbol' => 'N·m'],
+                    ['code' => 'newton_centimeter',    'labels' => $makeLabels('newton centimeter'),    'symbol' => 'N·cm'],
+                    ['code' => 'kilonewton_meter',     'labels' => $makeLabels('kilonewton meter'),     'symbol' => 'kN·m'],
+                    ['code' => 'pound_foot',           'labels' => $makeLabels('pound foot'),           'symbol' => 'lb·ft'],
+                    ['code' => 'pound_inch',           'labels' => $makeLabels('pound inch'),           'symbol' => 'lb·in'],
+                    ['code' => 'kilogram_force_meter', 'labels' => $makeLabels('kilogram force meter'), 'symbol' => 'kgf·m'],
+                ],
+            ]
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | 24. FLOW RATE
+        |--------------------------------------------------------------------------
+        */
+        MeasurementFamily::updateOrCreate(
+            ['code' => 'flow_rate'],
+            [
+                'name'          => 'Flow Rate',
+                'labels'        => $makeLabels('flow rate'),
+                'standard_unit' => 'cubic_meter_per_second',
+                'symbol'        => 'm³/s',
+                'units'         => [
+                    ['code' => 'cubic_meter_per_second',  'labels' => $makeLabels('cubic meter per second'),  'symbol' => 'm³/s'],
+                    ['code' => 'liter_per_second',        'labels' => $makeLabels('liter per second'),        'symbol' => 'L/s'],
+                    ['code' => 'liter_per_minute',        'labels' => $makeLabels('liter per minute'),        'symbol' => 'L/min'],
+                    ['code' => 'liter_per_hour',          'labels' => $makeLabels('liter per hour'),          'symbol' => 'L/h'],
+                    ['code' => 'cubic_foot_per_minute',   'labels' => $makeLabels('cubic foot per minute'),   'symbol' => 'ft³/min'],
+                    ['code' => 'gallon_per_minute',       'labels' => $makeLabels('gallon per minute'),       'symbol' => 'gal/min'],
+                ],
+            ]
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | 25. LUMINOUS INTENSITY
+        |--------------------------------------------------------------------------
+        */
+        MeasurementFamily::updateOrCreate(
+            ['code' => 'luminous_intensity'],
+            [
+                'name'          => 'Luminous Intensity',
+                'labels'        => $makeLabels('luminous intensity'),
+                'standard_unit' => 'candela',
                 'symbol'        => 'cd',
                 'units'         => [
-                    ['code' => 'MICROCANDELA', 'labels' => ['en_US' => 'Microcandela'], 'symbol' => 'µcd'],
-                    ['code' => 'MILLICANDELA', 'labels' => ['en_US' => 'Millicandela'], 'symbol' => 'mcd'],
-                    ['code' => 'CANDELA',      'labels' => ['en_US' => 'Candela'],      'symbol' => 'cd'],
-                    ['code' => 'KILOCANDELA',  'labels' => ['en_US' => 'Kilocandela'],  'symbol' => 'kcd'],
-                    ['code' => 'MEGACANDELA',  'labels' => ['en_US' => 'Megacandela'],  'symbol' => 'Mcd'],
-                    ['code' => 'LUMEN_PER_SR', 'labels' => ['en_US' => 'Lumen per steradian'], 'symbol' => 'lm/sr'],
-                    ['code' => 'HEFNERKERZE',  'labels' => ['en_US' => 'Hefnerkerze'],  'symbol' => 'HK'],
+                    ['code' => 'millicandela', 'labels' => $makeLabels('millicandela'), 'symbol' => 'mcd'],
+                    ['code' => 'candela',      'labels' => $makeLabels('candela'),      'symbol' => 'cd'],
+                    ['code' => 'kilocandela',  'labels' => $makeLabels('kilocandela'),  'symbol' => 'kcd'],
+                    ['code' => 'lumen',        'labels' => $makeLabels('lumen'),        'symbol' => 'lm'],
                 ],
             ]
         );
-
     }
 }
