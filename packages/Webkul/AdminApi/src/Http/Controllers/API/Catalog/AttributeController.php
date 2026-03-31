@@ -13,7 +13,9 @@ use Webkul\Attribute\Repositories\AttributeOptionRepository;
 use Webkul\Attribute\Repositories\AttributeRepository;
 use Webkul\Attribute\Rules\AttributeTypes;
 use Webkul\Attribute\Rules\NotSupportedAttributes;
+use Webkul\Attribute\Rules\SwatchTypes;
 use Webkul\Attribute\Rules\ValidationTypes;
+use Webkul\Attribute\Rules\ValidSwatchValue;
 use Webkul\Core\Rules\Code;
 
 class AttributeController extends ApiController
@@ -55,7 +57,7 @@ class AttributeController extends ApiController
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function store()
     {
@@ -70,6 +72,10 @@ class AttributeController extends ApiController
                 sprintf('unique:%s,code', 'attributes'),
                 new Code,
                 new NotSupportedAttributes,
+            ],
+            'swatch_type' => [
+                'nullable',
+                new SwatchTypes,
             ],
         ];
 
@@ -105,7 +111,7 @@ class AttributeController extends ApiController
     /**
      * Update the specified resource in storage.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function update(string $code)
     {
@@ -114,7 +120,7 @@ class AttributeController extends ApiController
             return $this->modelNotFoundResponse(trans('admin::app.catalog.attributes.not-found', ['code' => $code]));
         }
 
-        $requestData = request()->except(['type', 'code', 'value_per_locale', 'value_per_channel', 'is_unique']);
+        $requestData = request()->except(['type', 'code', 'swatch_type', 'value_per_locale', 'value_per_channel', 'is_unique']);
         $requestData = $this->setLabels($requestData);
         $id = $attribute->id;
 
@@ -135,7 +141,7 @@ class AttributeController extends ApiController
     /**
      * Display a single result of the resource.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function getOptions(string $code)
     {
@@ -149,7 +155,7 @@ class AttributeController extends ApiController
     /**
      * Store a newly attribute option in storage.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function storeOption(string $attributeCode)
     {
@@ -192,7 +198,7 @@ class AttributeController extends ApiController
     /**
      * Updates an attribute option in the storage.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function updateOption(string $attributeCode)
     {
@@ -251,6 +257,7 @@ class AttributeController extends ApiController
                 }),
                 new Code,
             ],
+            'swatch_value' => [new ValidSwatchValue($attributeId)],
         ];
 
         return Validator::make($requestData, $rules);

@@ -3,6 +3,7 @@
 namespace Webkul\Admin\Http\Controllers\Settings\DataTransfer;
 
 use Illuminate\Support\Facades\Storage;
+use Illuminate\View\View;
 use Webkul\Admin\DataGrids\Settings\DataTransfer\JobTrackerGrid;
 use Webkul\Admin\Http\Controllers\Controller;
 use Webkul\DataTransfer\Helpers\Export;
@@ -29,7 +30,7 @@ class TrackerController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\View\View
+     * @return View
      */
     public function index()
     {
@@ -43,7 +44,7 @@ class TrackerController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\View\View
+     * @return View
      */
     public function view($batchId = null)
     {
@@ -56,12 +57,14 @@ class TrackerController extends Controller
         $summary = $this->normalizeSummary($import->summary);
         $import['data'] = json_decode($import->data, true);
 
+        $batchState = $this->mapJobStateToBatchState($import->state);
+
         if ($jobInstance['type'] == 'export') {
             $isValid = $this->exportHelper->setExport($import)->isValid();
-            $stats = $this->exportHelper->stats($import->state);
+            $stats = $this->exportHelper->stats($batchState);
         } else {
             $isValid = $this->importHelper->setImport($import)->isValid();
-            $stats = $this->importHelper->stats($import->state);
+            $stats = $this->importHelper->stats($batchState);
         }
 
         return view('admin::settings.data-transfer.tracker.import', compact(
@@ -71,6 +74,20 @@ class TrackerController extends Controller
             'jobInstance',
             'summary',
         ));
+    }
+
+    /**
+     * Map job track state to the corresponding batch state for stats queries.
+     */
+    private function mapJobStateToBatchState(string $jobState): string
+    {
+        return match ($jobState) {
+            'processing', 'processed' => 'processed',
+            'linking', 'linked'       => 'linked',
+            'indexing', 'indexed'      => 'indexed',
+            'completed'                => 'processed',
+            default                    => $jobState,
+        };
     }
 
     /**

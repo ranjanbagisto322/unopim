@@ -234,6 +234,9 @@ class ProductDataGrid extends DataGrid implements ExportableInterface
                 'searchable' => false,
                 'filterable' => true,
                 'sortable'   => true,
+                'closure'    => function ($row) {
+                    return core()->formatDateWithTimeZone($row->updated_at, 'Y-m-d H:i:s');
+                },
             ],
 
             'completeness' => [
@@ -424,12 +427,24 @@ class ProductDataGrid extends DataGrid implements ExportableInterface
             $result = ResultCursorFactory::createCursor($esQuery, $requestedParams);
 
             $ids = $result->getAllIds();
+            $total = $result->count();
+
+            /**
+             * If the requested page exceeds available data (ES returns no IDs but total > 0),
+             * reset to page 1 and re-fetch to avoid showing empty records with a non-zero count.
+             */
+            if (empty($ids) && $total > 0 && $pagination['page'] > 1) {
+                $pagination['page'] = 1;
+                $requestedParams['pagination']['page'] = 1;
+
+                $result = ResultCursorFactory::createCursor($esQuery, $requestedParams);
+                $ids = $result->getAllIds();
+                $total = $result->count();
+            }
 
             $this->queryBuilder->whereIn('products.id', $ids);
 
             if (! empty($ids)) {
-                $tablePrefix = DB::getTablePrefix();
-
                 $this->queryBuilder->orderByRaw(
                     DB::rawQueryGrammar()->orderByField(DB::getTablePrefix().'products.id', $ids)
                 );
@@ -440,8 +455,6 @@ class ProductDataGrid extends DataGrid implements ExportableInterface
 
                 return;
             }
-
-            $total = $result->count();
 
             $this->paginator = new LengthAwarePaginator(
                 $total ? $this->queryBuilder->get() : [],
@@ -932,17 +945,27 @@ class ProductDataGrid extends DataGrid implements ExportableInterface
         unset($record->raw_values);
 
         foreach ($this->columns as $column) {
-            if (! isset($this->attributeColumns[$column->index])) {
+            $code = $column->index;
+            if (! isset($this->attributeColumns[$code])) {
                 continue;
             }
 
+            $value = $values[$code] ?? null;
             if ($closure = $column->closure) {
-                $record->{$column->index} = $closure($values[$column->index] ?? null, $record);
+                $record->{$column->index} = $closure($value, $record);
 
                 continue;
             }
 
-            $record->{$column->index} = $values[$column->index] ?? null;
+            $attribute = $this->attributeService->findAttributeByCode($code);
+
+            if ($this->isSwatchAttribute($attribute)) {
+                $record->{$code} = $this->processSwatchAttribute($attribute, $value, $record, $code);
+
+                continue;
+            }
+
+            $record->{$code} = $value;
         }
     }
 
@@ -962,5 +985,65 @@ class ProductDataGrid extends DataGrid implements ExportableInterface
         return ! empty($skuAttributeTranslation)
             ? $skuAttributeTranslation
             : trans('admin::app.catalog.products.index.datagrid.sku');
+    }
+
+    protected function processSwatchAttribute($attribute, $value, $record, string $code)
+    {
+        $mapSwatch = function ($optionValue) use ($attribute) {
+            if (! $optionValue) {
+                return null;
+            }
+
+            $cleanValue = trim($optionValue, '[]');
+
+            $option = $attribute->options()
+                ->where(function ($q) use ($cleanValue) {
+                    $q->where('code', $cleanValue)
+                        ->orWhereHas('translations', function ($q2) use ($cleanValue) {
+                            $q2->where('label', $cleanValue)
+                                ->where('locale', core()->getRequestedLocaleCode());
+                        });
+                })
+                ->first();
+
+            if (! $option) {
+                return null;
+            }
+
+            $swatchValue = $option->swatch_value
+                ? "storage/{$option->swatch_value}"
+                : null;
+
+            $imageUrl = ($swatchValue && file_exists(public_path($swatchValue)))
+                ? asset($swatchValue)
+                : unopim_asset('images/product-placeholders/front.svg');
+
+            return $attribute->swatch_type === 'color'
+                ? "<div style='background-color: {$option->swatch_value};' class='w-[25px] h-[25px] flex-shrink-0 rounded-md border border-gray-200 dark:border-gray-800 inline-block'></div>"
+                : "<img src='".$imageUrl."' alt='".e($optionValue)."' class='w-[46px] h-[46px] flex-shrink-0 rounded-lg border border-gray-300 shadow-sm object-cover inline-block' />";
+        };
+
+        if ($attribute->type === 'multiselect') {
+            if (is_string($value)) {
+                $value = explode(',', $value);
+            }
+
+            return is_array($value)
+                ? implode(' ', array_map($mapSwatch, $value))
+                : $mapSwatch($value);
+        }
+
+        $swatchHtml = is_array($value)
+            ? array_map($mapSwatch, $value)
+            : $mapSwatch($value);
+
+        return "<div class='flex flex-wrap items-center gap-2 min-w-0'>".$swatchHtml.'</div>';
+    }
+
+    protected function isSwatchAttribute($attribute): bool
+    {
+        return $attribute
+            && in_array($attribute->type, ['select', 'multiselect'], true)
+            && in_array($attribute->swatch_type, ['color', 'image'], true);
     }
 }

@@ -211,27 +211,20 @@
                             <!-- Modal Content -->
                             <x-slot:content>
                                 <div v-show="! ai.images.length">
-                                    <!-- Model -->
-                                    <x-admin::form.control-group>
-                                        <x-admin::form.control-group.label class="required">
-                                            @lang('admin::app.components.media.images.ai-generation.model')
+                                    <!-- Default Image Prompt -->
+                                    <x-admin::form.control-group v-if="imagePrompts.length">
+                                        <x-admin::form.control-group.label>
+                                            @lang('admin::app.components.tinymce.ai-generation.default-prompt')
                                         </x-admin::form.control-group.label>
-
-                                        <x-admin::form.control-group.control
-                                            type="select"
-                                            name="model"
-                                            rules="required"
-                                            ::value="ai.model"
-                                            v-model="ai.model"
-                                            ::options="aiModels"
-                                            track-by="id"
-                                            label-by="label"
-                                            :label="trans('admin::app.components.media.images.ai-generation.model')"
+                                        <select
+                                            @change="onImagePromptChange($event)"
+                                            class="w-full py-2.5 px-3 border rounded-md text-sm text-gray-600 dark:text-gray-300 dark:bg-cherry-800 dark:border-cherry-800"
                                         >
-                                        </x-admin::form.control-group.control>
-
-                                        <x-admin::form.control-group.error control-name="model" />
+                                            <option value="">-- Select a prompt template --</option>
+                                            <option v-for="p in imagePrompts" :key="p.title" :value="p.prompt">@{{ p.title }}</option>
+                                        </select>
                                     </x-admin::form.control-group>
+
                                     <!-- Prompt -->
                                     <x-admin::form.control-group>
                                         <x-admin::form.control-group.label class="required">
@@ -364,42 +357,64 @@
 
                             <!-- Modal Footer -->
                             <x-slot:footer>
-                                <div class="flex gap-x-2.5 items-center">
+                                <div class="flex items-center justify-between w-full">
+                                    <!-- Platform & Model compact selectors (left side) -->
+                                    <div class="flex items-center gap-2" v-if="!ai.images.length">
+                                        <select
+                                            v-model="ai.platform_id"
+                                            @change="onPlatformChange()"
+                                            class="py-1.5 px-2 border rounded-md text-xs text-gray-600 dark:text-gray-300 dark:bg-cherry-800 dark:border-cherry-800 max-w-[140px]"
+                                            title="@lang('admin::app.components.tinymce.ai-generation.platform')"
+                                        >
+                                            <option v-for="p in platforms" :key="p.id" :value="p.id">@{{ p.label }}</option>
+                                        </select>
+                                        <select
+                                            v-model="ai.model"
+                                            class="py-1.5 px-2 border rounded-md text-xs text-gray-600 dark:text-gray-300 dark:bg-cherry-800 dark:border-cherry-800 max-w-[160px]"
+                                            title="@lang('admin::app.components.media.images.ai-generation.model')"
+                                        >
+                                            <option v-for="m in aiModels" :key="m.id" :value="m.id">@{{ m.label }}</option>
+                                        </select>
+                                    </div>
+                                    <div v-else></div>
+
+                                    <!-- Action buttons (right side) -->
+                                    <div class="flex gap-x-2.5 items-center">
                                     <template v-if="! ai.images.length">
-                                        <button class="secondary-button">
-                                            <!-- Spinner -->
+                                        <button
+                                            class="secondary-button"
+                                            :disabled="isLoading"
+                                            :class="{ 'opacity-50 cursor-not-allowed': isLoading }">
                                             <template v-if="isLoading">
                                                 <img
                                                     class="animate-spin h-5 w-5 text-violet-700"
                                                     src="{{ unopim_asset('images/spinner.svg') }}"
                                                 />
-
-                                                @lang('admin::app.components.media.images.ai-generation.generating')
+                                                @lang('admin::app.components.tinymce.ai-generation.generating')
                                             </template>
 
                                             <template v-else>
-                                                <span class="icon-magic  text-violet-700"></span>
-
-                                                @lang('admin::app.components.media.images.ai-generation.generate')
+                                                <span class="icon-magic text-2xl text-violet-700"></span>
+                                                @lang('admin::app.components.tinymce.ai-generation.generate')
                                             </template>
                                         </button>
                                     </template>
 
                                     <template v-else>
-                                        <button class="secondary-button">
-                                            <!-- Spinner -->
+                                         <button
+                                            class="secondary-button"
+                                            :disabled="isLoading"
+                                            :class="{ 'opacity-50 cursor-not-allowed': isLoading }">
                                             <template v-if="isLoading">
                                                 <img
                                                     class="animate-spin h-5 w-5 text-violet-700"
                                                     src="{{ unopim_asset('images/spinner.svg') }}"
                                                 />
-
                                                 @lang('admin::app.components.media.images.ai-generation.regenerating')
                                             </template>
 
                                             <template v-else>
                                                 <span class="icon-magic text-2xl text-violet-700"></span>
-
                                                 @lang('admin::app.components.media.images.ai-generation.regenerate')
                                             </template>
                                         </button>
@@ -413,6 +428,7 @@
                                             @lang('admin::app.components.media.images.ai-generation.apply')
                                         </button>
                                     </template>
+                                    </div>
                                 </div>
                             </x-slot>
                         </x-admin::modal>
@@ -546,7 +562,9 @@
 
                         prompt: null,
 
-                        model: 'dall-e-2',
+                        platform_id: null,
+
+                        model: null,
 
                         n: 1,
 
@@ -557,10 +575,11 @@
                         images: [],
                     },
 
+                    platforms: [],
                     aiModels: [],
+                    imagePrompts: [],
                     suggestionValues: [],
-                    selectedModel: null,
-                    resourceId: "{{ request()->id }}",
+                    resourceId: "{{ request()->id ?? auth()->id() }}",
                     entityName: "{{ $attributes->get('entity-name', 'attribute') }}",
                 }
             },
@@ -647,8 +666,12 @@
                     this.$refs.magicAIImageModal.open();
                     this.$nextTick(() => {
                         if (this.$refs.imagePromptInput) {
-                            if (this.aiModels.length === 0) {
-                                this.fetchModels();
+                            if (this.platforms.length === 0) {
+                                this.fetchPlatforms();
+                            }
+
+                            if (this.imagePrompts.length === 0) {
+                                this.fetchImagePrompts();
                             }
 
                             const tribute = this.$tribute.init({
@@ -665,14 +688,51 @@
                     });
                 },
 
-                async fetchModels() {
+                async fetchPlatforms() {
                     try {
-                        const response = await axios.get("{{ route('admin.magic_ai.available_model') }}");
+                        const response = await axios.get("{{ route('admin.magic_ai.platforms') }}");
+                        this.platforms = response.data.platforms || [];
 
-                        this.aiModels = response.data.models.filter(model => model.id === 'dall-e-2' || model.id === 'dall-e-3');
-                        this.ai.model = this.aiModels[0] ? this.aiModels[0].id : '';
+                        if (this.platforms.length) {
+                            let defaultPlatform = this.platforms.find(p => p.is_default);
+                            this.ai.platform_id = defaultPlatform ? defaultPlatform.id : this.platforms[0].id;
+                            this.loadModelsForPlatform();
+                        }
                     } catch (error) {
-                        console.error("Failed to fetch AI models:", error);
+                        console.error("Failed to fetch platforms:", error);
+                    }
+                },
+
+                onPlatformChange() {
+                    this.loadModelsForPlatform();
+                },
+
+                loadModelsForPlatform() {
+                    let platform = this.platforms.find(p => p.id === this.ai.platform_id);
+
+                    if (platform && platform.models) {
+                        this.aiModels = platform.models.map(m => ({ id: m, label: m }));
+                        this.ai.model = this.aiModels[0]?.id || null;
+                    } else {
+                        this.aiModels = [];
+                        this.ai.model = null;
+                    }
+                },
+
+                async fetchImagePrompts() {
+                    try {
+                        const response = await axios.get("{{ route('admin.magic_ai.default_prompt') }}", {
+                            params: { purpose: 'image_generation' }
+                        });
+                        this.imagePrompts = response.data.prompts || [];
+                    } catch (error) {
+                        console.error("Failed to fetch image prompts:", error);
+                    }
+                },
+
+                onImagePromptChange(event) {
+                    if (event.target.value) {
+                        this.ai.prompt = event.target.value;
                     }
                 },
 
@@ -715,11 +775,11 @@
                     this.isLoading = true;
 
                     let self = this;
-
                     params.resource_id = this.resourceId;
                     params.resource_type = this.getResourceType();
                     params.field_type = 'image';
                     params.model = this.ai.model;
+                    params.platform_id = this.ai.platform_id;
                     params.channel = "{{ core()->getRequestedChannelCode() }}";
                     params.locale = "{{ core()->getRequestedLocaleCode() }}";
 
@@ -741,11 +801,19 @@
                 },
 
                 apply() {
-                    this.selectedAIImages.forEach((image, index) => {
+                    this.selectedAIImages.forEach((image) => {
+                        const mime = image.url.match(/^data:(image\/[^;]+);base64,/)[1];
+
+                        const extension = {
+                            'image/jpeg': 'jpg',
+                            'image/png': 'png',
+                            'image/webp': 'webp',
+                        }[mime] || 'png';
+
                         this.images.push({
                             id: 'image_' + this.images.length,
                             url: '',
-                            file: this.getBase64ToFile(image.url, 'temp.png')
+                            file: this.getBase64ToFile(image.url, `temp.${extension}`)
                         });
                     });
 

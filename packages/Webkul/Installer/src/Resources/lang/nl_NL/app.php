@@ -6,7 +6,6 @@ return [
             'attribute-families' => [
                 'default' => 'Standaard',
             ],
-
             'attribute-groups' => [
                 'description'      => 'Beschrijving',
                 'general'          => 'Algemeen',
@@ -14,7 +13,6 @@ return [
                 'price'            => 'Prijs',
                 'media'            => 'Media',
             ],
-
             'attributes' => [
                 'brand'                => 'Merk',
                 'color'                => 'Kleur',
@@ -45,7 +43,6 @@ return [
                 'weight'               => 'Gewicht',
                 'width'                => 'Breedte',
             ],
-
             'attribute-options' => [
                 'black'  => 'Zwart',
                 'green'  => 'Groente',
@@ -58,19 +55,16 @@ return [
                 'yellow' => 'Geel',
             ],
         ],
-
         'category' => [
             'categories' => [
                 'description' => 'Beschrijving van hoofdcategorie',
                 'name'        => 'Wortel',
             ],
-
             'category_fields' => [
                 'name'        => 'Naam',
                 'description' => 'Beschrijving',
             ],
         ],
-
         'core' => [
             'channels' => [
                 'meta-title'       => 'Demo winkel',
@@ -78,7 +72,6 @@ return [
                 'meta-description' => 'Metabeschrijving van de demowinkel',
                 'name'             => 'Standaard',
             ],
-
             'currencies' => [
                 'AED' => 'Dirham',
                 'AFN' => 'Israëlische sjekel',
@@ -95,19 +88,16 @@ return [
                 'USD' => 'Amerikaanse dollar',
             ],
         ],
-
         'user' => [
             'roles' => [
                 'description' => 'Gebruikers met deze rol hebben alle toegang',
                 'name'        => 'Beheerder',
             ],
-
             'users' => [
                 'name' => 'Voorbeeld',
             ],
         ],
     ],
-
     'installer' => [
         'middleware' => [
             'already-installed' => 'Applicatie is al geïnstalleerd.',
@@ -123,7 +113,6 @@ return [
                 'password'         => 'Wachtwoord',
                 'title'            => 'Beheerder aanmaken',
             ],
-
             'environment-configuration' => [
                 'allowed-currencies'  => 'Toegestane valuta\'s',
                 'allowed-locales'     => 'Toegestane landinstellingen',
@@ -161,13 +150,11 @@ return [
                 'usd'                 => 'Amerikaanse dollar (USD)',
                 'warning-message'     => 'Pas op! De instellingen voor uw standaardsysteemtalen en de standaardvaluta zijn permanent en kunnen nooit meer worden gewijzigd.',
             ],
-
             'installation-processing' => [
                 'unopim'      => 'Installatie UnoPim',
                 'unopim-info' => 'Het maken van de databasetabellen kan even duren',
                 'title'       => 'Installatie',
             ],
-
             'installation-completed' => [
                 'admin-panel'               => 'Beheerderspaneel',
                 'unopim-forums'             => 'UnoPim-forum',
@@ -175,7 +162,6 @@ return [
                 'title-info'                => 'UnoPim is succesvol op uw systeem geïnstalleerd.',
                 'title'                     => 'Installatie voltooid',
             ],
-
             'ready-for-installation' => [
                 'create-databsae-table'   => 'Maak de databasetabel',
                 'install-info-button'     => 'Klik op onderstaande knop om',
@@ -185,7 +171,6 @@ return [
                 'start-installation'      => 'Begin met de installatie',
                 'title'                   => 'Klaar voor installatie',
             ],
-
             'start' => [
                 'locale'        => 'Lokaal',
                 'main'          => 'Begin',
@@ -193,7 +178,6 @@ return [
                 'title'         => 'Uw UnoPim-installatie',
                 'welcome-title' => 'Welkom bij UnoPim :version',
             ],
-
             'server-requirements' => [
                 'calendar'    => 'Kalender',
                 'ctype'       => 'cType',
@@ -216,7 +200,6 @@ return [
                 'tokenizer'   => 'tokenizer',
                 'xml'         => 'XML',
             ],
-
             'back'                     => 'Rug',
             'unopim-info'              => 'een gemeenschapsproject van',
             'unopim-logo'              => 'UnoPim-logo',

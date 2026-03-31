@@ -6,7 +6,6 @@ return [
             'attribute-families' => [
                 'default' => 'Zadano',
             ],
-
             'attribute-groups' => [
                 'description'      => 'Opis',
                 'general'          => 'Općenito',
@@ -14,7 +13,6 @@ return [
                 'price'            => 'Cijena',
                 'media'            => 'Mediji',
             ],
-
             'attributes' => [
                 'brand'                => 'Brend',
                 'color'                => 'Boja',
@@ -45,7 +43,6 @@ return [
                 'weight'               => 'Težina',
                 'width'                => 'Širina',
             ],
-
             'attribute-options' => [
                 'black'  => 'Crna',
                 'green'  => 'Zelena',
@@ -58,19 +55,16 @@ return [
                 'yellow' => 'Žuta',
             ],
         ],
-
         'category' => [
             'categories' => [
                 'description' => 'Opis glavne kategorije',
                 'name'        => 'Glavna',
             ],
-
             'category_fields' => [
                 'name'        => 'Ime',
                 'description' => 'Opis',
             ],
         ],
-
         'core' => [
             'channels' => [
                 'meta-title'       => 'Demo Trgovina',
@@ -78,7 +72,6 @@ return [
                 'meta-description' => 'Demo Trgovina Meta Opis',
                 'name'             => 'Zadano',
             ],
-
             'currencies' => [
                 'AED' => 'Dirham',
                 'AFN' => 'Afganistanski Afghani',
@@ -95,19 +88,16 @@ return [
                 'USD' => 'Američki Dolar',
             ],
         ],
-
         'user' => [
             'roles' => [
                 'description' => 'Ova uloga omogućuje korisnicima potpuni pristup',
                 'name'        => 'Administrator',
             ],
-
             'users' => [
                 'name' => 'Primjer',
             ],
         ],
     ],
-
     'installer' => [
         'middleware' => [
             'already-installed' => 'Aplikacija je već instalirana.',
@@ -123,7 +113,6 @@ return [
                 'password'         => 'Lozinka',
                 'title'            => 'Kreiraj Administratora',
             ],
-
             'environment-configuration' => [
                 'allowed-currencies'  => 'Dopuštene Valute',
                 'allowed-locales'     => 'Dopušteni Lokaliteti',
@@ -161,13 +150,11 @@ return [
                 'usd'                 => 'Američki Dolar (USD)',
                 'warning-message'     => 'Upozorenje! Zadane jezične i valutne postavke ne mogu se kasnije mijenjati.',
             ],
-
             'installation-processing' => [
                 'unopim'      => 'Instalacija UnoPim-a',
                 'unopim-info' => 'Kreiranje tablica baze podataka, ovo može potrajati.',
                 'title'       => 'Instalacija',
             ],
-
             'installation-completed' => [
                 'admin-panel'               => 'Administratorska Ploča',
                 'unopim-forums'             => 'UnoPim Forumi',
@@ -175,7 +162,6 @@ return [
                 'title-info'                => 'UnoPim je uspješno instaliran.',
                 'title'                     => 'Instalacija Dovršena',
             ],
-
             'ready-for-installation' => [
                 'create-databsae-table'   => 'Kreiraj Tablice Baze',
                 'install-info-button'     => 'Kliknite gumb ispod za početak',
@@ -185,7 +171,6 @@ return [
                 'start-installation'      => 'Započni Instalaciju',
                 'title'                   => 'Spremno za Instalaciju',
             ],
-
             'start' => [
                 'locale'        => 'Lokalitet',
                 'main'          => 'Početak',
@@ -193,7 +178,6 @@ return [
                 'title'         => 'Vaša UnoPim Instalacija',
                 'welcome-title' => 'Dobrodošli u UnoPim :version',
             ],
-
             'server-requirements' => [
                 'calendar'    => 'Kalendar',
                 'ctype'       => 'cType',
@@ -216,7 +200,6 @@ return [
                 'tokenizer'   => 'Tokenizator',
                 'xml'         => 'XML',
             ],
-
             'back'                     => 'Natrag',
             'unopim-info'              => 'Projekt Zajednice',
             'unopim-logo'              => 'UnoPim Logo',

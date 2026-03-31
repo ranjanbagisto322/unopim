@@ -6,7 +6,6 @@ return [
             'attribute-families' => [
                 'default' => 'По умолчанию',
             ],
-
             'attribute-groups' => [
                 'description'      => 'Описание',
                 'general'          => 'Общий',
@@ -14,7 +13,6 @@ return [
                 'price'            => 'Цена',
                 'media'            => 'Медиа',
             ],
-
             'attributes' => [
                 'brand'                => 'Бренд',
                 'color'                => 'Цвет',
@@ -45,7 +43,6 @@ return [
                 'weight'               => 'Масса',
                 'width'                => 'Ширина',
             ],
-
             'attribute-options' => [
                 'black'  => 'Черный',
                 'green'  => 'Зеленый',
@@ -58,19 +55,16 @@ return [
                 'yellow' => 'Желтый',
             ],
         ],
-
         'category' => [
             'categories' => [
                 'description' => 'Описание корневой категории',
                 'name'        => 'Корень',
             ],
-
             'category_fields' => [
                 'name'        => 'Имя',
                 'description' => 'Описание',
             ],
         ],
-
         'core' => [
             'channels' => [
                 'meta-title'       => 'Демо-магазин',
@@ -78,7 +72,6 @@ return [
                 'meta-description' => 'Мета-описание демо-магазина',
                 'name'             => 'По умолчанию',
             ],
-
             'currencies' => [
                 'AED' => 'Дирхам',
                 'AFN' => 'Израильский шекель',
@@ -95,19 +88,16 @@ return [
                 'USD' => 'Доллар США',
             ],
         ],
-
         'user' => [
             'roles' => [
                 'description' => 'Пользователи с этой ролью будут иметь весь доступ',
                 'name'        => 'Администратор',
             ],
-
             'users' => [
                 'name' => 'Пример',
             ],
         ],
     ],
-
     'installer' => [
         'middleware' => [
             'already-installed' => 'Приложение уже установлено.',
@@ -123,7 +113,6 @@ return [
                 'password'         => 'Пароль',
                 'title'            => 'Создать администратора',
             ],
-
             'environment-configuration' => [
                 'allowed-currencies'  => 'Разрешенные валюты',
                 'allowed-locales'     => 'Разрешенные локали',
@@ -161,13 +150,11 @@ return [
                 'usd'                 => 'Доллар США (USD)',
                 'warning-message'     => 'Остерегаться! Настройки системных языков по умолчанию, а также валюты по умолчанию являются постоянными и не могут быть изменены больше никогда.',
             ],
-
             'installation-processing' => [
                 'unopim'      => 'Установка УноПим',
                 'unopim-info' => 'Создание таблиц базы данных. Это может занять несколько минут.',
                 'title'       => 'Установка',
             ],
-
             'installation-completed' => [
                 'admin-panel'               => 'Панель администратора',
                 'unopim-forums'             => 'Форум UnoPim',
@@ -175,7 +162,6 @@ return [
                 'title-info'                => 'UnoPim успешно установлен в вашей системе.',
                 'title'                     => 'Установка завершена',
             ],
-
             'ready-for-installation' => [
                 'create-databsae-table'   => 'Создайте таблицу базы данных',
                 'install-info-button'     => 'Нажмите кнопку ниже, чтобы',
@@ -185,7 +171,6 @@ return [
                 'start-installation'      => 'Начать установку',
                 'title'                   => 'Готов к установке',
             ],
-
             'start' => [
                 'locale'        => 'Языковой стандарт',
                 'main'          => 'Начинать',
@@ -193,7 +178,6 @@ return [
                 'title'         => 'Ваша установка UnoPim',
                 'welcome-title' => 'Добро пожаловать в УноПим :version',
             ],
-
             'server-requirements' => [
                 'calendar'    => 'Календарь',
                 'ctype'       => 'cType',
@@ -216,7 +200,6 @@ return [
                 'tokenizer'   => 'токенизатор',
                 'xml'         => 'XML',
             ],
-
             'back'                     => 'Назад',
             'unopim-info'              => 'общественный проект от',
             'unopim-logo'              => 'Логотип УноПим',

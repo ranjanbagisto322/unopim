@@ -3,6 +3,8 @@
 namespace Webkul\Attribute\Repositories;
 
 use Illuminate\Container\Container;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Webkul\Attribute\Contracts\Attribute;
 use Webkul\Attribute\Models\AttributeFamily;
@@ -35,7 +37,7 @@ class AttributeRepository extends Repository
     /**
      * Create attribute.
      *
-     * @return \Webkul\Attribute\Contracts\Attribute
+     * @return Attribute
      */
     public function create(array $data)
     {
@@ -63,7 +65,7 @@ class AttributeRepository extends Repository
      *
      * @param  int  $id
      * @param  string  $attribute
-     * @return \Webkul\Attribute\Contracts\Attribute
+     * @return Attribute
      */
     public function update(array $data, $id, $attribute = 'id')
     {
@@ -108,6 +110,14 @@ class AttributeRepository extends Repository
             unset($data['is_unique']);
         }
 
+        // Cast boolean fields to 0/1 — unchecked checkboxes send null/empty
+        // which violates PostgreSQL NOT NULL constraints.
+        foreach (['is_required', 'is_unique', 'enable_wysiwyg', 'is_filterable', 'ai_translate'] as $boolField) {
+            if (array_key_exists($boolField, $data)) {
+                $data[$boolField] = (int) (bool) $data[$boolField];
+            }
+        }
+
         return $data;
     }
 
@@ -115,7 +125,7 @@ class AttributeRepository extends Repository
      * Get product default attributes.
      *
      * @param  array  $codes
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
     public function getProductDefaultAttributes($codes = null)
     {
@@ -155,7 +165,7 @@ class AttributeRepository extends Repository
      * Get family attributes.
      *
      * @param  \Webkul\Attribute\Contracts\AttributeFamily  $attributeFamily
-     * @return \Webkul\Attribute\Contracts\Attribute
+     * @return Attribute
      */
     public function getFamilyAttributes($attributeFamily)
     {
@@ -214,7 +224,7 @@ class AttributeRepository extends Repository
      * This function returns a query builder instance for the Attribute model.
      * It eager loads the 'translations' relationship for the Attribute.
      *
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return Builder
      */
     public function queryBuilder()
     {

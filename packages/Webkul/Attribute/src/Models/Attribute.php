@@ -12,7 +12,7 @@ use Webkul\Core\Eloquent\TranslatableModel;
 use Webkul\Core\Rules\BooleanString;
 use Webkul\Core\Rules\Decimal;
 use Webkul\Core\Rules\FileOrImageValidValue;
-use Webkul\Core\Rules\Slug;
+use Webkul\Core\Rules\Sku;
 use Webkul\HistoryControl\Contracts\HistoryAuditable as HistoryContract;
 use Webkul\HistoryControl\Traits\HistoryTrait;
 use Webkul\Product\Validator\Rule\AttributeOptionRule;
@@ -56,6 +56,7 @@ class Attribute extends TranslatableModel implements AttributeContract, HistoryC
         'type',
         'enable_wysiwyg',
         'position',
+        'swatch_type',
         'is_required',
         'is_unique',
         'validation',
@@ -135,9 +136,11 @@ class Attribute extends TranslatableModel implements AttributeContract, HistoryC
      */
     public function getValidationRules(?string $currentChannelCode = null, ?string $currentLocaleCode = null, ?int $id = null, bool $withUniqueValidation = true)
     {
-        $validations = $this->fieldTypeValidations();
+        $validations = [
+            $this->is_required ? 'required' : 'nullable',
+        ];
 
-        $validations[] = $this->is_required ? 'required' : 'nullable';
+        $validations = array_merge($validations, $this->fieldTypeValidations());
 
         if ($this->type == 'price') {
             $validations[] = "regex:/^\d+(\.\d+)?$/";
@@ -169,7 +172,7 @@ class Attribute extends TranslatableModel implements AttributeContract, HistoryC
         }
 
         if ($this->code === 'sku') {
-            $validations[] = new Slug;
+            $validations[] = new Sku;
         }
 
         return $validations;
@@ -184,6 +187,8 @@ class Attribute extends TranslatableModel implements AttributeContract, HistoryC
 
         if ($this->is_required) {
             $validations[] = 'required';
+        } else {
+            $validations[] = 'nullable';
         }
 
         if ($this->type === 'file') {

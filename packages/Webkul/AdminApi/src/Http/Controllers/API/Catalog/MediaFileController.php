@@ -3,13 +3,19 @@
 namespace Webkul\AdminApi\Http\Controllers\API\Catalog;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Validator;
 use Symfony\Component\HttpFoundation\Response;
 use Webkul\AdminApi\Http\Controllers\API\ApiController;
+use Webkul\Attribute\Repositories\AttributeOptionRepository;
+use Webkul\Attribute\Repositories\AttributeRepository;
 use Webkul\Category\Repositories\CategoryRepository;
 use Webkul\Category\Validator\Catalog\CategoryMediaValidator;
 use Webkul\Core\Filesystem\FileStorer;
+use Webkul\Core\Rules\Code;
 use Webkul\Product\Repositories\ProductRepository;
 use Webkul\Product\Validator\API\UploadMediaValidator;
 
@@ -25,13 +31,15 @@ class MediaFileController extends ApiController
         protected ProductRepository $productRepository,
         protected CategoryMediaValidator $categoryMediaValidator,
         protected UploadMediaValidator $mediaValidator,
-        protected FileStorer $fileStorer
+        protected FileStorer $fileStorer,
+        protected AttributeOptionRepository $attributeOptionRepository,
+        protected AttributeRepository $attributeRepository,
     ) {}
 
     /**
      * Handles the storage of media files for products.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function storeProductMedia()
     {
@@ -92,7 +100,7 @@ class MediaFileController extends ApiController
     /**
      * Handles the storage of media files for categories.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function storeCategoryMedia()
     {
@@ -113,7 +121,7 @@ class MediaFileController extends ApiController
 
         $validator = $this->categoryMediaValidator->validate($requestData, $categoryId);
 
-        if ($validator instanceof \Illuminate\Validation\Validator && $validator->fails()) {
+        if ($validator instanceof Validator && $validator->fails()) {
             return $this->validateErrorResponse($validator);
         }
 
@@ -137,6 +145,86 @@ class MediaFileController extends ApiController
                     ]
                 );
             }
+        } catch (\Exception $e) {
+            return $this->storeExceptionLog($e);
+        }
+    }
+
+    /**
+     * Handles the storage of media files for swatch attribute.
+     *
+     * @return JsonResponse
+     */
+    public function storeSwatchMedia()
+    {
+        request()->validate([
+            'code' => [
+                'required',
+                'string',
+                Rule::exists('attribute_options', 'code'),
+                new Code,
+            ],
+            'attribute_code' => [
+                'required',
+                'string',
+                Rule::exists('attributes', 'code'),
+                new Code,
+            ],
+            'file' => 'required|file|mimes:jpeg,png,jpg,webp,svg|max:2048',
+        ]);
+
+        $requestData = request()->all();
+
+        $attribute = $this->attributeRepository->findOneByField('code', $requestData['attribute_code']);
+
+        if (! $attribute) {
+            return $this->modelNotFoundResponse(
+                trans('admin::app.catalog.attributes.not-found', ['code' => $requestData['attribute_code']])
+            );
+        }
+
+        $attributeOption = $this->attributeOptionRepository->findOneWhere([
+            'code'         => $requestData['code'],
+            'attribute_id' => $attribute->id,
+        ]);
+
+        if (! $attributeOption) {
+            return $this->modelNotFoundResponse(
+                trans('admin::app.catalog.products.edit.types.configurable.variant-attribute-option-not-found', ['attributes' => $requestData['code']])
+            );
+        }
+
+        if ($attribute->swatch_type !== 'image') {
+            return $this->validateErrorResponse([
+                'file' => trans('admin::app.catalog.attributes.create.invalid-swatch-type', ['attribute' => $requestData['attribute_code'], 'type' => 'Upload', 'swatch_type' => 'Image']),
+            ]);
+        }
+
+        try {
+            $file = request()->file('file');
+
+            if ($file instanceof UploadedFile) {
+                $filePath = $this->fileStorer->store(
+                    path: 'attribute_option'.DIRECTORY_SEPARATOR.$attributeOption->id,
+                    file: $file
+                );
+
+                $updatedOption = $this->attributeOptionRepository->update([
+                    'swatch_value' => $filePath,
+                ], $attributeOption->id);
+
+                return $this->successResponse(
+                    trans('admin::app.catalog.attribute-options.update-success'),
+                    Response::HTTP_OK,
+                    [
+                        'code'             => $requestData['code'],
+                        'swatch_value'     => $updatedOption->swatch_value,
+                        'swatch_value_url' => $updatedOption->swatch_value_url,
+                    ]
+                );
+            }
+
+            return $this->validateErrorResponse(['file' => ['Invalid file uploaded.']]);
         } catch (\Exception $e) {
             return $this->storeExceptionLog($e);
         }

@@ -64,7 +64,7 @@ class SimpleProductController extends ProductController
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function store()
     {
@@ -76,7 +76,7 @@ class SimpleProductController extends ProductController
             'family'            => ['required', 'string'],
             'additional'        => ['nullable', 'array'],
             'values'            => ['required', 'array'],
-            'values.common.sku' => ['required'],
+            'values.common.sku' => ['required', 'unique:products,sku'],
             'variant'           => ['nullable', 'array'],
         ]);
 
@@ -138,7 +138,7 @@ class SimpleProductController extends ProductController
     /**
      * Update the specified resource in storage.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function update(string $sku)
     {
@@ -195,7 +195,7 @@ class SimpleProductController extends ProductController
     /**
      * Partial Update the specified resource in storage.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function partialUpdate(string $sku)
     {

@@ -3,8 +3,10 @@
 return [
     'seeders' => [
         'attribute' => [
-            'attribute-families' => 'Familias de atributos',
-            'attribute-groups'   => [
+            'attribute-families' => [
+                'default' => 'Predeterminado',
+            ],
+            'attribute-groups' => [
                 'description'      => 'Descripción',
                 'general'          => 'General',
                 'meta-description' => 'Meta descripción',
@@ -96,7 +98,6 @@ return [
             ],
         ],
     ],
-
     'installer' => [
         'middleware' => [
             'already-installed' => 'La aplicación ya está instalada.',
@@ -112,7 +113,6 @@ return [
                 'password'         => 'Contraseña',
                 'title'            => 'Crear Administrador',
             ],
-
             'environment-configuration' => [
                 'allowed-currencies'  => 'Monedas Permitidas',
                 'allowed-locales'     => 'Idiomas Permitidos',
@@ -150,13 +150,11 @@ return [
                 'usd'                 => 'Dólar Estadounidense (USD)',
                 'warning-message'     => '¡Advertencia! Las configuraciones de idioma y moneda predeterminadas son permanentes y no se pueden cambiar.',
             ],
-
             'installation-processing' => [
                 'unopim'      => 'Instalación de UnoPim',
                 'unopim-info' => 'Creando las tablas de la base de datos, esto puede tardar un momento',
                 'title'       => 'Instalación',
             ],
-
             'installation-completed' => [
                 'admin-panel'               => 'Panel de Administración',
                 'unopim-forums'             => 'Foro de UnoPim',
@@ -164,7 +162,6 @@ return [
                 'title-info'                => 'UnoPim se ha instalado correctamente en tu sistema.',
                 'title'                     => 'Instalación Completada',
             ],
-
             'ready-for-installation' => [
                 'create-databsae-table'   => 'Crear las tablas de la base de datos',
                 'install-info-button'     => 'Haz clic en el botón de abajo para',
@@ -174,7 +171,6 @@ return [
                 'start-installation'      => 'Iniciar Instalación',
                 'title'                   => 'Listo para la Instalación',
             ],
-
             'start' => [
                 'locale'        => 'Idioma',
                 'main'          => 'Comenzar',
@@ -182,7 +178,6 @@ return [
                 'title'         => 'Instalación de UnoPim',
                 'welcome-title' => 'Bienvenido a UnoPim :version',
             ],
-
             'server-requirements' => [
                 'calendar'    => 'Calendario',
                 'ctype'       => 'cType',
@@ -205,7 +200,6 @@ return [
                 'tokenizer'   => 'Tokenizador',
                 'xml'         => 'XML',
             ],
-
             'back'                     => 'Volver',
             'unopim-info'              => 'Un Proyecto Comunitario de',
             'unopim-logo'              => 'Logo de UnoPim',
