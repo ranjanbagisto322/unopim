@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
 use Webkul\Admin\Http\Controllers\Controller;
 use Webkul\Core\Filesystem\FileStorer;
+use Webkul\Core\Rules\AlphaNumericSpace;
 
 class AccountController extends Controller
 {
@@ -39,7 +40,7 @@ class AccountController extends Controller
         $user = auth()->guard('admin')->user();
 
         $this->validate(request(), [
-            'name'             => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z0-9\s]+$/'],
+            'name'             => ['required', new AlphaNumericSpace],
             'email'            => 'email|unique:admins,email,'.$user->id,
             'password'         => 'nullable|min:6|confirmed',
             'current_password' => 'required|min:6',
@@ -71,14 +72,13 @@ class AccountController extends Controller
             unset($data['password']);
         } else {
             $isPasswordChanged = true;
-
             $data['password'] = bcrypt($data['password']);
         }
 
         if (request()->hasFile('image')) {
 
             $uploadedFile = current(request()->file('image'));
-            $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'svg'];
+            $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp'];
 
             if (! in_array(strtolower($uploadedFile->getClientOriginalExtension()), $allowedExtensions)) {
                 return back()->withErrors(['image' => 'Invalid file extension']);
@@ -87,11 +87,10 @@ class AccountController extends Controller
             $allowedMimeTypes = [
                 'image/jpeg',
                 'image/png',
-                'image/webp',
-                'image/svg+xml'
+                'image/webp'
             ];
 
-            if (! in_array($uploadedFile->getMimeType(), $allowedMimeTypes)) {
+            if (! in_array($uploadedFile->getMimeType(), $allowedMimeTypes, true)) {
                 return back()->withErrors(['image' => 'Invalid file type']);
             }
 
