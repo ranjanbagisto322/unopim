@@ -29,6 +29,7 @@ use Webkul\Product\Providers\ProductServiceProvider;
 use Webkul\Theme\Providers\ThemeServiceProvider;
 use Webkul\User\Providers\UserServiceProvider;
 use Webkul\Webhook\Providers\WebhookServiceProvider;
+use Webkul\Measurement\Providers\MeasurementServiceProvider;
 
 return [
     /*
@@ -71,4 +72,5 @@ return [
     WebhookServiceProvider::class,
     CompletenessServiceProvider::class,
     AiAgentServiceProvider::class,
+    MeasurementServiceProvider::class,
 ];
