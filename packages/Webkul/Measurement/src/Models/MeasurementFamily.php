@@ -26,7 +26,7 @@ class MeasurementFamily extends Model implements HistoryAuditable
         'labels' => 'array',
     ];
 
-    protected $historyTags = ['measurementFamily'];
+    protected $historyTags = ['measurement Family'];
 
     protected $historyColumns = [
         'code',

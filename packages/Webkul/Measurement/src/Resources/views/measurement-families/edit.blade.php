@@ -1,6 +1,6 @@
 <x-admin::layouts.with-history>
     <x-slot:entityName>
-        measurementFamily
+        measurement Family
     </x-slot:entityName>
 
     <x-slot:title>
