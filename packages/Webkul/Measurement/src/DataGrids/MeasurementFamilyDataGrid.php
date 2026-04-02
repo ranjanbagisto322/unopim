@@ -17,6 +17,7 @@ class MeasurementFamilyDataGrid extends DataGrid
                 'measurement_families.labels',
                 'measurement_families.code',
                 'measurement_families.standard_unit',
+                'measurement_families.units',
                 'measurement_families.created_at',
                 'measurement_families.updated_at',
                 DB::raw('JSON_LENGTH(units) as unit_count')
@@ -61,9 +62,29 @@ class MeasurementFamilyDataGrid extends DataGrid
             'index'      => 'standard_unit',
             'label'      => trans('measurement::app.datagrid.standard_unit'),
             'type'       => 'string',
-            'searchable' => true,
+            'searchable' => false,
             'sortable'   => false,
-            'filterable' => true,
+            'filterable' => false,
+            'closure'    => function ($row) {
+
+                $units = json_decode($row->units ?? '[]', true);
+                $standardUnitCode = $row->standard_unit;
+
+                $locale = app()->getLocale(); 
+
+                if (! empty($units)) {
+                    foreach ($units as $unit) {
+                        if (($unit['code'] ?? null) === $standardUnitCode) {
+
+                            return $unit['labels'][$locale] 
+                                ?? $unit['labels']['en_US'] 
+                                ?? $standardUnitCode;
+                        }
+                    }
+                }
+
+                return $standardUnitCode ?? '-';
+            },
         ]);
 
         $this->addColumn([
