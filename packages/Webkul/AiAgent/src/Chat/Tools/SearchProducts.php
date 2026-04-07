@@ -37,8 +37,8 @@ class SearchProducts implements PimTool
                     ->leftJoin('attribute_families as af', 'af.id', '=', 'p.attribute_family_id')
                     ->select(
                         'p.id', 'p.sku', 'p.type', 'p.status', 'af.code as family_code',
-                        DB::raw("JSON_UNQUOTE(JSON_EXTRACT(p.values, '$.channel_locale_specific.{$context->channel}.{$context->locale}.name')) as product_name"),
-                        DB::raw("JSON_UNQUOTE(JSON_EXTRACT(p.values, '$.common.url_key')) as url_key"),
+                        DB::raw("JSON_UNQUOTE(JSON_EXTRACT(`p`.`values`, '$.channel_locale_specific.{$context->channel}.{$context->locale}.name')) as product_name"),
+                        DB::raw("JSON_UNQUOTE(JSON_EXTRACT(`p`.`values`, '$.common.url_key')) as url_key"),
                     );
 
                 if ($query) {
@@ -46,7 +46,7 @@ class SearchProducts implements PimTool
                     $qb->where(function ($q) use ($escaped, $context) {
                         $q->where('p.sku', 'like', "%{$escaped}%")
                             ->orWhere('p.values->common->url_key', 'like', "%{$escaped}%")
-                            ->orWhereRaw("JSON_EXTRACT(p.values, '$.channel_locale_specific.{$context->channel}.{$context->locale}.name') LIKE ?", ["%{$escaped}%"]);
+                            ->orWhereRaw("JSON_EXTRACT(`p`.`values`, '$.channel_locale_specific.{$context->channel}.{$context->locale}.name') LIKE ?", ["%{$escaped}%"]);
                     });
                 }
 
@@ -56,7 +56,9 @@ class SearchProducts implements PimTool
 
                 $products = $qb->orderByDesc('p.id')->limit($candidateLimit)->get();
 
-                $results = $products->map(function ($p) {
+                $editBaseUrl = route('admin.catalog.products.edit', ['id' => '__ID__']);
+
+                $results = $products->map(function ($p) use ($editBaseUrl) {
                     return [
                         'id'              => $p->id,
                         'sku'             => $p->sku,
@@ -64,6 +66,7 @@ class SearchProducts implements PimTool
                         'type'            => $p->type,
                         'status'          => $p->status ? 'active' : 'inactive',
                         'family'          => $p->family_code,
+                        'edit_url'        => str_replace('__ID__', (string) $p->id, $editBaseUrl),
                         'relevance_score' => null,
                     ];
                 });
