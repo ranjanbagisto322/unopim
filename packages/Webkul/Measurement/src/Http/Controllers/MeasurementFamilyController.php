@@ -30,46 +30,61 @@ class MeasurementFamilyController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'code'               => 'required|string|max:191',
+            'code'               => 'required|string|max:191|unique:measurement_families,code',
             'standard_unit_code' => 'required|string|max:191',
             'symbol'             => 'nullable|string|max:50',
         ]);
 
-        
-        $familyLabels = $request->input('labels', []);
-        $unitLabels   = $request->input('unit_labels', []);
+        try {
+            $familyLabels = $request->input('labels', []);
+            $unitLabels   = $request->input('unit_labels', []);
 
-        $units = [
-            [
-                'code'   => $request->standard_unit_code,
-                'labels' => $unitLabels,
-                'symbol' => $request->symbol,
-            ],
-        ];
+            $units = [
+                [
+                    'code'   => $request->standard_unit_code,
+                    'labels' => $unitLabels,
+                    'symbol' => $request->symbol,
+                    'convert_from_standard' => [
+                        [
+                            'value'    => "1",
+                            'operator' => "mul",
+                        ],
+                    ],
+                ],
+            ];
 
-        $data = [
-            'code'          => $request->code,
-            'labels'        => $familyLabels,
-            'standard_unit' => $request->standard_unit_code,
-            'units'         => $units,
-            'symbol'        => $request->symbol,
-        ];
+            $data = [
+                'code'          => $request->code,
+                'name'          => $request->code,
+                'labels'        => $familyLabels,
+                'standard_unit' => $request->standard_unit_code,
+                'units'         => $units,
+                'symbol'        => $request->symbol,
+            ];
 
-        $family = $this->measurementFamilyRepository->create($data);
+            $family = $this->measurementFamilyRepository->create($data);
 
-        session()->flash(
-            'success',
-            trans('measurement::app.messages.family.created')
-        );
+            session()->flash(
+                'success',
+                trans('measurement::app.messages.family.created')
+            );
 
-        return response()->json([
-            'data' => [
-                'redirect_url' => route(
-                    'admin.measurement.families.edit',
-                    $family->id
-                ),
-            ],
-        ]);
+            return response()->json([
+                'data' => [
+                    'redirect_url' => route(
+                        'admin.measurement.families.edit',
+                        $family->id
+                    ),
+                ],
+            ]);
+
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'error' => 'Something went wrong. Please try again.',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function edit($id)
@@ -77,8 +92,15 @@ class MeasurementFamilyController extends Controller
         $family = $this->measurementFamilyRepository->find($id);
         $labels = $family->labels ?? [];
         $locales = $this->localeRepository->getActiveLocales();
+        
+        $operationOptions = [
+            ['value' => 'mul', 'label' => 'Multiply'],
+            ['value' => 'div', 'label' => 'Divide'],
+            ['value' => 'add', 'label' => 'Add'],
+            ['value' => 'sub', 'label' => 'Subtract'],
+        ];
 
-        return view('measurement::measurement-families.edit', compact('family', 'labels', 'locales'));
+        return view('measurement::measurement-families.edit', compact('family', 'labels', 'locales', 'operationOptions'));
     }
 
     public function update(Request $request, $id)

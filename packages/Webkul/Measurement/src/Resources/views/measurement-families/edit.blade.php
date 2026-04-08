@@ -127,10 +127,7 @@
 
     @pushOnce('scripts')
 
-        <script
-            type="text/x-template"
-            id="v-locales-template"
-        >
+        <script type="text/x-template" id="v-locales-template">
             <div class="flex  gap-4 justify-between items-center max-sm:flex-wrap">
                 <p class="text-xl text-gray-800 dark:text-slate-50 font-bold">
                     @lang('measurement::app.measurement.edit.units')
@@ -300,6 +297,47 @@
                                 <x-admin::form.control-group.error control-name="symbol" />
                             </x-admin::form.control-group>
 
+                            <div v-if="!locale.is_standard">
+
+                                <!-- Operation -->
+                                <x-admin::form.control-group>
+                                    <x-admin::form.control-group.label class="required">
+                                        Conversion Operation
+                                    </x-admin::form.control-group.label>
+
+                                    <x-admin::form.control-group.control
+                                        type="select"
+                                        name="convert_from_standard"
+                                        rules="required"
+                                        v-model="locale.convert_from_standard"
+                                        :options="json_encode($operationOptions)"
+                                        track-by="value"
+                                        label-by="label"
+                                    />
+
+                                    <x-admin::form.control-group.error control-name="convert_from_standard" />
+                                </x-admin::form.control-group>
+
+                                <!-- Value -->
+                                <x-admin::form.control-group>
+                                    <x-admin::form.control-group.label class="required">
+                                        Conversion Value
+                                    </x-admin::form.control-group.label>
+
+                                    <x-admin::form.control-group.control
+                                        type="number"
+                                        name="convert_value"
+                                        rules="required"
+                                        step="0.000001"
+                                        v-model="locale.convert_value"
+                                        placeholder="Enter value"
+                                    />
+
+                                    <x-admin::form.control-group.error control-name="convert_value" />
+                                </x-admin::form.control-group>
+
+                            </div>
+
                         </x-slot>
 
                     
@@ -331,10 +369,28 @@
                             name: null,
                             labels: {},
                             status: false,
+                            convert_from_standard: 'mul',
+                            convert_value: null,
                         },
 
                         selectedLocales: 0,
                     }
+                },
+
+                computed: {
+                    gridsCount() {
+                        let count = this.$refs.datagrid.available.columns.length;
+
+                        if (this.$refs.datagrid.available.actions.length) {
+                            ++count;
+                        }
+
+                        if (this.$refs.datagrid.available.massActions.length) {
+                            ++count;
+                        }
+
+                        return count;
+                    },
                 },
 
                 computed: {
@@ -396,6 +452,8 @@
                                 code: response.data.data.code,
                                 labels: response.data.data.labels ?? {},
                                 symbol: response.data.data.symbol ?? null,
+                                convert_from_standard: response.data.data.convert_from_standard ?? 'mul',
+                                convert_value: response.data.data.convert_value ?? null,
                             };
 
                             this.selectedLocales = 1; 
@@ -408,6 +466,8 @@
                             code: null,
                             labels: {},
                             symbol: null,
+                            convert_from_standard: 'mul',
+                            convert_value: null,
                         };
 
                         this.selectedLocales = 0;

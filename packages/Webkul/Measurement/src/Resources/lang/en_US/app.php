@@ -8,7 +8,7 @@ return [
 
     'measurement' => [
         'index' => [
-            'create'   => 'Create Measurement Family',
+            'create'   => 'Create Measurements',
             'code'     => 'Code',
             'standard' => 'Standard Unit Code',
             'symbol'   => 'Symbol',

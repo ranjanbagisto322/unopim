@@ -28,8 +28,15 @@ class MeasurementUnitsController extends Controller
 
         $family = $this->measurementFamilyRepository->find($id);
         $locales = $this->localeRepository->getActiveLocales();
+        
+        $operationOptions = [
+            ['value' => 'mul', 'label' => 'Multiply'],
+            ['value' => 'div', 'label' => 'Divide'],
+            ['value' => 'add', 'label' => 'Add'],
+            ['value' => 'sub', 'label' => 'Subtract'],
+        ];
 
-        return view('measurement::measurement-families.edit', compact('family', 'locales'));
+        return view('measurement::measurement-families.edit', compact('family', 'locales', 'operationOptions'));
     }
 
     public function storeUnit($id)
@@ -47,6 +54,8 @@ class MeasurementUnitsController extends Controller
             'labels'      => 'required|array',
             'labels.*'    => 'nullable|string',
             'symbol'      => 'nullable|string',
+            'convert_from_standard' => 'nullable|string',
+            'convert_value' => 'nullable|numeric',
         ]);
 
         $units = $family->units ?? [];
@@ -61,6 +70,8 @@ class MeasurementUnitsController extends Controller
             'code'   => request('code'),
             'labels' => request('labels'),
             'symbol' => request('symbol'),
+            'convert_from_standard' => request('convert_from_standard'),
+            'convert_value' => request('convert_value'),
         ];
 
         $units[] = $newUnit;
@@ -92,6 +103,8 @@ class MeasurementUnitsController extends Controller
                 'labels'     => $unit['labels'] ?? [],
                 'precision'  => $unit['precision'] ?? null,
                 'symbol'     => $unit['symbol'] ?? null,
+                'convert_from_standard' => $unit['convert_from_standard'] ?? 'mul',
+                'convert_value' => $unit['convert_value'] ?? null,
                 'family_id'  => $familyId,
             ],
         ]);
@@ -113,6 +126,8 @@ class MeasurementUnitsController extends Controller
             'symbol'      => 'required|string',
             'labels'      => 'nullable|array',
             'labels.*'    => 'nullable|string',
+            'convert_from_standard' => 'nullable|string',
+            'convert_value' => 'nullable|numeric',
         ]);
 
         $units = $family->units ?? [];
@@ -128,6 +143,8 @@ class MeasurementUnitsController extends Controller
                 );
 
                 $unit['symbol'] = request('symbol');
+                $unit['convert_from_standard'] = request('convert_from_standard');
+                $unit['convert_value'] = request('convert_value');
 
                 break;
             }
