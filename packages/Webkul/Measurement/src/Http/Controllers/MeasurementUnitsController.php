@@ -54,8 +54,10 @@ class MeasurementUnitsController extends Controller
             'labels'      => 'required|array',
             'labels.*'    => 'nullable|string',
             'symbol'      => 'nullable|string',
-            'convert_from_standard' => 'nullable|string',
-            'convert_value' => 'nullable|numeric',
+            'convert_from_standard' => 'nullable|array',
+            'convert_from_standard.*' => 'nullable|string',
+            'convert_value' => 'nullable|array',
+            'convert_value.*' => 'nullable|numeric',
         ]);
 
         $units = $family->units ?? [];
@@ -66,12 +68,29 @@ class MeasurementUnitsController extends Controller
             ], 422);
         }
 
+        $conversionOperators = request('convert_from_standard', []);
+        $conversionValues = request('convert_value', []);
+
+        $conversionRows = [];
+        foreach ((array) $conversionOperators as $index => $operator) {
+            $conversionRows[] = [
+                'operator' => $operator ?: 'mul',
+                'value'    => isset($conversionValues[$index]) ? (string) $conversionValues[$index] : null,
+            ];
+        }
+
+        if (count($conversionRows) === 0) {
+            $conversionRows[] = [
+                'operator' => 'mul',
+                'value'    => null,
+            ];
+        }
+
         $newUnit = [
             'code'   => request('code'),
             'labels' => request('labels'),
             'symbol' => request('symbol'),
-            'convert_from_standard' => request('convert_from_standard'),
-            'convert_value' => request('convert_value'),
+            'convert_from_standard' => array_slice($conversionRows, 0, 4),
         ];
 
         $units[] = $newUnit;
@@ -103,7 +122,14 @@ class MeasurementUnitsController extends Controller
                 'labels'     => $unit['labels'] ?? [],
                 'precision'  => $unit['precision'] ?? null,
                 'symbol'     => $unit['symbol'] ?? null,
-                'convert_from_standard' => $unit['convert_from_standard'] ?? 'mul',
+                'convert_from_standard' => is_array($unit['convert_from_standard'] ?? null)
+                    ? $unit['convert_from_standard']
+                    : [
+                        [
+                            'operator' => $unit['convert_from_standard'] ?? 'mul',
+                            'value'    => $unit['convert_value'] ?? null,
+                        ],
+                    ],
                 'convert_value' => $unit['convert_value'] ?? null,
                 'family_id'  => $familyId,
             ],
@@ -126,8 +152,10 @@ class MeasurementUnitsController extends Controller
             'symbol'      => 'required|string',
             'labels'      => 'nullable|array',
             'labels.*'    => 'nullable|string',
-            'convert_from_standard' => 'nullable|string',
-            'convert_value' => 'nullable|numeric',
+            'convert_from_standard' => 'nullable|array',
+            'convert_from_standard.*' => 'nullable|string',
+            'convert_value' => 'nullable|array',
+            'convert_value.*' => 'nullable|numeric',
         ]);
 
         $units = $family->units ?? [];
@@ -142,9 +170,26 @@ class MeasurementUnitsController extends Controller
                     $newLabels
                 );
 
+                $conversionOperators = request('convert_from_standard', []);
+                $conversionValues = request('convert_value', []);
+
+                $conversionRows = [];
+                foreach ((array) $conversionOperators as $index => $operator) {
+                    $conversionRows[] = [
+                        'operator' => $operator ?: 'mul',
+                        'value'    => isset($conversionValues[$index]) ? (string) $conversionValues[$index] : null,
+                    ];
+                }
+
+                if (count($conversionRows) === 0) {
+                    $conversionRows[] = [
+                        'operator' => 'mul',
+                        'value'    => null,
+                    ];
+                }
+
                 $unit['symbol'] = request('symbol');
-                $unit['convert_from_standard'] = request('convert_from_standard');
-                $unit['convert_value'] = request('convert_value');
+                $unit['convert_from_standard'] = array_slice($conversionRows, 0, 4);
 
                 break;
             }

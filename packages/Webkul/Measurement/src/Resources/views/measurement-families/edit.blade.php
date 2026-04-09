@@ -298,44 +298,61 @@
                             </x-admin::form.control-group>
 
                             <div v-if="!locale.is_standard">
+                                <div
+                                    v-for="(conversion, index) in locale.conversions"
+                                    :key="index"
+                                    class="flex gap-3 items-end mb-3"
+                                >
+                                    <x-admin::form.control-group class="mb-0 flex-1">
+                                        <x-admin::form.control-group.label class="required">
+                                            Conversion operation
+                                        </x-admin::form.control-group.label>
 
-                                <!-- Operation -->
-                                <x-admin::form.control-group>
-                                    <x-admin::form.control-group.label class="required">
-                                        Conversion Operation
-                                    </x-admin::form.control-group.label>
+                                        <x-admin::form.control-group.control
+                                            type="number"
+                                            ::name="'convert_value[' + index + ']'"
+                                            rules="required"
+                                            step="0.000001"
+                                            v-model="conversion.value"
+                                            placeholder="Enter conversion value"
+                                        />
 
-                                    <x-admin::form.control-group.control
-                                        type="select"
-                                        name="convert_from_standard"
-                                        rules="required"
-                                        v-model="locale.convert_from_standard"
-                                        :options="json_encode($operationOptions)"
-                                        track-by="value"
-                                        label-by="label"
-                                    />
+                                        <x-admin::form.control-group.error control-name="convert_value" />
+                                    </x-admin::form.control-group>
 
-                                    <x-admin::form.control-group.error control-name="convert_from_standard" />
-                                </x-admin::form.control-group>
+                                    <x-admin::form.control-group class="mb-0 w-48">
+                                       
+                                        <x-admin::form.control-group.control
+                                            type="select"
+                                            ::name="'convert_from_standard[' + index + ']'"
+                                            rules="required"
+                                            v-model="conversion.operator"
+                                            :options="json_encode($operationOptions)"
+                                            track-by="value"
+                                            label-by="label"
+                                        />
+                                    </x-admin::form.control-group>
 
-                                <!-- Value -->
-                                <x-admin::form.control-group>
-                                    <x-admin::form.control-group.label class="required">
-                                        Conversion Value
-                                    </x-admin::form.control-group.label>
+                                    <button
+                                        type="button"
+                                        class="text-red-600 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-md "
+                                        @click="removeConversion(index)"
+                                        :disabled="locale.conversions.length === 1"
+                                    >
+                                        X
+                                    </button>
+                                </div>
 
-                                    <x-admin::form.control-group.control
-                                        type="number"
-                                        name="convert_value"
-                                        rules="required"
-                                        step="0.000001"
-                                        v-model="locale.convert_value"
-                                        placeholder="Enter value"
-                                    />
-
-                                    <x-admin::form.control-group.error control-name="convert_value" />
-                                </x-admin::form.control-group>
-
+                                <div class="mt-4">
+                                    <button
+                                        type="button"
+                                        class="secondary-button"
+                                        @click="addConversion"
+                                        :disabled="locale.conversions.length >= 4"
+                                    >
+                                        Add New Opration
+                                    </button>
+                                </div>
                             </div>
 
                         </x-slot>
@@ -369,8 +386,12 @@
                             name: null,
                             labels: {},
                             status: false,
-                            convert_from_standard: 'mul',
-                            convert_value: null,
+                            conversions: [
+                                {
+                                    operator: 'mul',
+                                    value: null,
+                                },
+                            ],
                         },
 
                         selectedLocales: 0,
@@ -448,17 +469,56 @@
 
                     editModal(url) {
                         this.$axios.get(url).then((response) => {
+                            let conversions = response.data.data.convert_from_standard ?? [];
+
+                            if (! Array.isArray(conversions)) {
+                                conversions = [
+                                    {
+                                        operator: response.data.data.convert_from_standard ?? 'mul',
+                                        value: response.data.data.convert_value ?? null,
+                                    },
+                                ];
+                            }
+
                             this.locale = {
                                 code: response.data.data.code,
                                 labels: response.data.data.labels ?? {},
                                 symbol: response.data.data.symbol ?? null,
-                                convert_from_standard: response.data.data.convert_from_standard ?? 'mul',
-                                convert_value: response.data.data.convert_value ?? null,
+                                conversions: conversions.length
+                                    ? conversions.map((conversion) => ({
+                                        operator: conversion.operator ?? 'mul',
+                                        value: conversion.value ?? null,
+                                    }))
+                                    : [
+                                        {
+                                            operator: 'mul',
+                                            value: null,
+                                        },
+                                    ],
                             };
 
-                            this.selectedLocales = 1; 
+                            this.selectedLocales = 1;
                             this.$refs.localeUpdateOrCreateModal.toggle();
                         });
+                    },
+
+                    addConversion() {
+                        if (this.locale.conversions.length >= 4) {
+                            return;
+                        }
+
+                        this.locale.conversions.push({
+                            operator: 'mul',
+                            value: null,
+                        });
+                    },
+
+                    removeConversion(index) {
+                        if (this.locale.conversions.length === 1) {
+                            return;
+                        }
+
+                        this.locale.conversions.splice(index, 1);
                     },
 
                     resetForm() {
@@ -466,8 +526,12 @@
                             code: null,
                             labels: {},
                             symbol: null,
-                            convert_from_standard: 'mul',
-                            convert_value: null,
+                            conversions: [
+                                {
+                                    operator: 'mul',
+                                    value: null,
+                                },
+                            ],
                         };
 
                         this.selectedLocales = 0;
