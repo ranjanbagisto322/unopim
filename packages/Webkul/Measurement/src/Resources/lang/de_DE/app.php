@@ -13,12 +13,16 @@ return [
             'standard' => 'Standard-Einheitencode',
             'symbol'   => 'Symbol',
             'save'     => 'Speichern',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
         ],
 
         'edit' => [
             'measurement_edit' => 'Messfamilie bearbeiten',
             'back'             => 'Zurück',
             'save'             => 'Speichern',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
             'general'          => 'Allgemein',
             'code'             => 'Code',
             'label'            => 'Bezeichnung',
@@ -27,10 +31,12 @@ return [
         ],
 
         'unit' => [
-            'edit_unit'   => 'Einheit bearbeiten',
-            'create_unit' => 'Einheit erstellen',
-            'symbol'      => 'Symbol',
-            'save'        => 'Speichern',
+            'edit_unit'             => 'Einheit bearbeiten',
+            'create_unit'           => 'Einheit erstellen',
+            'symbol'                => 'Symbol',
+            'save'                  => 'Speichern',
+            'conversion_operation'  => 'Konvertierungsoperation',
+            'add_new_operation'     => 'Neue Operation hinzufügen',
         ],
     ],
 

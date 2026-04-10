@@ -13,12 +13,16 @@ return [
             'standard' => 'Standard enhedskode',
             'symbol'   => 'Symbol',
             'save'     => 'Gem',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
         ],
 
         'edit' => [
             'measurement_edit' => 'Rediger målefamilie',
             'back'             => 'Tilbage',
             'save'             => 'Gem',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
             'general'          => 'Generelt',
             'code'             => 'Kode',
             'label'            => 'Etiket',
@@ -27,10 +31,12 @@ return [
         ],
 
         'unit' => [
-            'edit_unit'   => 'Rediger enhed',
-            'create_unit' => 'Opret enhed',
-            'symbol'      => 'Symbol',
-            'save'        => 'Gem',
+            'edit_unit'             => 'Rediger enhed',
+            'create_unit'           => 'Opret enhed',
+            'symbol'                => 'Symbol',
+            'save'                  => 'Gem',
+            'conversion_operation'  => 'Konverteringsoperation',
+            'add_new_operation'     => 'Tilføj ny operation',
         ],
     ],
 

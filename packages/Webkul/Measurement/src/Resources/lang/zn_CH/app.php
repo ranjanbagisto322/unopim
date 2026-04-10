@@ -13,12 +13,16 @@ return [
             'standard' => '标准单位代码',
             'symbol'   => '符号',
             'save'     => '保存',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
         ],
 
         'edit' => [
             'measurement_edit' => '编辑计量单位组',
             'back'             => '返回',
             'save'             => '保存',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
             'general'          => '通用',
             'code'             => '代码',
             'label'            => '标签',
@@ -31,6 +35,8 @@ return [
             'create_unit' => '创建单位',
             'symbol'      => '符号',
             'save'        => '保存',
+            'conversion_operation'  => '转换操作',
+            'add_new_operation'     => '添加新操作',
         ],
     ],
 

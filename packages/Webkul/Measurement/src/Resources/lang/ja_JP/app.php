@@ -13,12 +13,16 @@ return [
             'standard' => '標準単位コード',
             'symbol'   => '記号',
             'save'     => '保存',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
         ],
 
         'edit' => [
             'measurement_edit' => '測定ファミリーを編集',
             'back'             => '戻る',
             'save'             => '保存',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
             'general'          => '一般',
             'code'             => 'コード',
             'label'            => 'ラベル',
@@ -31,6 +35,8 @@ return [
             'create_unit' => '単位を作成',
             'symbol'      => '記号',
             'save'        => '保存',
+            'conversion_operation'  => '変換操作',
+            'add_new_operation'     => '新しい操作を追加',
         ],
     ],
 

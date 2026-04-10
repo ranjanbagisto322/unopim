@@ -13,12 +13,16 @@ return [
             'standard' => 'Код стандартной единицы',
             'symbol'   => 'Символ',
             'save'     => 'Сохранить',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
         ],
 
         'edit' => [
             'measurement_edit' => 'Редактировать группу измерений',
             'back'             => 'Назад',
             'save'             => 'Сохранить',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
             'general'          => 'Общее',
             'code'             => 'Код',
             'label'            => 'Метка',
@@ -31,6 +35,8 @@ return [
             'create_unit' => 'Создать единицу',
             'symbol'      => 'Символ',
             'save'        => 'Сохранить',
+            'conversion_operation'  => 'Операция преобразования',
+            'add_new_operation'     => 'Добавить новую операцию',
         ],
     ],
 

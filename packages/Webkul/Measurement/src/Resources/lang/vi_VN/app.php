@@ -13,12 +13,16 @@ return [
             'standard' => 'Mã đơn vị chuẩn',
             'symbol'   => 'Ký hiệu',
             'save'     => 'Lưu',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
         ],
 
         'edit' => [
             'measurement_edit' => 'Chỉnh sửa Nhóm Đo lường',
             'back'             => 'Quay lại',
             'save'             => 'Lưu',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
             'general'          => 'Chung',
             'code'             => 'Mã',
             'label'            => 'Nhãn',
@@ -31,6 +35,8 @@ return [
             'create_unit' => 'Tạo Đơn vị',
             'symbol'      => 'Ký hiệu',
             'save'        => 'Lưu',
+            'conversion_operation'  => 'Hoạt động chuyển đổi',
+            'add_new_operation'     => 'Thêm hoạt động mới',
         ],
     ],
 

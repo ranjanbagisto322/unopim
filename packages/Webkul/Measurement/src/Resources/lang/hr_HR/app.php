@@ -13,12 +13,16 @@ return [
             'standard' => 'Kod standardne jedinice',
             'symbol'   => 'Simbol',
             'save'     => 'Spremi',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
         ],
 
         'edit' => [
             'measurement_edit' => 'Uredi obitelj mjerenja',
             'back'             => 'Natrag',
             'save'             => 'Spremi',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
             'general'          => 'Općenito',
             'code'             => 'Kod',
             'label'            => 'Oznaka',
@@ -31,6 +35,8 @@ return [
             'create_unit' => 'Kreiraj jedinicu',
             'symbol'      => 'Simbol',
             'save'        => 'Spremi',
+            'conversion_operation'  => 'Operacija konverzije',
+            'add_new_operation'     => 'Dodaj novu operaciju',
         ],
     ],
 

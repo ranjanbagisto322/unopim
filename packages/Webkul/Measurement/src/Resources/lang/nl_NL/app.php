@@ -13,12 +13,16 @@ return [
             'standard' => 'Standaardeenheid code',
             'symbol'   => 'Symbool',
             'save'     => 'Opslaan',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
         ],
 
         'edit' => [
             'measurement_edit' => 'Bewerk meetfamilie',
             'back'             => 'Terug',
             'save'             => 'Opslaan',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
             'general'          => 'Algemeen',
             'code'             => 'Code',
             'label'            => 'Label',
@@ -31,6 +35,8 @@ return [
             'create_unit' => 'Maak eenheid',
             'symbol'      => 'Symbool',
             'save'        => 'Opslaan',
+            'conversion_operation'  => 'Conversieoperatie',
+            'add_new_operation'     => 'Nieuwe bewerking toevoegen',
         ],
     ],
 

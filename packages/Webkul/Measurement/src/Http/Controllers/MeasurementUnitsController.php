@@ -114,10 +114,13 @@ class MeasurementUnitsController extends Controller
 
         }
 
+       $isStandard = $family->standard_unit === $code;
+
         return new JsonResponse([
             'data' => [
                 ...$unit,
-
+                
+                'is_standard' => $isStandard,
                 'status'     => isset($unit['status']) ? (bool) $unit['status'] : true,
                 'labels'     => $unit['labels'] ?? [],
                 'precision'  => $unit['precision'] ?? null,

@@ -129,10 +129,6 @@ class UnitDataGrid extends DataGrid
             'method' => 'GET',
             'url'    => function ($row) {
 
-                if ($row->is_standard) {
-                    return null;
-                }
-
                 return route('admin.measurement.families.units.edit', [
                     'familyId' => $this->familyId,
                     'code'     => $row->code,

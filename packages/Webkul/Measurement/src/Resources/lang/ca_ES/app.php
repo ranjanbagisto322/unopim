@@ -13,12 +13,16 @@ return [
             'standard' => 'Codi de la unitat estàndard',
             'symbol'   => 'Símbol',
             'save'     => 'Desar',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
         ],
 
         'edit' => [
             'measurement_edit' => 'Editar família de mesures',
             'back'             => 'Enrere',
             'save'             => 'Desar',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
             'general'          => 'General',
             'code'             => 'Codi',
             'label'            => 'Etiqueta',
@@ -27,10 +31,12 @@ return [
         ],
 
         'unit' => [
-            'edit_unit'   => 'Editar unitat',
-            'create_unit' => 'Crear unitat',
-            'symbol'      => 'Símbol',
-            'save'        => 'Desar',
+            'edit_unit'             => 'Editar unitat',
+            'create_unit'           => 'Crear unitat',
+            'symbol'                => 'Símbol',
+            'save'                  => 'Desar',
+            'conversion_operation'  => 'Operació de conversió',
+            'add_new_operation'     => 'Afegir nova operació',
         ],
     ],
 

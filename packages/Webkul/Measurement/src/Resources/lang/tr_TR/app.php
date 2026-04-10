@@ -13,12 +13,16 @@ return [
             'standard' => 'Standart Birim Kodu',
             'symbol'   => 'Sembol',
             'save'     => 'Kaydet',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
         ],
 
         'edit' => [
             'measurement_edit' => 'Ölçüm Ailesini Düzenle',
             'back'             => 'Geri',
             'save'             => 'Kaydet',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
             'general'          => 'Genel',
             'code'             => 'Kod',
             'label'            => 'Etiket',
@@ -31,6 +35,8 @@ return [
             'create_unit' => 'Birim Oluştur',
             'symbol'      => 'Sembol',
             'save'        => 'Kaydet',
+            'conversion_operation'  => 'Dönüştürme işlemi',
+            'add_new_operation'     => 'Yeni işlem ekle',
         ],
     ],
 

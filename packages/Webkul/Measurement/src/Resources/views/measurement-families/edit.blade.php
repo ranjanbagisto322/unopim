@@ -297,17 +297,21 @@
                                 <x-admin::form.control-group.error control-name="symbol" />
                             </x-admin::form.control-group>
 
-                            <div v-if="!locale.is_standard">
+                            <div>
+                                <div class="mb-4">
+                                    <x-admin::form.control-group class="mb-0">
+                                        <x-admin::form.control-group.label class="required">
+                                            @lang('measurement::app.measurement.unit.conversion_operation')
+                                        </x-admin::form.control-group.label>
+                                    </x-admin::form.control-group>
+                                </div>
+
                                 <div
                                     v-for="(conversion, index) in locale.conversions"
                                     :key="index"
-                                    class="flex gap-3 items-end mb-3"
+                                    class="flex gap-3 items-center mb-3"
                                 >
                                     <x-admin::form.control-group class="mb-0 flex-1">
-                                        <x-admin::form.control-group.label class="required">
-                                            Conversion operation
-                                        </x-admin::form.control-group.label>
-
                                         <x-admin::form.control-group.control
                                             type="number"
                                             ::name="'convert_value[' + index + ']'"
@@ -315,13 +319,13 @@
                                             step="0.000001"
                                             v-model="conversion.value"
                                             placeholder="Enter conversion value"
+                                            ::disabled="locale.is_standard"
                                         />
 
                                         <x-admin::form.control-group.error control-name="convert_value" />
                                     </x-admin::form.control-group>
 
                                     <x-admin::form.control-group class="mb-0 w-48">
-                                       
                                         <x-admin::form.control-group.control
                                             type="select"
                                             ::name="'convert_from_standard[' + index + ']'"
@@ -330,16 +334,21 @@
                                             :options="json_encode($operationOptions)"
                                             track-by="value"
                                             label-by="label"
+                                            ::disabled="locale.is_standard"
                                         />
                                     </x-admin::form.control-group>
 
                                     <button
                                         type="button"
-                                        class="text-red-600 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-md "
+                                        class="flex items-center justify-center text-red-600 bg-transparent hover:bg-gray-200 dark:hover:bg-gray-800 rounded-md"
                                         @click="removeConversion(index)"
                                         :disabled="locale.conversions.length === 1"
                                     >
-                                        X
+                                        
+                                        <span
+                                            class="icon-delete cursor-pointer rounded-md p-1.5 text-2xl transition-all hover:bg-violet-100 dark:hover:bg-gray-800"
+                                            title="Delete"
+                                        ></span>
                                     </button>
                                 </div>
 
@@ -348,15 +357,14 @@
                                         type="button"
                                         class="secondary-button"
                                         @click="addConversion"
-                                        :disabled="locale.conversions.length >= 4"
+                                        :disabled="locale.conversions.length >= 4 || locale.is_standard"
                                     >
-                                        Add New Opration
+                                        @lang('measurement::app.measurement.unit.add_new_operation')
                                     </button>
                                 </div>
                             </div>
 
                         </x-slot>
-
                     
                         <x-slot:footer>
                             <div class="flex gap-x-2.5 items-center">
@@ -484,6 +492,7 @@
                                 code: response.data.data.code,
                                 labels: response.data.data.labels ?? {},
                                 symbol: response.data.data.symbol ?? null,
+                                is_standard: response.data.data.is_standard ?? 0,
                                 conversions: conversions.length
                                     ? conversions.map((conversion) => ({
                                         operator: conversion.operator ?? 'mul',

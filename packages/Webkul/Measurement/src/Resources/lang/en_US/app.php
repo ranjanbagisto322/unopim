@@ -13,6 +13,8 @@ return [
             'standard' => 'Standard Unit Code',
             'symbol'   => 'Symbol',
             'save'     => 'Save',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
 
         ],
 
@@ -20,6 +22,8 @@ return [
             'measurement_edit' => 'Edit Measurement Family',
             'back'             => 'Back',
             'save'             => 'Save',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
             'general'          => 'General',
             'code'             => 'Code',
             'label'            => 'Label',
@@ -27,10 +31,12 @@ return [
             'create_units'     => 'Create Units',
         ],
         'unit' => [
-            'edit_unit'   => 'Edit Unit',
-            'create_unit' => 'Create Unit',
-            'symbol'      => 'Symbol',
-            'save'        => 'Save',
+            'edit_unit'             => 'Edit Unit',
+            'create_unit'           => 'Create Unit',
+            'symbol'                => 'Symbol',
+            'save'                  => 'Save',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
         ],
     ],
 

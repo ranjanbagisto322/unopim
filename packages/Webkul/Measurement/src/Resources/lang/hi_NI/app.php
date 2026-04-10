@@ -13,12 +13,16 @@ return [
             'standard' => 'मानक इकाई कोड',
             'symbol'   => 'प्रतीक',
             'save'     => 'सहेजें',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
         ],
 
         'edit' => [
             'measurement_edit' => 'मापन परिवार संपादित करें',
             'back'             => 'वापस',
             'save'             => 'सहेजें',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
             'general'          => 'सामान्य',
             'code'             => 'कोड',
             'label'            => 'लेबल',
@@ -27,10 +31,12 @@ return [
         ],
 
         'unit' => [
-            'edit_unit'   => 'इकाई संपादित करें',
-            'create_unit' => 'इकाई बनाएँ',
-            'symbol'      => 'प्रतीक',
-            'save'        => 'सहेजें',
+            'edit_unit'             => 'इकाई संपादित करें',
+            'create_unit'           => 'इकाई बनाएँ',
+            'symbol'                => 'प्रतीक',
+            'save'                  => 'सहेजें',
+            'conversion_operation'  => 'रूपांतरण ऑपरेशन',
+            'add_new_operation'     => 'नया ऑपरेशन जोड़ें',
         ],
     ],
 

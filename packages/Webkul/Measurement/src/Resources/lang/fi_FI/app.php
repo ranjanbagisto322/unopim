@@ -13,12 +13,16 @@ return [
             'standard' => 'Vakioyksikön koodi',
             'symbol'   => 'Symboli',
             'save'     => 'Tallenna',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
         ],
 
         'edit' => [
             'measurement_edit' => 'Muokkaa mittausperhettä',
             'back'             => 'Takaisin',
             'save'             => 'Tallenna',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
             'general'          => 'Yleinen',
             'code'             => 'Koodi',
             'label'            => 'Nimike',
@@ -27,10 +31,12 @@ return [
         ],
 
         'unit' => [
-            'edit_unit'   => 'Muokkaa yksikköä',
-            'create_unit' => 'Luo yksikkö',
-            'symbol'      => 'Symboli',
-            'save'        => 'Tallenna',
+            'edit_unit'             => 'Muokkaa yksikköä',
+            'create_unit'           => 'Luo yksikkö',
+            'symbol'                => 'Symboli',
+            'save'                  => 'Tallenna',
+            'conversion_operation'  => 'Muunnosoperaatio',
+            'add_new_operation'     => 'Lisää uusi toiminto',
         ],
     ],
 

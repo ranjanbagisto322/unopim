@@ -13,12 +13,16 @@ return [
             'standard' => '標準單位代碼',
             'symbol'   => '符號',
             'save'     => '儲存',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
         ],
 
         'edit' => [
             'measurement_edit' => '編輯計量單位群組',
             'back'             => '返回',
             'save'             => '儲存',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
             'general'          => '一般',
             'code'             => '代碼',
             'label'            => '標籤',
@@ -31,6 +35,8 @@ return [
             'create_unit' => '建立單位',
             'symbol'      => '符號',
             'save'        => '儲存',
+            'conversion_operation'  => '轉換操作',
+            'add_new_operation'     => '新增操作',
         ],
     ],
 

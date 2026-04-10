@@ -13,12 +13,16 @@ return [
             'standard' => 'Kode Unit Standar',
             'symbol'   => 'Simbol',
             'save'     => 'Simpan',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
         ],
 
         'edit' => [
             'measurement_edit' => 'Edit Keluarga Pengukuran',
             'back'             => 'Kembali',
             'save'             => 'Simpan',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
             'general'          => 'Umum',
             'code'             => 'Kode',
             'label'            => 'Label',
@@ -31,6 +35,8 @@ return [
             'create_unit' => 'Buat Unit',
             'symbol'      => 'Simbol',
             'save'        => 'Simpan',
+            'conversion_operation'  => 'Operasi konversi',
+            'add_new_operation'     => 'Tambahkan operasi baru',
         ],
     ],
 

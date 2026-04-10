@@ -13,12 +13,16 @@ return [
             'standard' => 'Cod Unitate Standard',
             'symbol'   => 'Simbol',
             'save'     => 'Salvează',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
         ],
 
         'edit' => [
             'measurement_edit' => 'Editează Familia de Măsurare',
             'back'             => 'Înapoi',
             'save'             => 'Salvează',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
             'general'          => 'General',
             'code'             => 'Cod',
             'label'            => 'Etichetă',
@@ -31,6 +35,8 @@ return [
             'create_unit' => 'Creează Unitate',
             'symbol'      => 'Simbol',
             'save'        => 'Salvează',
+            'conversion_operation'  => 'Operație de conversie',
+            'add_new_operation'     => 'Adăugați o nouă operație',
         ],
     ],
 

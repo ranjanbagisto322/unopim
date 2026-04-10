@@ -13,12 +13,16 @@ return [
             'standard' => 'Стандарт нэгжийн код',
             'symbol'   => 'Бэлгэ тэмдэг',
             'save'     => 'Хадгалах',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
         ],
 
         'edit' => [
             'measurement_edit' => 'Хэмжих гэр бүл засах',
             'back'             => 'Буцах',
             'save'             => 'Хадгалах',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
             'general'          => 'Ерөнхий',
             'code'             => 'Код',
             'label'            => 'Тэмдэглэгээ',
@@ -31,6 +35,8 @@ return [
             'create_unit' => 'Нэгж үүсгэх',
             'symbol'      => 'Бэлгэ тэмдэг',
             'save'        => 'Хадгалах',
+            'conversion_operation'  => 'Хөрвүүлэх үйлдэл',
+            'add_new_operation'     => 'Шинэ үйлдэл нэмэх',
         ],
     ],
 

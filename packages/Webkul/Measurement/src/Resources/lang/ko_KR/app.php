@@ -13,12 +13,16 @@ return [
             'standard' => '표준 단위 코드',
             'symbol'   => '기호',
             'save'     => '저장',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
         ],
 
         'edit' => [
             'measurement_edit' => '측정 패밀리 편집',
             'back'             => '뒤로',
             'save'             => '저장',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
             'general'          => '일반',
             'code'             => '코드',
             'label'            => '라벨',
@@ -31,6 +35,8 @@ return [
             'create_unit' => '단위 생성',
             'symbol'      => '기호',
             'save'        => '저장',
+            'conversion_operation'  => '변환 작업',
+            'add_new_operation'     => '새 작업 추가',
         ],
     ],
 

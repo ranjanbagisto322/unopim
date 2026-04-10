@@ -13,12 +13,16 @@ return [
             'standard' => 'Standardenhetskod',
             'symbol'   => 'Symbol',
             'save'     => 'Spara',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
         ],
 
         'edit' => [
             'measurement_edit' => 'Redigera mätningsfamilj',
             'back'             => 'Tillbaka',
             'save'             => 'Spara',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
             'general'          => 'Allmänt',
             'code'             => 'Kod',
             'label'            => 'Etikett',
@@ -31,6 +35,8 @@ return [
             'create_unit' => 'Skapa enhet',
             'symbol'      => 'Symbol',
             'save'        => 'Spara',
+            'conversion_operation'  => 'Konverteringsoperation',
+            'add_new_operation'     => 'Lägg till ny operation',
         ],
     ],
 

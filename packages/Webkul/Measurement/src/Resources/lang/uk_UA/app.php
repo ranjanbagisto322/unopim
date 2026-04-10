@@ -13,12 +13,16 @@ return [
             'standard' => 'Код стандартної одиниці',
             'symbol'   => 'Символ',
             'save'     => 'Зберегти',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
         ],
 
         'edit' => [
             'measurement_edit' => 'Редагувати групу вимірювань',
             'back'             => 'Назад',
             'save'             => 'Зберегти',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
             'general'          => 'Загальні',
             'code'             => 'Код',
             'label'            => 'Мітка',
@@ -31,6 +35,8 @@ return [
             'create_unit' => 'Створити одиницю',
             'symbol'      => 'Символ',
             'save'        => 'Зберегти',
+            'conversion_operation'  => 'Операція перетворення',
+            'add_new_operation'     => 'Додати нову операцію',
         ],
     ],
 

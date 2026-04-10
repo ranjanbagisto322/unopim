@@ -13,12 +13,16 @@ return [
             'standard' => 'رمز الوحدة القياسية',
             'symbol'   => 'الرمز',
             'save'     => 'حفظ',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
         ],
 
         'edit' => [
             'measurement_edit' => 'تعديل عائلة القياس',
             'back'             => 'رجوع',
             'save'             => 'حفظ',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
             'general'          => 'عام',
             'code'             => 'الرمز',
             'label'            => 'التسمية',
@@ -27,10 +31,12 @@ return [
         ],
 
         'unit' => [
-            'edit_unit'   => 'تعديل الوحدة',
-            'create_unit' => 'إنشاء وحدة',
-            'symbol'      => 'الرمز',
-            'save'        => 'حفظ',
+            'edit_unit'             => 'تعديل الوحدة',
+            'create_unit'           => 'إنشاء وحدة',
+            'symbol'                => 'الرمز',
+            'save'                  => 'حفظ',
+            'conversion_operation'  => 'عملية التحويل',
+            'add_new_operation'     => 'إضافة عملية جديدة',
         ],
     ],
 

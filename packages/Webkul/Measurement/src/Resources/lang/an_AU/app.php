@@ -13,12 +13,16 @@ return [
             'standard' => 'Codigo d’a unidat estandar',
             'symbol'   => 'Símbolo',
             'save'     => 'Alzar',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
         ],
 
         'edit' => [
             'measurement_edit' => 'Editar familia de medidas',
             'back'             => 'Tornar',
             'save'             => 'Alzar',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
             'general'          => 'Cheneral',
             'code'             => 'Codigo',
             'label'            => 'Etiqueta',
@@ -27,10 +31,12 @@ return [
         ],
 
         'unit' => [
-            'edit_unit'   => 'Editar unidat',
-            'create_unit' => 'Creyar unidat',
-            'symbol'      => 'Símbolo',
-            'save'        => 'Alzar',
+            'edit_unit'             => 'Editar unidat',
+            'create_unit'           => 'Creyar unidat',
+            'symbol'                => 'Símbolo',
+            'save'                  => 'Alzar',
+            'conversion_operation'  => 'Conversion operation',
+            'add_new_operation'     => 'Add New Operation',
         ],
     ],
 
