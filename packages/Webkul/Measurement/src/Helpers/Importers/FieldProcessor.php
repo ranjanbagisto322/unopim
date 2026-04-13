@@ -6,6 +6,13 @@ use Webkul\DataTransfer\Helpers\Importers\FieldProcessor as CoreFieldProcessor;
 
 class FieldProcessor extends CoreFieldProcessor
 {
+    protected $measurementHelper;
+
+    public function __construct()
+    {
+        $this->measurementHelper = app(\Webkul\Measurement\Helpers\MeasurementHelper::class);
+    }
+
     public function handleField($field, mixed $value, ?string $path = null)
     {
         $path = $path ?? '';
@@ -16,10 +23,11 @@ class FieldProcessor extends CoreFieldProcessor
                 $value = str_replace('|', ',', $value);
                 [$unit, $val] = array_map('trim', explode(',', $value, 2));
 
-                return [
-                    'unit'  => $unit,
-                    'value' => $val,
-                ];
+                return $this->measurementHelper->getMeasurementValueStructure($val, $unit, $field);
+            }
+
+            if (is_array($value) && isset($value['value'], $value['unit'])) {
+                return $this->measurementHelper->getMeasurementValueStructure($value['value'], $value['unit'], $field);
             }
 
             return $value;

@@ -1,7 +1,12 @@
 @php
     $attributeId = $field->attribute->id ?? $field->id;
-    $currentValue = $value['value'] ?? '';
-    $currentUnit  = empty($currentValue) ? '__auto__' : ($value['unit'] ?? '__auto__');
+    if (isset($value)) {
+        $currentValue = $value['amount'] ?? '';
+        $currentUnit  = $value['unit'] ?? '__auto__';
+    } else {
+        $currentValue = $value['value'] ?? '';
+        $currentUnit  = empty($currentValue) ? '__auto__' : ($value['unit'] ?? '__auto__');
+    }
 @endphp
 
 <div class="grid gap-4 [grid-template-columns:repeat(auto-fit,_minmax(200px,_1fr))]">

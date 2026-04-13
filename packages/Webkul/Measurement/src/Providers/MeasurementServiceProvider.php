@@ -38,6 +38,8 @@ class MeasurementServiceProvider extends ServiceProvider
                 }
             });
         }
+
+        \Webkul\Product\Models\Product::observe(\Webkul\Measurement\Observers\ProductObserver::class);
     }
 
     public function register()

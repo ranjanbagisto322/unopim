@@ -26,10 +26,7 @@ class MeasurementProductImport
             return;
         }
 
-        $json = [
-            'value' => $value,
-            'unit'  => $unit,
-        ];
+        $json = $this->helper->getMeasurementValueStructure($value, $unit, $attribute);
 
         $product->attribute_values()->updateOrCreate(
             [
