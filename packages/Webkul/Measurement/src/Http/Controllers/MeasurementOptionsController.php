@@ -96,7 +96,8 @@ class MeasurementOptionsController extends AbstractOptionsController
             $page,
             50,
             $query,
-            $queryParams
+            $queryParams,
+            $defaultUnit
         );
 
         return response()->json($options);
@@ -107,12 +108,17 @@ class MeasurementOptionsController extends AbstractOptionsController
     int $page,
     int $limit,
     string $query,
-    array $queryParams
+    array $queryParams,
+    string $defaultUnit = null 
     ): array {
         $selectedValue = $queryParams['identifiers']['value'] ?? null;
 
         if (empty($selectedValue) || $selectedValue === '__auto__') {
             $collection = $collection->sortByDesc('is_default');
+            
+            if (empty($selectedValue) && $collection->where('is_default', true)->first()) {
+
+            }
         } else {
             $collection = $collection->sortByDesc(fn ($item) => $item->id === $selectedValue);
         }

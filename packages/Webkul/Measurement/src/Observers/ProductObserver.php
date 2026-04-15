@@ -54,10 +54,17 @@ class ProductObserver
 
     protected function processScope(array &$scopedValues)
     {
-        foreach ($scopedValues as $attributeCode => &$value) {
-            $attribute = app(\Webkul\Attribute\Repositories\AttributeRepository::class)->findOneByField('code', $attributeCode);
+        foreach ($scopedValues as $attributeCode => $value) { 
+            $attribute = app(\Webkul\Attribute\Repositories\AttributeRepository::class)
+                ->findOneByField('code', $attributeCode);
 
-            if ($attribute && $attribute->type === 'measurement' && is_array($value) && isset($value['value'], $value['unit'])) {
+            if ($attribute && $attribute->type === 'measurement' && is_array($value)) {
+                
+                if (! isset($value['value']) || $value['value'] === '' || $value['value'] === null) {
+                    unset($scopedValues[$attributeCode]);
+                    continue;
+                }
+
                 $measurement = $this->attributeMeasurementRepository->getByAttributeId($attribute->id);
 
                 if ($measurement && $measurement->family) {
@@ -65,15 +72,12 @@ class ProductObserver
                     $baseUnit = $family->standard_unit;
                     $baseData = $this->calculateBaseData($value['value'], $value['unit'], $family);
 
-                    $value = [
-                       
-                                'unit' => $value['unit'],
-                                'amount' => number_format($value['value'], 4),
-                                'family' => $family->code,
-                                'base_data' => number_format($baseData, 6),
-                                'base_unit' => $baseUnit,
-                            
-                        
+                    $scopedValues[$attributeCode] = [
+                        'unit'      => $value['unit'],
+                        'amount'    => number_format((float) $value['value'], 4, '.', ''),
+                        'family'    => $family->code,
+                        'base_data' => number_format((float) $baseData, 6, '.', ''),
+                        'base_unit' => $baseUnit,
                     ];
                 }
             }

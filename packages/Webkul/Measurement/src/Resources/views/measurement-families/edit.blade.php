@@ -309,7 +309,7 @@
                                 <div
                                     v-for="(conversion, index) in locale.conversions"
                                     :key="index"
-                                    class="flex gap-3 items-center mb-3"
+                                    class="flex items-center gap-3 mb-3"
                                 >
                                     <x-admin::form.control-group class="mb-0 flex-1">
                                         <x-admin::form.control-group.control
@@ -319,10 +319,10 @@
                                             step="0.000001"
                                             v-model="conversion.value"
                                             placeholder="Enter conversion value"
-                                            ::disabled="locale.is_standard"
+                                            ::disabled="isConversionDisabled"
                                         />
 
-                                        <x-admin::form.control-group.error control-name="convert_value" />
+                                        <x-admin::form.control-group.error control-name="'convert_value[' + index + ']'" />
                                     </x-admin::form.control-group>
 
                                     <x-admin::form.control-group class="mb-0 w-48">
@@ -334,19 +334,19 @@
                                             :options="json_encode($operationOptions)"
                                             track-by="value"
                                             label-by="label"
-                                            ::disabled="locale.is_standard"
+                                            ::disabled="isConversionDisabled"
                                         />
                                     </x-admin::form.control-group>
 
                                     <button
                                         type="button"
-                                        class="flex items-center justify-center text-red-600 bg-transparent hover:bg-gray-200 dark:hover:bg-gray-800 rounded-md"
+                                        class=""
                                         @click="removeConversion(index)"
-                                        :disabled="locale.conversions.length === 1"
+                                        :disabled="locale.conversions.length === 1 || isConversionDisabled"
                                     >
                                         
                                         <span
-                                            class="icon-delete cursor-pointer rounded-md p-1.5 text-2xl transition-all hover:bg-violet-100 dark:hover:bg-gray-800"
+                                            class="icon-delete cursor-pointer rounded-md p-1 text-2xl transition-all hover:bg-violet-100 dark:hover:bg-gray-800"
                                             title="Delete"
                                         ></span>
                                     </button>
@@ -357,7 +357,7 @@
                                         type="button"
                                         class="secondary-button"
                                         @click="addConversion"
-                                        :disabled="locale.conversions.length >= 4 || locale.is_standard"
+                                        :disabled="locale.conversions.length >= 4 || isConversionDisabled"
                                     >
                                         @lang('measurement::app.measurement.unit.add_new_operation')
                                     </button>
@@ -401,7 +401,7 @@
                                 },
                             ],
                         },
-
+                        familyUsedInProducts: Boolean({{ json_encode($familyUsedInProducts ?? false) }}),
                         selectedLocales: 0,
                     }
                 },
@@ -420,22 +420,12 @@
 
                         return count;
                     },
-                },
 
-                computed: {
-                    gridsCount() {
-                        let count = this.$refs.datagrid.available.columns.length;
-
-                        if (this.$refs.datagrid.available.actions.length) {
-                            ++count;
-                        }
-
-                        if (this.$refs.datagrid.available.massActions.length) {
-                            ++count;
-                        }
-
-                        return count;
-                    },
+                    isConversionDisabled() {
+                        return this.familyUsedInProducts
+                            || this.locale.is_used_in_products
+                            || this.locale.is_standard;
+                    }
                 },
 
                 methods: {
@@ -493,6 +483,7 @@
                                 labels: response.data.data.labels ?? {},
                                 symbol: response.data.data.symbol ?? null,
                                 is_standard: response.data.data.is_standard ?? 0,
+                                is_used_in_products: response.data.data.is_used_in_products ?? false,
                                 conversions: conversions.length
                                     ? conversions.map((conversion) => ({
                                         operator: conversion.operator ?? 'mul',
@@ -535,6 +526,7 @@
                             code: null,
                             labels: {},
                             symbol: null,
+                            is_used_in_products: false,
                             conversions: [
                                 {
                                     operator: 'mul',

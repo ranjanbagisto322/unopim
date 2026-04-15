@@ -13,7 +13,8 @@ class MeasurementUnitsController extends Controller
 {
     public function __construct(
         protected MeasurementFamilyRepository $measurementFamilyRepository,
-        protected LocaleRepository $localeRepository
+        protected LocaleRepository $localeRepository,
+        protected \Webkul\Measurement\Repository\AttributeMeasurementRepository $attributeMeasurementRepository
     ) {}
 
     public function units($id)
@@ -36,7 +37,17 @@ class MeasurementUnitsController extends Controller
             ['value' => 'sub', 'label' => 'Subtract'],
         ];
 
-        return view('measurement::measurement-families.edit', compact('family', 'locales', 'operationOptions'));
+        $familyUsedInProducts = false;
+        if (isset($family->units)) {
+            foreach ($family->units as $unitData) {
+                if (isset($unitData['code']) && $this->attributeMeasurementRepository->findWhere(['unit_code' => $unitData['code']])->count() > 0) {
+                    $familyUsedInProducts = true;
+                    break;
+                }
+            }
+        }
+
+        return view('measurement::measurement-families.edit', compact('family', 'locales', 'operationOptions', 'familyUsedInProducts'));
     }
 
     public function storeUnit($id)
@@ -116,9 +127,12 @@ class MeasurementUnitsController extends Controller
 
        $isStandard = $family->standard_unit === $code;
 
+        $isUsedInProducts = $this->attributeMeasurementRepository->findWhere(['unit_code' => $code])->count() > 0;
+
         return new JsonResponse([
             'data' => [
                 ...$unit,
+                'is_used_in_products' => $isUsedInProducts,
                 
                 'is_standard' => $isStandard,
                 'status'     => isset($unit['status']) ? (bool) $unit['status'] : true,

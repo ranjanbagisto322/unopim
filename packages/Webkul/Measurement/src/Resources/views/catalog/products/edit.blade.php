@@ -1,10 +1,30 @@
 @php
     $attributeId = $field->attribute->id ?? $field->id;
+
+    $formatValue = function($val) {
+        if ($val === '' || $val === null) return '';
+
+        $num = (float) $val;
+        if (floor($num) == $num) {
+            return (int) $num;
+        }
+        $formatted = rtrim(rtrim(number_format($num, 4, '.', ''), '0'), '.');
+
+        if (strpos($formatted, '.') !== false) {
+            $parts = explode('.', $formatted);
+            if (strlen($parts[1]) == 1) {
+                $formatted .= '0';
+            }
+        }
+
+        return $formatted;
+    };
+
     if (isset($value)) {
-        $currentValue = $value['amount'] ?? '';
+        $currentValue = $formatValue($value['amount'] ?? '');
         $currentUnit  = $value['unit'] ?? '__auto__';
     } else {
-        $currentValue = $value['value'] ?? '';
+        $currentValue = $formatValue($value['value'] ?? '');
         $currentUnit  = empty($currentValue) ? '__auto__' : ($value['unit'] ?? '__auto__');
     }
 @endphp
