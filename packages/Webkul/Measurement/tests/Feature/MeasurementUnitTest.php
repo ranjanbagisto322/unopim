@@ -81,7 +81,7 @@ it('should not allow duplicate unit code', function () {
     )
         ->assertStatus(422)
         ->assertJsonFragment([
-            'message' => 'Unit code already exists',
+            'message' => 'Unit code already exists.',
         ]);
 });
 
@@ -120,6 +120,69 @@ it('should update unit successfully', function () {
 
     expect($family->units[0]['symbol'])->toBe('mtr');
     expect($family->units[0]['labels'])->toHaveKey('hi_IN');
+});
+
+it('should create a unit with conversion data successfully', function () {
+    $family = familyWithUnits();
+
+    $this->withHeaders([
+        'X-Requested-With' => 'XMLHttpRequest',
+    ])->post(
+        route('admin.measurement.families.units.store', $family->id),
+        [
+            'code' => 'meter',
+            'symbol' => 'm',
+            'labels' => ['en_US' => 'Meter'],
+            'convert_from_standard' => ['mul', 'add'],
+            'convert_value' => ['1', '10'],
+        ]
+    )
+        ->assertOk()
+        ->assertJsonStructure([
+            'data' => ['redirect_url'],
+        ]);
+
+    $family->refresh();
+
+    expect($family->units)->toHaveCount(1);
+    expect($family->units[0]['convert_from_standard'])->toEqual([
+        ['operator' => 'mul', 'value' => '1'],
+        ['operator' => 'add', 'value' => '10'],
+    ]);
+});
+
+it('should update unit conversion successfully', function () {
+    $family = familyWithUnits([
+        [
+            'code' => 'meter',
+            'symbol' => 'm',
+            'labels' => ['en_US' => 'Meter'],
+            'convert_from_standard' => ['mul'],
+            'convert_value' => ['1'],
+        ],
+    ]);
+
+    $this->put(
+        route(
+            'admin.measurement.families.units.update',
+            ['familyId' => $family->id, 'code' => 'meter']
+        ),
+        [
+            'symbol' => 'mtr',
+            'labels' => ['hi_IN' => 'मीटर'],
+            'convert_from_standard' => ['div', 'add'],
+            'convert_value' => ['2', '5'],
+        ]
+    )
+        ->assertRedirect();
+
+    $family->refresh();
+
+    expect($family->units[0]['symbol'])->toBe('mtr');
+    expect($family->units[0]['convert_from_standard'])->toEqual([
+        ['operator' => 'div', 'value' => '2'],
+        ['operator' => 'add', 'value' => '5'],
+    ]);
 });
 
 it('should delete unit successfully', function () {

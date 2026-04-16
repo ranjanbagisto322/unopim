@@ -43,12 +43,7 @@
                 <x-slot:content>
 
                         <div class="space-y-3">
-
-                            <div class="">
-                                <h2 class="text-base text-gray-800 dark:text-white font-semibold">
-                                    PROPERTIES
-                                </h2>
-                            </div>
+                            
                                 <!-- Code -->
                                 <x-admin::form.control-group class="mt-2">
                                     <x-admin::form.control-group.label class="required">
@@ -88,21 +83,10 @@
                                     </x-admin::form.control-group>
                                 @endforeach
 
-                            
-                            <div class="mt-2 flex items-start gap-2 p-3 rounded-md border border-orange-300 bg-orange-50 dark:bg-orange-900/20">
-
-                                <span class="text-orange-500 text-lg">
-                                    ⚠️
-                                </span>
-                                <p class="text-sm text-orange-600 dark:text-orange-300">
-                                    This standard unit is set once and for all. It will be used to convert the other units.
-                                </p>
-
-                            </div>
 
                             <div class="mt-4">
                                 <h2 class="text-base text-gray-800 dark:text-white font-semibold">
-                                    STANDARD UNIT
+                                    Create Standard Unit
                                 </h2>
                             </div>
                             

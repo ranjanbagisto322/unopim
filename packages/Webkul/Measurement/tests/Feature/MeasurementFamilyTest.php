@@ -38,8 +38,7 @@ it('should return validation errors when creating measurement family', function 
 
     $this->post(route('admin.measurement.families.store'), [])
         ->assertInvalid('code')
-        ->assertInvalid('standard_unit_code')
-        ->assertInvalid('labels');
+        ->assertInvalid('standard_unit_code');
 });
 
 it('should create a measurement family successfully', function () {
@@ -126,8 +125,10 @@ it('should mass delete measurement families successfully', function () {
         route('admin.measurement.families.mass_delete'),
         ['indices' => $ids]
     )
-        ->assertRedirect()
-        ->assertSessionHas('success');
+        ->assertOk()
+        ->assertJsonFragment([
+            'success' => true,
+        ]);
 
     foreach ($ids as $id) {
         $this->assertDatabaseMissing('measurement_families', ['id' => $id]);

@@ -109,6 +109,15 @@ class MeasurementUnitsController extends Controller
         $this->measurementFamilyRepository->update([
             'units' => $units,
         ], $id);
+
+        return response()->json([
+            'data' => [
+                'redirect_url' => route(
+                    'admin.measurement.families.units.edit',
+                    ['familyId' => $id, 'code' => $newUnit['code']]
+                ),
+            ],
+        ]);
     }
 
     public function editUnit(int $familyId, string $code): JsonResponse
@@ -215,6 +224,19 @@ class MeasurementUnitsController extends Controller
         $this->measurementFamilyRepository->update([
             'units' => $units,
         ], $familyId);
+
+        if (request()->ajax()) {
+            return response()->json([
+                'data' => [
+                    'redirect_url' => route(
+                        'admin.measurement.families.units.edit',
+                        ['familyId' => $familyId, 'code' => $code]
+                    ),
+                ],
+            ]);
+        }
+
+        return redirect()->back();
     }
 
     public function deleteUnit($familyId, $code)

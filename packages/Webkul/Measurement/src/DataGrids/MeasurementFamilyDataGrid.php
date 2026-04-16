@@ -64,7 +64,7 @@ class MeasurementFamilyDataGrid extends DataGrid
             'type'       => 'string',
             'searchable' => false,
             'sortable'   => false,
-            'filterable' => false,
+            'filterable' => true,
             'closure'    => function ($row) {
 
                 $units = json_decode($row->units ?? '[]', true);

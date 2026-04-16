@@ -291,14 +291,13 @@
                                     rules="required"
                                     v-model="locale.symbol"
                                     placeholder="Symbol"
-                                    
                                 />
 
                                 <x-admin::form.control-group.error control-name="symbol" />
                             </x-admin::form.control-group>
 
                             <div>
-                                <div class="mb-4">
+                                <div class="">
                                     <x-admin::form.control-group class="mb-0">
                                         <x-admin::form.control-group.label class="required">
                                             @lang('measurement::app.measurement.unit.conversion_operation')
@@ -309,9 +308,9 @@
                                 <div
                                     v-for="(conversion, index) in locale.conversions"
                                     :key="index"
-                                    class="flex items-center gap-3 mb-3"
+                                    class="flex items-center gap-2"
                                 >
-                                    <x-admin::form.control-group class="mb-0 flex-1">
+                                    <x-admin::form.control-group class="w-1/3">
                                         <x-admin::form.control-group.control
                                             type="number"
                                             ::name="'convert_value[' + index + ']'"
@@ -320,12 +319,13 @@
                                             v-model="conversion.value"
                                             placeholder="Enter conversion value"
                                             ::disabled="isConversionDisabled"
+                                            :label="trans('measurement::app.measurement.unit.conversion_value')"
                                         />
 
-                                        <x-admin::form.control-group.error control-name="'convert_value[' + index + ']'" />
+                                        <x-admin::form.control-group.error ::control-name="'convert_value[' + index + ']'" />
                                     </x-admin::form.control-group>
 
-                                    <x-admin::form.control-group class="mb-0 w-48">
+                                    <x-admin::form.control-group class="flex-1">
                                         <x-admin::form.control-group.control
                                             type="select"
                                             ::name="'convert_from_standard[' + index + ']'"
@@ -335,18 +335,19 @@
                                             track-by="value"
                                             label-by="label"
                                             ::disabled="isConversionDisabled"
+                                            :label="trans('measurement::app.measurement.unit.conversion_operator')"
                                         />
+                                        <x-admin::form.control-group.error ::control-name="'convert_from_standard[' + index + ']'" />
                                     </x-admin::form.control-group>
 
                                     <button
                                         type="button"
-                                        class=""
+                                        class="flex items-center mb-4 justify-center rounded"
                                         @click="removeConversion(index)"
                                         :disabled="locale.conversions.length === 1 || isConversionDisabled"
                                     >
-                                        
                                         <span
-                                            class="icon-delete cursor-pointer rounded-md p-1 text-2xl transition-all hover:bg-violet-100 dark:hover:bg-gray-800"
+                                            class="icon-delete cursor-pointer rounded-md text-2xl transition-all hover:bg-violet-100 dark:hover:bg-gray-800"
                                             title="Delete"
                                         ></span>
                                     </button>
@@ -422,6 +423,9 @@
                     },
 
                     isConversionDisabled() {
+                        if (this.selectedLocales === 0) {
+                            return false;
+                        }
                         return this.familyUsedInProducts
                             || this.locale.is_used_in_products
                             || this.locale.is_standard;

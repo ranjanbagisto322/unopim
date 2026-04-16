@@ -13,7 +13,8 @@ class MeasurementFamilyController extends Controller
 {
     public function __construct(
         protected MeasurementFamilyRepository $measurementFamilyRepository,
-        protected LocaleRepository $localeRepository
+        protected LocaleRepository $localeRepository,
+        protected AttributeMeasurementRepository $attributeMeasurementRepository
     ) {}
 
     public function index()
@@ -100,7 +101,17 @@ class MeasurementFamilyController extends Controller
             ['value' => 'sub', 'label' => 'Subtract'],
         ];
 
-        return view('measurement::measurement-families.edit', compact('family', 'labels', 'locales', 'operationOptions'));
+        $familyUsedInProducts = false;
+        if (isset($family->units)) {
+            foreach ($family->units as $unitData) {
+                if (isset($unitData['code']) && $this->attributeMeasurementRepository->findWhere(['unit_code' => $unitData['code']])->count() > 0) {
+                    $familyUsedInProducts = true;
+                    break;
+                }
+            }
+        }
+
+        return view('measurement::measurement-families.edit', compact('family', 'labels', 'locales', 'operationOptions', 'familyUsedInProducts'));
     }
 
     public function update(Request $request, $id)
