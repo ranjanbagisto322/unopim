@@ -38,7 +38,7 @@ class MeasurementServiceProvider extends ServiceProvider
                 }
             });
         }
-
+        
         \Webkul\Product\Models\Product::observe(\Webkul\Measurement\Observers\ProductObserver::class);
     }
 
@@ -49,6 +49,11 @@ class MeasurementServiceProvider extends ServiceProvider
         $this->app->bind(
             \Webkul\DataTransfer\Helpers\Importers\FieldProcessor::class,
             \Webkul\Measurement\Helpers\Importers\FieldProcessor::class
+        );
+
+        $this->app->bind(
+            \Webkul\DataTransfer\Helpers\Exporters\Product\Exporter::class,
+            \Webkul\Measurement\Helpers\Exporters\ProductExporter::class
         );
 
         Route::prefix('api')

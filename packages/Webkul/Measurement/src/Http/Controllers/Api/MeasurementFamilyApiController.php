@@ -38,7 +38,19 @@ class MeasurementFamilyApiController extends Controller
             'symbol'        => 'nullable|string|max:50',
         ]);
 
-        $family = $this->repository->create($request->all());
+        $data = $request->all();
+
+        // Add default conversion for the standard unit
+        foreach ($data['units'] as &$unit) {
+            if ($unit['code'] === $data['standard_unit']) {
+                $unit['convert_from_standard'] = [
+                    ['operator' => 'mul', 'value' => '1']
+                ];
+                break;
+            }
+        }
+
+        $family = $this->repository->create($data);
 
         return response()->json([
             'success' => true,

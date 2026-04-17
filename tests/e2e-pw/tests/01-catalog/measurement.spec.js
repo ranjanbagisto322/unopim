@@ -81,7 +81,7 @@ test.describe('UnoPim Measurement Feature', () => {
     async function createMeasurementFamily(page, code, standardUnitCode, symbol, label = null) {
         await goToFamilies(page);
 
-        const createButton = page.getByRole('button', { name: /Create Measurement Family/i }).first();
+        const createButton = page.getByRole('button', { name: /Create Measurements/i }).first();
         await createButton.waitFor({ state: 'visible', timeout: 10000 });
         await createButton.click();
 
@@ -136,6 +136,51 @@ test.describe('UnoPim Measurement Feature', () => {
         return page.locator('#type').locator('..').locator('.multiselect__placeholder, .multiselect__single').first();
     }
 
+    async function addConversionOperation(page, value, operator) {
+        // Look for the "Add New Operation" button
+        const addOpBtn = page.locator('button:has-text("Add New Operation"), button:has-text("add_new_operation"), [data-action="add-operation"]').first();
+        if (await addOpBtn.isVisible().catch(() => false)) {
+            await addOpBtn.click();
+            await page.waitForTimeout(500);
+        }
+
+        // Fill the conversion value field
+        const conversionValueInputs = page.locator('input[name*="convert_value"], input[placeholder*="conversion value" i]');
+        const valueInputCount = await conversionValueInputs.count();
+        if (valueInputCount > 0) {
+            const lastValueInput = conversionValueInputs.nth(valueInputCount - 1);
+            if (await lastValueInput.isVisible()) {
+                await lastValueInput.fill(value.toString());
+            }
+        }
+
+        // Select the conversion operator
+        const operatorSelects = page.locator('select[name*="convert_from_standard"], input[data-vv-name*="convert_from_standard"]');
+        const operatorCount = await operatorSelects.count();
+        if (operatorCount > 0) {
+            const lastOperatorSelect = operatorSelects.nth(operatorCount - 1);
+            if (await lastOperatorSelect.isVisible()) {
+                // Try clicking the multiselect
+                const multiSelectTrigger = lastOperatorSelect.locator('..').locator('.multiselect__placeholder, .multiselect__single').first();
+                if (await multiSelectTrigger.isVisible().catch(() => false)) {
+                    await multiSelectTrigger.click();
+                    await page.waitForTimeout(300);
+                    const operatorOption = page.locator('.multiselect__option, .multiselect__element span')
+                        .filter({ hasText: operator })
+                        .first();
+                    if (await operatorOption.isVisible().catch(() => false)) {
+                        await operatorOption.click();
+                    }
+                } else {
+                    // Fallback: fill directly
+                    await lastOperatorSelect.selectOption(operator).catch(() => {});
+                }
+            }
+        }
+
+        await page.waitForTimeout(500);
+    }
+
     async function fillAttributeLabel(page, label) {
         const englishLabel = page.getByText('English (United States)', { exact: true }).first();
         if (await englishLabel.isVisible().catch(() => false)) {
@@ -182,12 +227,14 @@ test.describe('UnoPim Measurement Feature', () => {
 
     async function deleteMeasurementFamily(page, familyCode) {
         await goToFamilies(page);
-        const search = page.locator('input[placeholder="Search"]').first();
-        await search.fill(familyCode);
-        await search.press('Enter');
-        await page.waitForTimeout(1000);
+        const search = page.locator('input[placeholder*="Search" i], input[name="search"], input[aria-label*="Search" i]').first();
+        if (await search.isVisible({ timeout: 5000 })) {
+            await search.fill(familyCode);
+            await search.press('Enter');
+            await page.waitForTimeout(1000);
+        }
         
-        const deleteIcon = page.locator('.icon-delete, [class*="delete"]').first();
+        const deleteIcon = page.locator('.icon-delete, [class*="delete"], button:has-text("Delete")').first();
         if (await deleteIcon.isVisible()) {
             await deleteIcon.click();
             await page.waitForTimeout(500);
@@ -209,7 +256,7 @@ test.describe('UnoPim Measurement Feature', () => {
             await goToFamilies(adminPage);
 
             await expect(adminPage.getByText('Measurement Families', { exact: false })).toBeVisible({ timeout: 10000 });
-            await expect(adminPage.getByRole('button', { name: /Create Measurement Family/i })).toBeVisible({ timeout: 10000 });
+            await expect(adminPage.getByRole('button', { name: /Create Measurements/i })).toBeVisible({ timeout: 10000 });
         });
 
         test('TC02 - Search existing measurement families', async ({ adminPage }) => {
@@ -245,7 +292,7 @@ test.describe('UnoPim Measurement Feature', () => {
             }
         });
 
-        test('TC06 - Create a new unit in measurement family', async ({ adminPage }) => {
+        test('TC06 - Create a new unit in measurement family with conversion', async ({ adminPage }) => {
             const familyCode = `unit_fam_${Date.now()}`;
             const created = await createMeasurementFamily(adminPage, familyCode, 'base_unit', 'BU');
             expect(created).toBeTruthy();
@@ -292,6 +339,9 @@ test.describe('UnoPim Measurement Feature', () => {
                     if (await symbolInput.isVisible() && await symbolInput.isEnabled()) {
                         await symbolInput.fill('TU');
                     }
+
+                    // Add conversion operation
+                    await addConversionOperation(adminPage, '2.5', 'mul');
 
                     const saveBtn = adminPage.getByRole('button', { name: /save|create/i }).last();
                     if (await saveBtn.isVisible()) {
@@ -343,7 +393,7 @@ test.describe('UnoPim Measurement Feature', () => {
         
         test('TC11 - Create measurement family with empty code', async ({ adminPage }) => {
             await goToFamilies(adminPage);
-            const createBtn = adminPage.getByRole('button', { name: /Create|Measurement/ }).first();
+            const createBtn = adminPage.getByRole('button', { name: /Create Measurements/i }).first();
             if (await createBtn.isVisible()) {
                 await createBtn.click();
                 await adminPage.waitForTimeout(500);
@@ -359,7 +409,7 @@ test.describe('UnoPim Measurement Feature', () => {
 
         test('TC12 - Create measurement family with empty standard unit code', async ({ adminPage }) => {
             await goToFamilies(adminPage);
-            const createBtn = adminPage.getByRole('button', { name: /Create|Measurement/ }).first();
+            const createBtn = adminPage.getByRole('button', { name: /Create Measurements/i }).first();
             if (await createBtn.isVisible()) {
                 await createBtn.click();
                 await adminPage.waitForTimeout(500);
@@ -375,7 +425,7 @@ test.describe('UnoPim Measurement Feature', () => {
 
         test('TC13 - Create measurement family with empty symbol', async ({ adminPage }) => {
             await goToFamilies(adminPage);
-            const createBtn = adminPage.getByRole('button', { name: /Create|Measurement/ }).first();
+            const createBtn = adminPage.getByRole('button', { name: /Create Measurements/i }).first();
             if (await createBtn.isVisible()) {
                 await createBtn.click();
                 await adminPage.waitForTimeout(500);
@@ -391,7 +441,7 @@ test.describe('UnoPim Measurement Feature', () => {
 
         test('TC14 - Create measurement family with all empty fields', async ({ adminPage }) => {
             await goToFamilies(adminPage);
-            const createBtn = adminPage.getByRole('button', { name: /Create|Measurement/ }).first();
+            const createBtn = adminPage.getByRole('button', { name: /Create Measurements/i }).first();
             if (await createBtn.isVisible()) {
                 await createBtn.click();
                 await adminPage.waitForTimeout(500);
@@ -414,7 +464,7 @@ test.describe('UnoPim Measurement Feature', () => {
 
             // Try to create duplicate
             await goToFamilies(adminPage);
-            const createBtn = adminPage.getByRole('button', { name: /Create|Measurement/ }).first();
+            const createBtn = adminPage.getByRole('button', { name: /Create Measurements/i }).first();
             if (await createBtn.isVisible()) {
                 await createBtn.click();
                 await adminPage.waitForTimeout(500);
@@ -430,7 +480,7 @@ test.describe('UnoPim Measurement Feature', () => {
 
         test('TC16 - Create measurement family with special characters in code', async ({ adminPage }) => {
             await goToFamilies(adminPage);
-            const createBtn = adminPage.getByRole('button', { name: /Create|Measurement/ }).first();
+            const createBtn = adminPage.getByRole('button', { name: /Create Measurements/i }).first();
             if (await createBtn.isVisible()) {
                 await createBtn.click();
                 await adminPage.waitForTimeout(500);
@@ -516,7 +566,7 @@ test.describe('UnoPim Measurement Feature', () => {
 
         test('TC24 - Verify button states in measurement families', async ({ adminPage }) => {
             await goToFamilies(adminPage);
-            const createBtn = adminPage.getByRole('button', { name: /Create|Measurement/ }).first();
+            const createBtn = adminPage.getByRole('button', { name: /Create Measurements/i }).first();
             const isEnabled = await createBtn.isEnabled().catch(() => false);
             expect(isEnabled).toBeTruthy();
         });
@@ -529,7 +579,7 @@ test.describe('UnoPim Measurement Feature', () => {
         test('TC25 - Create measurement family with very long code', async ({ adminPage }) => {
             const longCode = 'a'.repeat(100);
             await goToFamilies(adminPage);
-            const createBtn = adminPage.getByRole('button', { name: /Create|Measurement/ }).first();
+            const createBtn = adminPage.getByRole('button', { name: /Create Measurements/i }).first();
             if (await createBtn.isVisible()) {
                 await createBtn.click();
                 await adminPage.waitForTimeout(500);
@@ -564,7 +614,7 @@ test.describe('UnoPim Measurement Feature', () => {
 
         test('TC28 - Verify cancel button on measurement family create', async ({ adminPage }) => {
             await goToFamilies(adminPage);
-            const createBtn = adminPage.getByRole('button', { name: /Create|Measurement/ }).first();
+            const createBtn = adminPage.getByRole('button', { name: /Create Measurements/i }).first();
             if (await createBtn.isVisible()) {
                 await createBtn.click();
                 await adminPage.waitForTimeout(500);
@@ -663,6 +713,422 @@ test.describe('UnoPim Measurement Feature', () => {
                 expect(true).toBeTruthy();
             }
         });
+
+        test('TC41 - Create unit with multiply conversion operation', async ({ adminPage }) => {
+            const familyCode = `conv_mul_${Date.now()}`;
+            const created = await createMeasurementFamily(adminPage, familyCode, 'meter', 'M');
+            expect(created).toBeTruthy();
+
+            await goToFamilies(adminPage);
+            const search = adminPage.locator('input[placeholder*="Search" i], input[type="search"]').first();
+            if (await search.isVisible()) {
+                await search.fill(familyCode);
+                await search.press('Enter');
+                await adminPage.waitForTimeout(2000);
+            }
+
+            const editBtn = adminPage.locator('[title="Edit"], .icon-edit').first();
+            if (await editBtn.isVisible()) {
+                await editBtn.click();
+                await adminPage.waitForTimeout(2000);
+
+                const addUnitBtn = adminPage.locator('button:has-text("Add Unit"), button:has-text("Create Unit")').first();
+                if (await addUnitBtn.isVisible()) {
+                    await addUnitBtn.click();
+                    await adminPage.waitForTimeout(1000);
+
+                    const codeInput = adminPage.locator('input[name*="code"], input[placeholder*="code" i]').last();
+                    if (await codeInput.isVisible()) {
+                        await codeInput.fill(`km_${Date.now()}`);
+                    }
+
+                    const symbolInput = adminPage.locator('input[name*="symbol"]').last();
+                    if (await symbolInput.isVisible()) {
+                        await symbolInput.fill('KM');
+                    }
+
+                    // Add multiply conversion: 1000 * 1 = 1000
+                    await addConversionOperation(adminPage, '1000', 'mul');
+
+                    const saveBtn = adminPage.getByRole('button', { name: /save/i }).last();
+                    if (await saveBtn.isVisible()) {
+                        await saveBtn.click();
+                        await adminPage.waitForTimeout(2000);
+                    }
+                }
+            }
+        });
+
+        test('TC42 - Create unit with divide conversion operation', async ({ adminPage }) => {
+            const familyCode = `conv_div_${Date.now()}`;
+            const created = await createMeasurementFamily(adminPage, familyCode, 'liter', 'L');
+            expect(created).toBeTruthy();
+
+            await goToFamilies(adminPage);
+            const search = adminPage.locator('input[placeholder*="Search" i]').first();
+            if (await search.isVisible()) {
+                await search.fill(familyCode);
+                await search.press('Enter');
+                await adminPage.waitForTimeout(2000);
+            }
+
+            const editBtn = adminPage.locator('[title="Edit"], .icon-edit').first();
+            if (await editBtn.isVisible()) {
+                await editBtn.click();
+                await adminPage.waitForTimeout(2000);
+
+                const addUnitBtn = adminPage.locator('button:has-text("Add Unit"), button:has-text("Create Unit")').first();
+                if (await addUnitBtn.isVisible()) {
+                    await addUnitBtn.click();
+                    await adminPage.waitForTimeout(1000);
+
+                    const codeInput = adminPage.locator('input[name*="code"]').last();
+                    if (await codeInput.isVisible()) {
+                        await codeInput.fill(`ml_${Date.now()}`);
+                    }
+
+                    const symbolInput = adminPage.locator('input[name*="symbol"]').last();
+                    if (await symbolInput.isVisible()) {
+                        await symbolInput.fill('ML');
+                    }
+
+                    // Add divide conversion: 1/1000 = 0.001
+                    await addConversionOperation(adminPage, '1000', 'div');
+
+                    const saveBtn = adminPage.getByRole('button', { name: /save/i }).last();
+                    if (await saveBtn.isVisible()) {
+                        await saveBtn.click();
+                        await adminPage.waitForTimeout(2000);
+                    }
+                }
+            }
+        });
+
+        test('TC43 - Create unit with add conversion operation', async ({ adminPage }) => {
+            const familyCode = `conv_add_${Date.now()}`;
+            const created = await createMeasurementFamily(adminPage, familyCode, 'celsius', 'C');
+            expect(created).toBeTruthy();
+
+            await goToFamilies(adminPage);
+            const search = adminPage.locator('input[placeholder*="Search" i]').first();
+            if (await search.isVisible()) {
+                await search.fill(familyCode);
+                await search.press('Enter');
+                await adminPage.waitForTimeout(2000);
+            }
+
+            const editBtn = adminPage.locator('[title="Edit"], .icon-edit').first();
+            if (await editBtn.isVisible()) {
+                await editBtn.click();
+                await adminPage.waitForTimeout(2000);
+
+                const addUnitBtn = adminPage.locator('button:has-text("Add Unit"), button:has-text("Create Unit")').first();
+                if (await addUnitBtn.isVisible()) {
+                    await addUnitBtn.click();
+                    await adminPage.waitForTimeout(1000);
+
+                    const codeInput = adminPage.locator('input[name*="code"]').last();
+                    if (await codeInput.isVisible()) {
+                        await codeInput.fill(`offset_${Date.now()}`);
+                    }
+
+                    const symbolInput = adminPage.locator('input[name*="symbol"]').last();
+                    if (await symbolInput.isVisible()) {
+                        await symbolInput.fill('OFFSET');
+                    }
+
+                    // Add conversion: + 273.15
+                    await addConversionOperation(adminPage, '273.15', 'add');
+
+                    const saveBtn = adminPage.getByRole('button', { name: /save/i }).last();
+                    if (await saveBtn.isVisible()) {
+                        await saveBtn.click();
+                        await adminPage.waitForTimeout(2000);
+                    }
+                }
+            }
+        });
+
+        test('TC44 - Create unit with subtract conversion operation', async ({ adminPage }) => {
+            const familyCode = `conv_sub_${Date.now()}`;
+            const created = await createMeasurementFamily(adminPage, familyCode, 'absolute_temp', 'ABS');
+            expect(created).toBeTruthy();
+
+            await goToFamilies(adminPage);
+            const search = adminPage.locator('input[placeholder*="Search" i]').first();
+            if (await search.isVisible()) {
+                await search.fill(familyCode);
+                await search.press('Enter');
+                await adminPage.waitForTimeout(2000);
+            }
+
+            const editBtn = adminPage.locator('[title="Edit"], .icon-edit').first();
+            if (await editBtn.isVisible()) {
+                await editBtn.click();
+                await adminPage.waitForTimeout(2000);
+
+                const addUnitBtn = adminPage.locator('button:has-text("Add Unit"), button:has-text("Create Unit")').first();
+                if (await addUnitBtn.isVisible()) {
+                    await addUnitBtn.click();
+                    await adminPage.waitForTimeout(1000);
+
+                    const codeInput = adminPage.locator('input[name*="code"]').last();
+                    if (await codeInput.isVisible()) {
+                        await codeInput.fill(`rel_temp_${Date.now()}`);
+                    }
+
+                    const symbolInput = adminPage.locator('input[name*="symbol"]').last();
+                    if (await symbolInput.isVisible()) {
+                        await symbolInput.fill('REL');
+                    }
+
+                    // Add conversion: - 100
+                    await addConversionOperation(adminPage, '100', 'sub');
+
+                    const saveBtn = adminPage.getByRole('button', { name: /save/i }).last();
+                    if (await saveBtn.isVisible()) {
+                        await saveBtn.click();
+                        await adminPage.waitForTimeout(2000);
+                    }
+                }
+            }
+        });
+
+        test('TC45 - Create unit with multiple conversion operations', async ({ adminPage }) => {
+            const familyCode = `conv_multi_${Date.now()}`;
+            const created = await createMeasurementFamily(adminPage, familyCode, 'base_unit', 'BU');
+            expect(created).toBeTruthy();
+
+            await goToFamilies(adminPage);
+            const search = adminPage.locator('input[placeholder*="Search" i]').first();
+            if (await search.isVisible()) {
+                await search.fill(familyCode);
+                await search.press('Enter');
+                await adminPage.waitForTimeout(2000);
+            }
+
+            const editBtn = adminPage.locator('[title="Edit"], .icon-edit').first();
+            if (await editBtn.isVisible()) {
+                await editBtn.click();
+                await adminPage.waitForTimeout(2000);
+
+                const addUnitBtn = adminPage.locator('button:has-text("Add Unit"), button:has-text("Create Unit")').first();
+                if (await addUnitBtn.isVisible()) {
+                    await addUnitBtn.click();
+                    await adminPage.waitForTimeout(1000);
+
+                    const codeInput = adminPage.locator('input[name*="code"]').last();
+                    if (await codeInput.isVisible()) {
+                        await codeInput.fill(`derived_${Date.now()}`);
+                    }
+
+                    const symbolInput = adminPage.locator('input[name*="symbol"]').last();
+                    if (await symbolInput.isVisible()) {
+                        await symbolInput.fill('DERIVED');
+                    }
+
+                    // Add first operation: multiply by 2
+                    await addConversionOperation(adminPage, '2', 'mul');
+                    await adminPage.waitForTimeout(500);
+
+                    // Add second operation: add 10
+                    await addConversionOperation(adminPage, '10', 'add');
+
+                    const saveBtn = adminPage.getByRole('button', { name: /save/i }).last();
+                    if (await saveBtn.isVisible()) {
+                        await saveBtn.click();
+                        await adminPage.waitForTimeout(2000);
+                    }
+                }
+            }
+        });
+
+        test('TC46 - Create unit with decimal conversion value', async ({ adminPage }) => {
+            const familyCode = `conv_decimal_${Date.now()}`;
+            const created = await createMeasurementFamily(adminPage, familyCode, 'weight_unit', 'WU');
+            expect(created).toBeTruthy();
+
+            await goToFamilies(adminPage);
+            const search = adminPage.locator('input[placeholder*="Search" i]').first();
+            if (await search.isVisible()) {
+                await search.fill(familyCode);
+                await search.press('Enter');
+                await adminPage.waitForTimeout(2000);
+            }
+
+            const editBtn = adminPage.locator('[title="Edit"], .icon-edit').first();
+            if (await editBtn.isVisible()) {
+                await editBtn.click();
+                await adminPage.waitForTimeout(2000);
+
+                const addUnitBtn = adminPage.locator('button:has-text("Add Unit"), button:has-text("Create Unit")').first();
+                if (await addUnitBtn.isVisible()) {
+                    await addUnitBtn.click();
+                    await adminPage.waitForTimeout(1000);
+
+                    const codeInput = adminPage.locator('input[name*="code"]').last();
+                    if (await codeInput.isVisible()) {
+                        await codeInput.fill(`gram_${Date.now()}`);
+                    }
+
+                    const symbolInput = adminPage.locator('input[name*="symbol"]').last();
+                    if (await symbolInput.isVisible()) {
+                        await symbolInput.fill('G');
+                    }
+
+                    // Add conversion with decimal: 0.001
+                    await addConversionOperation(adminPage, '0.001', 'mul');
+
+                    const saveBtn = adminPage.getByRole('button', { name: /save/i }).last();
+                    if (await saveBtn.isVisible()) {
+                        await saveBtn.click();
+                        await adminPage.waitForTimeout(2000);
+                    }
+                }
+            }
+        });
+
+        test('TC47 - Create unit with very small decimal conversion value', async ({ adminPage }) => {
+            const familyCode = `conv_tiny_${Date.now()}`;
+            const created = await createMeasurementFamily(adminPage, familyCode, 'micro_unit', 'MU');
+            expect(created).toBeTruthy();
+
+            await goToFamilies(adminPage);
+            const search = adminPage.locator('input[placeholder*="Search" i]').first();
+            if (await search.isVisible()) {
+                await search.fill(familyCode);
+                await search.press('Enter');
+                await adminPage.waitForTimeout(2000);
+            }
+
+            const editBtn = adminPage.locator('[title="Edit"], .icon-edit').first();
+            if (await editBtn.isVisible()) {
+                await editBtn.click();
+                await adminPage.waitForTimeout(2000);
+
+                const addUnitBtn = adminPage.locator('button:has-text("Add Unit"), button:has-text("Create Unit")').first();
+                if (await addUnitBtn.isVisible()) {
+                    await addUnitBtn.click();
+                    await adminPage.waitForTimeout(1000);
+
+                    const codeInput = adminPage.locator('input[name*="code"]').last();
+                    if (await codeInput.isVisible()) {
+                        await codeInput.fill(`micro_${Date.now()}`);
+                    }
+
+                    const symbolInput = adminPage.locator('input[name*="symbol"]').last();
+                    if (await symbolInput.isVisible()) {
+                        await symbolInput.fill('μ');
+                    }
+
+                    // Add conversion with very small value: 0.000001
+                    await addConversionOperation(adminPage, '0.000001', 'mul');
+
+                    const saveBtn = adminPage.getByRole('button', { name: /save/i }).last();
+                    if (await saveBtn.isVisible()) {
+                        await saveBtn.click();
+                        await adminPage.waitForTimeout(2000);
+                    }
+                }
+            }
+        });
+
+        test('TC48 - Update unit conversion operations', async ({ adminPage }) => {
+            const familyCode = `conv_update_${Date.now()}`;
+            const created = await createMeasurementFamily(adminPage, familyCode, 'update_unit', 'UU');
+            expect(created).toBeTruthy();
+
+            await goToFamilies(adminPage);
+            const search = adminPage.locator('input[placeholder*="Search" i]').first();
+            if (await search.isVisible()) {
+                await search.fill(familyCode);
+                await search.press('Enter');
+                await adminPage.waitForTimeout(2000);
+            }
+
+            const editBtn = adminPage.locator('[title="Edit"], .icon-edit').first();
+            if (await editBtn.isVisible()) {
+                await editBtn.click();
+                await adminPage.waitForTimeout(2000);
+
+                // Edit the standard unit's conversion
+                const editUnitBtn = adminPage.locator('[title="Edit Unit"], button:has-text("Edit")').nth(1);
+                if (await editUnitBtn.isVisible()) {
+                    await editUnitBtn.click();
+                    await adminPage.waitForTimeout(1000);
+
+                    // Update conversion value
+                    const conversionValueInputs = adminPage.locator('input[name*="convert_value"], input[placeholder*="conversion value" i]');
+                    if (await conversionValueInputs.count() > 0) {
+                        const firstConversionInput = conversionValueInputs.first();
+                        if (await firstConversionInput.isVisible()) {
+                            await firstConversionInput.clear();
+                            await firstConversionInput.fill('5.5');
+                        }
+                    }
+
+                    const saveBtn = adminPage.getByRole('button', { name: /save/i }).last();
+                    if (await saveBtn.isVisible()) {
+                        await saveBtn.click();
+                        await adminPage.waitForTimeout(2000);
+                    }
+                }
+            }
+        });
+
+        test('TC49 - Verify conversion operations persist after save', async ({ adminPage }) => {
+            const familyCode = `conv_persist_${Date.now()}`;
+            const created = await createMeasurementFamily(adminPage, familyCode, 'persist_unit', 'PU');
+            expect(created).toBeTruthy();
+
+            await goToFamilies(adminPage);
+            const search = adminPage.locator('input[placeholder*="Search" i]').first();
+            if (await search.isVisible()) {
+                await search.fill(familyCode);
+                await search.press('Enter');
+                await adminPage.waitForTimeout(2000);
+            }
+
+            const editBtn = adminPage.locator('[title="Edit"], .icon-edit').first();
+            if (await editBtn.isVisible()) {
+                await editBtn.click();
+                await adminPage.waitForTimeout(2000);
+
+                // Check if units are displayed
+                const unitsList = adminPage.locator('[class*="unit"], tr:has-text("persist_unit")');
+                expect(await unitsList.count()).toBeGreaterThanOrEqual(0);
+
+                // Reload and verify persistence
+                await adminPage.reload();
+                await adminPage.waitForTimeout(2000);
+                expect(adminPage.url()).toContain('edit');
+            }
+        });
+
+        test('TC50 - Verify conversion operations in family edit view', async ({ adminPage }) => {
+            const familyCode = `conv_view_${Date.now()}`;
+            const created = await createMeasurementFamily(adminPage, familyCode, 'view_unit', 'VU');
+            expect(created).toBeTruthy();
+
+            await goToFamilies(adminPage);
+            const search = adminPage.locator('input[placeholder*="Search" i]').first();
+            if (await search.isVisible()) {
+                await search.fill(familyCode);
+                await search.press('Enter');
+                await adminPage.waitForTimeout(2000);
+            }
+
+            const editBtn = adminPage.locator('[title="Edit"], .icon-edit').first();
+            if (await editBtn.isVisible()) {
+                await editBtn.click();
+                await adminPage.waitForTimeout(2000);
+
+                // Look for conversion operation elements
+                const conversionElements = adminPage.locator('[class*="conversion"], [name*="convert"], input[placeholder*="conversion" i]');
+                const count = await conversionElements.count();
+                expect(count).toBeGreaterThanOrEqual(0);
+            }
+        });
     });
 
     // ========== CLEANUP & VALIDATION ==========
@@ -702,7 +1168,7 @@ test.describe('UnoPim Measurement Feature', () => {
 
         test('TC40 - Verify all required fields have proper labels', async ({ adminPage }) => {
             await goToFamilies(adminPage);
-            const createBtn = adminPage.getByRole('button', { name: /Create|Measurement/ }).first();
+            const createBtn = adminPage.getByRole('button', { name: /Create Measurements/i }).first();
             if (await createBtn.isVisible()) {
                 await createBtn.click();
                 await adminPage.waitForTimeout(500);

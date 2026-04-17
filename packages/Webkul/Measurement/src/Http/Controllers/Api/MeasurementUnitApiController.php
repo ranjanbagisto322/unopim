@@ -42,9 +42,13 @@ class MeasurementUnitApiController extends Controller
         }
 
         $request->validate([
-            'code'   => 'required|string',
-            'labels' => 'required|array',
-            'symbol' => 'nullable|string',
+            'code'        => 'required|string',
+            'labels'      => 'required|array',
+            'symbol'      => 'nullable|string',
+            'convert_from_standard' => 'nullable|array',
+            'convert_from_standard.*' => 'nullable|string',
+            'convert_value' => 'nullable|array',
+            'convert_value.*' => 'nullable|numeric',
         ]);
 
         $units = $family->units ?? [];
@@ -56,10 +60,29 @@ class MeasurementUnitApiController extends Controller
             ], 422);
         }
 
+        $conversionOperators = $request->input('convert_from_standard', []);
+        $conversionValues = $request->input('convert_value', []);
+
+        $conversionRows = [];
+        foreach ((array) $conversionOperators as $index => $operator) {
+            $conversionRows[] = [
+                'operator' => $operator ?: 'mul',
+                'value'    => isset($conversionValues[$index]) ? (string) $conversionValues[$index] : null,
+            ];
+        }
+
+        if (count($conversionRows) === 0) {
+            $conversionRows[] = [
+                'operator' => 'mul',
+                'value'    => null,
+            ];
+        }
+
         $units[] = [
             'code'   => $request->code,
             'labels' => $request->labels,
             'symbol' => $request->symbol,
+            'convert_from_standard' => array_slice($conversionRows, 0, 4),
         ];
 
         $this->repository->update(['units' => $units], $familyId);
@@ -83,7 +106,11 @@ class MeasurementUnitApiController extends Controller
 
         $request->validate([
             'labels' => 'nullable|array',
-            'symbol' => 'required|string',
+            'symbol' => 'nullable|string',
+            'convert_from_standard' => 'nullable|array',
+            'convert_from_standard.*' => 'nullable|string',
+            'convert_value' => 'nullable|array',
+            'convert_value.*' => 'nullable|numeric',
         ]);
 
         $units = $family->units ?? [];
@@ -93,6 +120,29 @@ class MeasurementUnitApiController extends Controller
             if ($unit['code'] === $code) {
                 $unit['labels'] = array_merge($unit['labels'] ?? [], $request->labels ?? []);
                 $unit['symbol'] = $request->symbol;
+
+                if ($code !== $family->standard_unit) {
+                    $conversionOperators = $request->input('convert_from_standard', []);
+                    $conversionValues = $request->input('convert_value', []);
+
+                    $conversionRows = [];
+                    foreach ((array) $conversionOperators as $index => $operator) {
+                        $conversionRows[] = [
+                            'operator' => $operator ?: 'mul',
+                            'value'    => isset($conversionValues[$index]) ? (string) $conversionValues[$index] : null,
+                        ];
+                    }
+
+                    if (count($conversionRows) === 0) {
+                        $conversionRows[] = [
+                            'operator' => 'mul',
+                            'value'    => null,
+                        ];
+                    }
+
+                    $unit['convert_from_standard'] = array_slice($conversionRows, 0, 4);
+                }
+
                 $updated = true;
                 break;
             }
