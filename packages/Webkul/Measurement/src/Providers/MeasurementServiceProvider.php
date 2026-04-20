@@ -56,6 +56,11 @@ class MeasurementServiceProvider extends ServiceProvider
             \Webkul\Measurement\Helpers\Exporters\ProductExporter::class
         );
 
+        $this->app->bind(
+            \Webkul\DataTransfer\Helpers\Importers\Product\Importer::class,
+            \Webkul\Measurement\Helpers\Importers\Product\Importer::class
+        );
+
         Route::prefix('api')
             ->middleware('api')
             ->group(__DIR__.'/../Routes/api.php');

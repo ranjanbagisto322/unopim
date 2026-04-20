@@ -23,11 +23,17 @@ class FieldProcessor extends CoreFieldProcessor
                 $value = str_replace('|', ',', $value);
                 [$unit, $val] = array_map('trim', explode(',', $value, 2));
 
-                return $this->measurementHelper->getMeasurementValueStructure($val, $unit, $field);
+                return [
+                    'value' => $val,
+                    'unit'  => $unit,
+                ];
             }
 
             if (is_array($value) && isset($value['value'], $value['unit'])) {
-                return $this->measurementHelper->getMeasurementValueStructure($value['value'], $value['unit'], $field);
+                return [
+                    'value' => $value['value'],
+                    'unit'  => $value['unit'],
+                ];
             }
 
             return $value;
