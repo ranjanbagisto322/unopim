@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Event;
 use Webkul\Attribute\Models\Attribute;
 use Webkul\Product\Models\Product;
 
@@ -65,6 +66,31 @@ it('should fetch attributes for bulk edit modal', function () {
     $options = collect($response->json('options'));
 
     $this->assertTrue($options->where('code', 'sku')->isEmpty(), 'SKU should be excluded from bulk edit attributes');
+});
+
+it('fires catalog.product.bulk.edit.after once with all processed product IDs', function () {
+    $products = Product::factory()->count(2)->create();
+
+    Event::fake(['catalog.product.bulk.edit.after']);
+
+    // Sync queue in the test env runs BulkProductUpdate inline, so the event
+    // fires within this request. Payload mirrors what the bulk-edit Vue
+    // spreadsheet posts: { product_id: { attribute_code: value } }.
+    $payload = [];
+    foreach ($products as $product) {
+        $payload[$product->id] = ['sku' => $product->sku];
+    }
+
+    $this->postJson(route('admin.catalog.products.bulk-edit.save'), ['data' => $payload])
+        ->assertOk();
+
+    // One bulk event is dispatched carrying all processed product IDs.
+    // The payload is ['ids' => [...]], matching how call_user_func_array passes it.
+    Event::assertDispatched('catalog.product.bulk.edit.after', function ($event, $payload) use ($products) {
+        $ids = $payload['ids'] ?? [];
+
+        return count(array_intersect($products->pluck('id')->toArray(), $ids)) === $products->count();
+    });
 });
 
 it('should display readable channel and locale names in column headers', function () {
