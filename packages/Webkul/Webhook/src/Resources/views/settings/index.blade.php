@@ -1,13 +1,9 @@
 @php
     $activeTab = match (true) {
-        request()->has('logs')    => 'logs',
-        request()->has('history') => 'history',
-        default                   => 'general',
+        request()->has('logs') && bouncer()->hasPermission('configuration.webhook.logs') => 'logs',
+        request()->has('history')                                                        => 'history',
+        default                                                                          => 'general',
     };
-
-    if ($activeTab === 'logs' && ! bouncer()->hasPermission('configuration.webhook.logs')) {
-        $activeTab = 'general';
-    }
 @endphp
 
 <x-admin::layouts.with-history
