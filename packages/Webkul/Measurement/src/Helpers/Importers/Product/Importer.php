@@ -2,6 +2,7 @@
 
 namespace Webkul\Measurement\Helpers\Importers\Product;
 
+use Webkul\DataTransfer\Helpers\Formatters\EscapeFormulaOperators;
 use Webkul\DataTransfer\Helpers\Importers\Product\Importer as CoreImporter;
 
 class Importer extends CoreImporter
@@ -133,8 +134,8 @@ class Importer extends CoreImporter
 
             // Handle measurement attributes with unit column
             if ($attribute->type === 'measurement') {
-                $unitColumnName = $attributeCode . '(unit)';
-                $unitUnderscoreName = $attributeCode . '_unit';
+                $unitColumnName = $attributeCode.'(unit)';
+                $unitUnderscoreName = $attributeCode.'_unit';
 
                 $unit = $rowData[$unitColumnName]
                     ?? $rowData[$unitUnderscoreName]
@@ -149,7 +150,7 @@ class Importer extends CoreImporter
                 }
 
                 $value = $this->fieldProcessor->handleField($attribute, $value, $imageDirPath);
-            
+
             } else {
                 $value = $this->fieldProcessor->handleField($attribute, $value, $imageDirPath);
 
@@ -157,9 +158,9 @@ class Importer extends CoreImporter
                     $value = $this->formatPriceValueWithCurrency($currencyCode, $value, $attribute->getValueFromProductValues($attributeValues, $rowData['channel'] ?? null, $rowData['locale'] ?? null));
                 }
             }
-            
-            $value = \Webkul\DataTransfer\Helpers\Formatters\EscapeFormulaOperators::unescapeValue($value);
-            
+
+            $value = EscapeFormulaOperators::unescapeValue($value);
+
             $attribute->setProductValue($value, $attributeValues, $rowData['channel'] ?? null, $rowData['locale'] ?? null);
         }
     }

@@ -8,26 +8,26 @@ return [
 
     'measurement' => [
         'index' => [
-            'create'   => 'Messfamilie erstellen',
-            'code'     => 'Code',
-            'standard' => 'Standard-Einheitencode',
-            'symbol'   => 'Symbol',
-            'save'     => 'Speichern',
+            'create'                => 'Messfamilie erstellen',
+            'code'                  => 'Code',
+            'standard'              => 'Standard-Einheitencode',
+            'symbol'                => 'Symbol',
+            'save'                  => 'Speichern',
             'conversion_operation'  => 'Conversion operation',
             'add_new_operation'     => 'Add New Operation',
         ],
 
         'edit' => [
-            'measurement_edit' => 'Messfamilie bearbeiten',
-            'back'             => 'Zurück',
-            'save'             => 'Speichern',
+            'measurement_edit'      => 'Messfamilie bearbeiten',
+            'back'                  => 'Zurück',
+            'save'                  => 'Speichern',
             'conversion_operation'  => 'Conversion operation',
             'add_new_operation'     => 'Add New Operation',
-            'general'          => 'Allgemein',
-            'code'             => 'Code',
-            'label'            => 'Bezeichnung',
-            'units'            => 'Einheiten',
-            'create_units'     => 'Einheiten erstellen',
+            'general'               => 'Allgemein',
+            'code'                  => 'Code',
+            'label'                 => 'Bezeichnung',
+            'units'                 => 'Einheiten',
+            'create_units'          => 'Einheiten erstellen',
         ],
 
         'unit' => [

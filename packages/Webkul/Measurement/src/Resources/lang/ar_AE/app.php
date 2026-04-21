@@ -8,26 +8,26 @@ return [
 
     'measurement' => [
         'index' => [
-            'create'   => 'إنشاء عائلة القياس',
-            'code'     => 'الرمز',
-            'standard' => 'رمز الوحدة القياسية',
-            'symbol'   => 'الرمز',
-            'save'     => 'حفظ',
+            'create'                => 'إنشاء عائلة القياس',
+            'code'                  => 'الرمز',
+            'standard'              => 'رمز الوحدة القياسية',
+            'symbol'                => 'الرمز',
+            'save'                  => 'حفظ',
             'conversion_operation'  => 'Conversion operation',
             'add_new_operation'     => 'Add New Operation',
         ],
 
         'edit' => [
-            'measurement_edit' => 'تعديل عائلة القياس',
-            'back'             => 'رجوع',
-            'save'             => 'حفظ',
+            'measurement_edit'      => 'تعديل عائلة القياس',
+            'back'                  => 'رجوع',
+            'save'                  => 'حفظ',
             'conversion_operation'  => 'Conversion operation',
             'add_new_operation'     => 'Add New Operation',
-            'general'          => 'عام',
-            'code'             => 'الرمز',
-            'label'            => 'التسمية',
-            'units'            => 'الوحدات',
-            'create_units'     => 'إنشاء وحدات',
+            'general'               => 'عام',
+            'code'                  => 'الرمز',
+            'label'                 => 'التسمية',
+            'units'                 => 'الوحدات',
+            'create_units'          => 'إنشاء وحدات',
         ],
 
         'unit' => [

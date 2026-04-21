@@ -2,8 +2,8 @@
 
 namespace Webkul\Measurement\Helpers\Exporters;
 
-use Webkul\DataTransfer\Helpers\Exporters\Product\Exporter as CoreExporter;
 use Webkul\Attribute\Rules\AttributeTypes;
+use Webkul\DataTransfer\Helpers\Exporters\Product\Exporter as CoreExporter;
 use Webkul\DataTransfer\Helpers\Formatters\EscapeFormulaOperators;
 
 class ProductExporter extends CoreExporter

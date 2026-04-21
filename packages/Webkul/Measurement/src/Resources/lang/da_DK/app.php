@@ -8,26 +8,26 @@ return [
 
     'measurement' => [
         'index' => [
-            'create'   => 'Opret målefamilie',
-            'code'     => 'Kode',
-            'standard' => 'Standard enhedskode',
-            'symbol'   => 'Symbol',
-            'save'     => 'Gem',
+            'create'                => 'Opret målefamilie',
+            'code'                  => 'Kode',
+            'standard'              => 'Standard enhedskode',
+            'symbol'                => 'Symbol',
+            'save'                  => 'Gem',
             'conversion_operation'  => 'Conversion operation',
             'add_new_operation'     => 'Add New Operation',
         ],
 
         'edit' => [
-            'measurement_edit' => 'Rediger målefamilie',
-            'back'             => 'Tilbage',
-            'save'             => 'Gem',
+            'measurement_edit'      => 'Rediger målefamilie',
+            'back'                  => 'Tilbage',
+            'save'                  => 'Gem',
             'conversion_operation'  => 'Conversion operation',
             'add_new_operation'     => 'Add New Operation',
-            'general'          => 'Generelt',
-            'code'             => 'Kode',
-            'label'            => 'Etiket',
-            'units'            => 'Enheder',
-            'create_units'     => 'Opret enheder',
+            'general'               => 'Generelt',
+            'code'                  => 'Kode',
+            'label'                 => 'Etiket',
+            'units'                 => 'Enheder',
+            'create_units'          => 'Opret enheder',
         ],
 
         'unit' => [

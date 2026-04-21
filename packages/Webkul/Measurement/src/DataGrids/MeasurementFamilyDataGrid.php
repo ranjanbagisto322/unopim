@@ -69,14 +69,14 @@ class MeasurementFamilyDataGrid extends DataGrid
 
                 $units = json_decode($row->units ?? '[]', true);
                 $standardUnitCode = $row->standard_unit;
-                $locale = app()->getLocale(); 
+                $locale = app()->getLocale();
 
                 if (! empty($units)) {
                     foreach ($units as $unit) {
                         if (($unit['code'] ?? null) === $standardUnitCode) {
 
-                            return $unit['labels'][$locale] 
-                                ?? $unit['labels']['en_US'] 
+                            return $unit['labels'][$locale]
+                                ?? $unit['labels']['en_US']
                                 ?? $standardUnitCode;
                         }
                     }

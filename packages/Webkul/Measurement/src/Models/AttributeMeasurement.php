@@ -3,6 +3,7 @@
 namespace Webkul\Measurement\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Webkul\Attribute\Models\Attribute;
 
 class AttributeMeasurement extends Model
 {
@@ -16,7 +17,7 @@ class AttributeMeasurement extends Model
 
     public function attribute()
     {
-        return $this->belongsTo(\Webkul\Attribute\Models\Attribute::class, 'attribute_id');
+        return $this->belongsTo(Attribute::class, 'attribute_id');
     }
 
     public function family()

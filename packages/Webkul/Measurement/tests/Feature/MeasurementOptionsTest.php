@@ -3,9 +3,10 @@
 use Webkul\Attribute\Models\Attribute;
 use Webkul\Measurement\Models\AttributeMeasurement;
 use Webkul\Measurement\Models\MeasurementFamily;
+use Webkul\Measurement\Tests\MeasurementTestCase;
 
 uses(
-    Webkul\Measurement\Tests\MeasurementTestCase::class
+    MeasurementTestCase::class
 )->group('measurement', 'admin');
 
 beforeEach(function () {

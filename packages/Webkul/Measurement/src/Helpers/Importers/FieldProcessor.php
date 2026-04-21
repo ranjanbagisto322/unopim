@@ -3,6 +3,7 @@
 namespace Webkul\Measurement\Helpers\Importers;
 
 use Webkul\DataTransfer\Helpers\Importers\FieldProcessor as CoreFieldProcessor;
+use Webkul\Measurement\Helpers\MeasurementHelper;
 
 class FieldProcessor extends CoreFieldProcessor
 {
@@ -10,13 +11,13 @@ class FieldProcessor extends CoreFieldProcessor
 
     public function __construct()
     {
-        $this->measurementHelper = app(\Webkul\Measurement\Helpers\MeasurementHelper::class);
+        $this->measurementHelper = app(MeasurementHelper::class);
     }
 
     public function handleField($field, mixed $value, ?string $path = null)
     {
         $path = $path ?? '';
-     
+
         if ($field->type === 'measurement' && ! empty($value)) {
 
             if (is_string($value)) {

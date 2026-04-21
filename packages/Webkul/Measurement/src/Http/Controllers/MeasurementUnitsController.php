@@ -6,15 +6,15 @@ use Illuminate\Http\JsonResponse;
 use Webkul\Admin\Http\Controllers\Controller;
 use Webkul\Core\Repositories\LocaleRepository;
 use Webkul\Measurement\DataGrids\UnitDataGrid;
-use Webkul\Measurement\Repository\MeasurementFamilyRepository;
 use Webkul\Measurement\Repository\AttributeMeasurementRepository;
+use Webkul\Measurement\Repository\MeasurementFamilyRepository;
 
 class MeasurementUnitsController extends Controller
 {
     public function __construct(
         protected MeasurementFamilyRepository $measurementFamilyRepository,
         protected LocaleRepository $localeRepository,
-        protected \Webkul\Measurement\Repository\AttributeMeasurementRepository $attributeMeasurementRepository
+        protected AttributeMeasurementRepository $attributeMeasurementRepository
     ) {}
 
     public function units($id)
@@ -29,7 +29,7 @@ class MeasurementUnitsController extends Controller
 
         $family = $this->measurementFamilyRepository->find($id);
         $locales = $this->localeRepository->getActiveLocales();
-        
+
         $operationOptions = [
             ['value' => 'mul', 'label' => 'Multiply'],
             ['value' => 'div', 'label' => 'Divide'],
@@ -61,14 +61,14 @@ class MeasurementUnitsController extends Controller
         }
 
         request()->validate([
-            'code'        => 'required|string',
-            'labels'      => 'required|array',
-            'labels.*'    => 'nullable|string',
-            'symbol'      => 'nullable|string',
-            'convert_from_standard' => 'nullable|array',
+            'code'                    => 'required|string',
+            'labels'                  => 'required|array',
+            'labels.*'                => 'nullable|string',
+            'symbol'                  => 'nullable|string',
+            'convert_from_standard'   => 'nullable|array',
             'convert_from_standard.*' => 'nullable|string',
-            'convert_value' => 'nullable|array',
-            'convert_value.*' => 'nullable|numeric',
+            'convert_value'           => 'nullable|array',
+            'convert_value.*'         => 'nullable|numeric',
         ]);
 
         $units = $family->units ?? [];
@@ -98,9 +98,9 @@ class MeasurementUnitsController extends Controller
         }
 
         $newUnit = [
-            'code'   => request('code'),
-            'labels' => request('labels'),
-            'symbol' => request('symbol'),
+            'code'                  => request('code'),
+            'labels'                => request('labels'),
+            'symbol'                => request('symbol'),
             'convert_from_standard' => array_slice($conversionRows, 0, 4),
         ];
 
@@ -134,7 +134,7 @@ class MeasurementUnitsController extends Controller
 
         }
 
-       $isStandard = $family->standard_unit === $code;
+        $isStandard = $family->standard_unit === $code;
 
         $isUsedInProducts = $this->attributeMeasurementRepository->findWhere(['unit_code' => $code])->count() > 0;
 
@@ -142,12 +142,12 @@ class MeasurementUnitsController extends Controller
             'data' => [
                 ...$unit,
                 'is_used_in_products' => $isUsedInProducts,
-                
-                'is_standard' => $isStandard,
-                'status'     => isset($unit['status']) ? (bool) $unit['status'] : true,
-                'labels'     => $unit['labels'] ?? [],
-                'precision'  => $unit['precision'] ?? null,
-                'symbol'     => $unit['symbol'] ?? null,
+
+                'is_standard'           => $isStandard,
+                'status'                => isset($unit['status']) ? (bool) $unit['status'] : true,
+                'labels'                => $unit['labels'] ?? [],
+                'precision'             => $unit['precision'] ?? null,
+                'symbol'                => $unit['symbol'] ?? null,
                 'convert_from_standard' => is_array($unit['convert_from_standard'] ?? null)
                     ? $unit['convert_from_standard']
                     : [
@@ -157,7 +157,7 @@ class MeasurementUnitsController extends Controller
                         ],
                     ],
                 'convert_value' => $unit['convert_value'] ?? null,
-                'family_id'  => $familyId,
+                'family_id'     => $familyId,
             ],
         ]);
     }
@@ -175,13 +175,13 @@ class MeasurementUnitsController extends Controller
         }
 
         request()->validate([
-            'symbol'      => 'required|string',
-            'labels'      => 'nullable|array',
-            'labels.*'    => 'nullable|string',
-            'convert_from_standard' => 'nullable|array',
+            'symbol'                  => 'required|string',
+            'labels'                  => 'nullable|array',
+            'labels.*'                => 'nullable|string',
+            'convert_from_standard'   => 'nullable|array',
             'convert_from_standard.*' => 'nullable|string',
-            'convert_value' => 'nullable|array',
-            'convert_value.*' => 'nullable|numeric',
+            'convert_value'           => 'nullable|array',
+            'convert_value.*'         => 'nullable|numeric',
         ]);
 
         $units = $family->units ?? [];

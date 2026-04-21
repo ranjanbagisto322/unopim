@@ -2,12 +2,18 @@
 
 namespace Webkul\Measurement\Providers;
 
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Console\Events\CommandFinished;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\ServiceProvider;
+use Webkul\DataTransfer\Helpers\Exporters\Product\Exporter;
+use Webkul\DataTransfer\Helpers\Importers\FieldProcessor;
+use Webkul\DataTransfer\Helpers\Importers\Product\Importer;
 use Webkul\Measurement\Database\Seeders\MeasurementFamilySeeder;
+use Webkul\Measurement\Helpers\Exporters\ProductExporter;
+use Webkul\Measurement\Observers\ProductObserver;
+use Webkul\Product\Models\Product;
 
 class MeasurementServiceProvider extends ServiceProvider
 {
@@ -33,31 +39,31 @@ class MeasurementServiceProvider extends ServiceProvider
             Event::listen(CommandFinished::class, function ($event) {
                 if ($event->command === 'unopim:install') {
                     Artisan::call('db:seed', [
-                        '--class' => MeasurementFamilySeeder::class
+                        '--class' => MeasurementFamilySeeder::class,
                     ]);
                 }
             });
         }
-        
-        \Webkul\Product\Models\Product::observe(\Webkul\Measurement\Observers\ProductObserver::class);
+
+        Product::observe(ProductObserver::class);
     }
 
     public function register()
     {
         $this->app->register(MeasurementEventServiceProvider::class);
-        
+
         $this->app->bind(
-            \Webkul\DataTransfer\Helpers\Importers\FieldProcessor::class,
+            FieldProcessor::class,
             \Webkul\Measurement\Helpers\Importers\FieldProcessor::class
         );
 
         $this->app->bind(
-            \Webkul\DataTransfer\Helpers\Exporters\Product\Exporter::class,
-            \Webkul\Measurement\Helpers\Exporters\ProductExporter::class
+            Exporter::class,
+            ProductExporter::class
         );
 
         $this->app->bind(
-            \Webkul\DataTransfer\Helpers\Importers\Product\Importer::class,
+            Importer::class,
             \Webkul\Measurement\Helpers\Importers\Product\Importer::class
         );
 

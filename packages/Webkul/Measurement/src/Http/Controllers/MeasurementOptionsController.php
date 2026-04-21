@@ -62,7 +62,6 @@ class MeasurementOptionsController extends AbstractOptionsController
         $currentLocale = app()->getLocale();
         $currentLang = strtok($currentLocale, '_');
 
-
         $family = $this->measurementFamilyRepository->findOneByField('code', $familyCode);
         $defaultUnit = $attributeMeasurement?->unit_code;
 
@@ -104,18 +103,18 @@ class MeasurementOptionsController extends AbstractOptionsController
     }
 
     protected function formatCollection(
-    Collection $collection,
-    int $page,
-    int $limit,
-    string $query,
-    array $queryParams,
-    string $defaultUnit = null 
+        Collection $collection,
+        int $page,
+        int $limit,
+        string $query,
+        array $queryParams,
+        ?string $defaultUnit = null
     ): array {
         $selectedValue = $queryParams['identifiers']['value'] ?? null;
 
         if (empty($selectedValue) || $selectedValue === '__auto__') {
             $collection = $collection->sortByDesc('is_default');
-            
+
             if (empty($selectedValue) && $collection->where('is_default', true)->first()) {
 
             }
@@ -132,4 +131,3 @@ class MeasurementOptionsController extends AbstractOptionsController
         ];
     }
 }
-

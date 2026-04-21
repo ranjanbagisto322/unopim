@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use Webkul\Admin\Http\Controllers\Controller;
 use Webkul\Core\Repositories\LocaleRepository;
 use Webkul\Measurement\DataGrids\MeasurementFamilyDataGrid;
-use Webkul\Measurement\Repository\MeasurementFamilyRepository;
 use Webkul\Measurement\Repository\AttributeMeasurementRepository;
+use Webkul\Measurement\Repository\MeasurementFamilyRepository;
 
 class MeasurementFamilyController extends Controller
 {
@@ -38,17 +38,17 @@ class MeasurementFamilyController extends Controller
 
         try {
             $familyLabels = $request->input('labels', []);
-            $unitLabels   = $request->input('unit_labels', []);
+            $unitLabels = $request->input('unit_labels', []);
 
             $units = [
                 [
-                    'code'   => $request->standard_unit_code,
-                    'labels' => $unitLabels,
-                    'symbol' => $request->symbol,
+                    'code'                  => $request->standard_unit_code,
+                    'labels'                => $unitLabels,
+                    'symbol'                => $request->symbol,
                     'convert_from_standard' => [
                         [
-                            'value'    => "1",
-                            'operator' => "mul",
+                            'value'    => '1',
+                            'operator' => 'mul',
                         ],
                     ],
                 ],
@@ -82,7 +82,7 @@ class MeasurementFamilyController extends Controller
         } catch (\Exception $e) {
 
             return response()->json([
-                'error' => 'Something went wrong. Please try again.',
+                'error'   => 'Something went wrong. Please try again.',
                 'message' => $e->getMessage(),
             ], 500);
         }
@@ -93,7 +93,7 @@ class MeasurementFamilyController extends Controller
         $family = $this->measurementFamilyRepository->find($id);
         $labels = $family->labels ?? [];
         $locales = $this->localeRepository->getActiveLocales();
-        
+
         $operationOptions = [
             ['value' => 'mul', 'label' => 'Multiply'],
             ['value' => 'div', 'label' => 'Divide'],
@@ -209,5 +209,4 @@ class MeasurementFamilyController extends Controller
 
         return redirect()->back();
     }
-
 }

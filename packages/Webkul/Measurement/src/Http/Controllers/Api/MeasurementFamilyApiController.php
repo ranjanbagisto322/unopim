@@ -44,7 +44,7 @@ class MeasurementFamilyApiController extends Controller
         foreach ($data['units'] as &$unit) {
             if ($unit['code'] === $data['standard_unit']) {
                 $unit['convert_from_standard'] = [
-                    ['operator' => 'mul', 'value' => '1']
+                    ['operator' => 'mul', 'value' => '1'],
                 ];
                 break;
             }

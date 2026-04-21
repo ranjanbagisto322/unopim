@@ -154,6 +154,4 @@ class UnitDataGrid extends DataGrid
             },
         ]);
     }
-
-    
 }

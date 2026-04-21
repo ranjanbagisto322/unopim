@@ -16,12 +16,12 @@ use Webkul\FPC\Providers\FPCServiceProvider;
 use Webkul\HistoryControl\Providers\HistoryControlServiceProvider;
 use Webkul\Installer\Providers\InstallerServiceProvider;
 use Webkul\MagicAI\Providers\MagicAIServiceProvider;
+use Webkul\Measurement\Providers\MeasurementServiceProvider;
 use Webkul\Notification\Providers\NotificationServiceProvider;
 use Webkul\Product\Providers\ProductServiceProvider;
 use Webkul\Theme\Providers\ThemeServiceProvider;
 use Webkul\User\Providers\UserServiceProvider;
 use Webkul\Webhook\Providers\WebhookServiceProvider;
-use Webkul\Measurement\Providers\MeasurementServiceProvider;
 
 return [
     /*

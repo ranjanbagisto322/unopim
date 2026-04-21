@@ -8,26 +8,26 @@ return [
 
     'measurement' => [
         'index' => [
-            'create'   => 'Luo mittausperhe',
-            'code'     => 'Koodi',
-            'standard' => 'Vakioyksikön koodi',
-            'symbol'   => 'Symboli',
-            'save'     => 'Tallenna',
+            'create'                => 'Luo mittausperhe',
+            'code'                  => 'Koodi',
+            'standard'              => 'Vakioyksikön koodi',
+            'symbol'                => 'Symboli',
+            'save'                  => 'Tallenna',
             'conversion_operation'  => 'Conversion operation',
             'add_new_operation'     => 'Add New Operation',
         ],
 
         'edit' => [
-            'measurement_edit' => 'Muokkaa mittausperhettä',
-            'back'             => 'Takaisin',
-            'save'             => 'Tallenna',
+            'measurement_edit'      => 'Muokkaa mittausperhettä',
+            'back'                  => 'Takaisin',
+            'save'                  => 'Tallenna',
             'conversion_operation'  => 'Conversion operation',
             'add_new_operation'     => 'Add New Operation',
-            'general'          => 'Yleinen',
-            'code'             => 'Koodi',
-            'label'            => 'Nimike',
-            'units'            => 'Yksiköt',
-            'create_units'     => 'Luo yksiköt',
+            'general'               => 'Yleinen',
+            'code'                  => 'Koodi',
+            'label'                 => 'Nimike',
+            'units'                 => 'Yksiköt',
+            'create_units'          => 'Luo yksiköt',
         ],
 
         'unit' => [

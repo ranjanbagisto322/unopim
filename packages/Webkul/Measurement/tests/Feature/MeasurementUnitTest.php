@@ -1,9 +1,10 @@
 <?php
 
 use Webkul\Measurement\Models\MeasurementFamily;
+use Webkul\Measurement\Tests\MeasurementTestCase;
 
 uses(
-    Webkul\Measurement\Tests\MeasurementTestCase::class
+    MeasurementTestCase::class
 )->group('measurement', 'admin');
 
 beforeEach(function () {
@@ -130,11 +131,11 @@ it('should create a unit with conversion data successfully', function () {
     ])->post(
         route('admin.measurement.families.units.store', $family->id),
         [
-            'code' => 'meter',
-            'symbol' => 'm',
-            'labels' => ['en_US' => 'Meter'],
+            'code'                  => 'meter',
+            'symbol'                => 'm',
+            'labels'                => ['en_US' => 'Meter'],
             'convert_from_standard' => ['mul', 'add'],
-            'convert_value' => ['1', '10'],
+            'convert_value'         => ['1', '10'],
         ]
     )
         ->assertOk()
@@ -154,11 +155,11 @@ it('should create a unit with conversion data successfully', function () {
 it('should update unit conversion successfully', function () {
     $family = familyWithUnits([
         [
-            'code' => 'meter',
-            'symbol' => 'm',
-            'labels' => ['en_US' => 'Meter'],
+            'code'                  => 'meter',
+            'symbol'                => 'm',
+            'labels'                => ['en_US' => 'Meter'],
             'convert_from_standard' => ['mul'],
-            'convert_value' => ['1'],
+            'convert_value'         => ['1'],
         ],
     ]);
 
@@ -168,10 +169,10 @@ it('should update unit conversion successfully', function () {
             ['familyId' => $family->id, 'code' => 'meter']
         ),
         [
-            'symbol' => 'mtr',
-            'labels' => ['hi_IN' => 'मीटर'],
+            'symbol'                => 'mtr',
+            'labels'                => ['hi_IN' => 'मीटर'],
             'convert_from_standard' => ['div', 'add'],
-            'convert_value' => ['2', '5'],
+            'convert_value'         => ['2', '5'],
         ]
     )
         ->assertRedirect();

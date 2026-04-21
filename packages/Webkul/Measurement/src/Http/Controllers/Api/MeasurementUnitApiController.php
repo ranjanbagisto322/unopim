@@ -42,13 +42,13 @@ class MeasurementUnitApiController extends Controller
         }
 
         $request->validate([
-            'code'        => 'required|string',
-            'labels'      => 'required|array',
-            'symbol'      => 'nullable|string',
-            'convert_from_standard' => 'nullable|array',
+            'code'                    => 'required|string',
+            'labels'                  => 'required|array',
+            'symbol'                  => 'nullable|string',
+            'convert_from_standard'   => 'nullable|array',
             'convert_from_standard.*' => 'nullable|string',
-            'convert_value' => 'nullable|array',
-            'convert_value.*' => 'nullable|numeric',
+            'convert_value'           => 'nullable|array',
+            'convert_value.*'         => 'nullable|numeric',
         ]);
 
         $units = $family->units ?? [];
@@ -79,9 +79,9 @@ class MeasurementUnitApiController extends Controller
         }
 
         $units[] = [
-            'code'   => $request->code,
-            'labels' => $request->labels,
-            'symbol' => $request->symbol,
+            'code'                  => $request->code,
+            'labels'                => $request->labels,
+            'symbol'                => $request->symbol,
             'convert_from_standard' => array_slice($conversionRows, 0, 4),
         ];
 
@@ -105,12 +105,12 @@ class MeasurementUnitApiController extends Controller
         }
 
         $request->validate([
-            'labels' => 'nullable|array',
-            'symbol' => 'nullable|string',
-            'convert_from_standard' => 'nullable|array',
+            'labels'                  => 'nullable|array',
+            'symbol'                  => 'nullable|string',
+            'convert_from_standard'   => 'nullable|array',
             'convert_from_standard.*' => 'nullable|string',
-            'convert_value' => 'nullable|array',
-            'convert_value.*' => 'nullable|numeric',
+            'convert_value'           => 'nullable|array',
+            'convert_value.*'         => 'nullable|numeric',
         ]);
 
         $units = $family->units ?? [];

@@ -8,27 +8,27 @@ return [
 
     'measurement' => [
         'index' => [
-            'create'   => 'Create Measurements',
-            'code'     => 'Code',
-            'standard' => 'Standard Unit Code',
-            'symbol'   => 'Symbol',
-            'save'     => 'Save',
+            'create'                => 'Create Measurements',
+            'code'                  => 'Code',
+            'standard'              => 'Standard Unit Code',
+            'symbol'                => 'Symbol',
+            'save'                  => 'Save',
             'conversion_operation'  => 'Conversion operation',
             'add_new_operation'     => 'Add New Operation',
 
         ],
 
         'edit' => [
-            'measurement_edit' => 'Edit Measurement Family',
-            'back'             => 'Back',
-            'save'             => 'Save',
+            'measurement_edit'      => 'Edit Measurement Family',
+            'back'                  => 'Back',
+            'save'                  => 'Save',
             'conversion_operation'  => 'Conversion operation',
             'add_new_operation'     => 'Add New Operation',
-            'general'          => 'General',
-            'code'             => 'Code',
-            'label'            => 'Label',
-            'units'            => 'Units',
-            'create_units'     => 'Create Units',
+            'general'               => 'General',
+            'code'                  => 'Code',
+            'label'                 => 'Label',
+            'units'                 => 'Units',
+            'create_units'          => 'Create Units',
         ],
         'unit' => [
             'edit_unit'             => 'Edit Unit',

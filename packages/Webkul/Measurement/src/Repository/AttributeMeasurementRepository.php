@@ -2,6 +2,7 @@
 
 namespace Webkul\Measurement\Repository;
 
+use Webkul\Attribute\Repositories\AttributeRepository;
 use Webkul\Core\Eloquent\Repository;
 
 class AttributeMeasurementRepository extends Repository
@@ -29,7 +30,7 @@ class AttributeMeasurementRepository extends Repository
 
     public function saveAttributeMeasurementByCode($attributeCode, $data)
     {
-        $attribute = app(\Webkul\Attribute\Repositories\AttributeRepository::class)
+        $attribute = app(AttributeRepository::class)
             ->findOneByField('code', $attributeCode);
 
         if ($attribute) {

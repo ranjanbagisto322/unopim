@@ -2,6 +2,7 @@
 
 namespace Webkul\Measurement\Observers;
 
+use Webkul\Attribute\Repositories\AttributeRepository;
 use Webkul\Measurement\Helpers\MeasurementHelper;
 use Webkul\Measurement\Repository\AttributeMeasurementRepository;
 use Webkul\Product\Models\Product;
@@ -22,9 +23,13 @@ class ProductObserver
 
     public function saving(Product $product)
     {
+        if (is_null($product->values)) {
+            return;
+        }
+
         $values = $product->values ?? [];
 
-        if (!is_array($values)) {
+        if (! is_array($values)) {
             $values = [];
         }
 
@@ -35,14 +40,14 @@ class ProductObserver
 
     protected function processMeasurementValues(array &$values)
     {
-    
+
         if (empty($values)) {
             return;
         }
 
         foreach ($values as $scope => &$scopedValues) {
 
-            if (!is_array($scopedValues)) {
+            if (! is_array($scopedValues)) {
                 continue;
             }
 
@@ -65,7 +70,7 @@ class ProductObserver
 
             } elseif ($scope === 'channel_locale_specific') {
                 foreach ($scopedValues as &$channelValues) {
-                    if (!is_array($channelValues)) {
+                    if (! is_array($channelValues)) {
                         continue;
                     }
 
@@ -83,13 +88,14 @@ class ProductObserver
     {
         foreach ($scopedValues as $attributeCode => $value) {
 
-            $attribute = app(\Webkul\Attribute\Repositories\AttributeRepository::class)
+            $attribute = app(AttributeRepository::class)
                 ->findOneByField('code', $attributeCode);
 
             if ($attribute && $attribute->type === 'measurement' && is_array($value)) {
 
-                if (!isset($value['value']) || $value['value'] === '' || $value['value'] === null) {
+                if (! isset($value['value']) || $value['value'] === '' || $value['value'] === null) {
                     unset($scopedValues[$attributeCode]);
+
                     continue;
                 }
 
@@ -119,14 +125,14 @@ class ProductObserver
 
     protected function calculateBaseData($value, $unit, $family)
     {
-        if (!$unit) {
+        if (! $unit) {
             return $value;
         }
 
         $units = collect($family->units);
         $unitData = $units->firstWhere('code', $unit);
 
-        if (!$unitData) {
+        if (! $unitData) {
             return $value;
         }
 
@@ -137,7 +143,7 @@ class ProductObserver
             $op = $conversion['operator'] ?? null;
             $val = $conversion['value'] ?? null;
 
-            if (!is_numeric($val)) {
+            if (! is_numeric($val)) {
                 continue;
             }
 

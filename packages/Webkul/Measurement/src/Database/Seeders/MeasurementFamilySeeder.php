@@ -9,9 +9,9 @@ class MeasurementFamilySeeder extends Seeder
 {
     public function run($parameters = [])
     {
-        $parameters     = $parameters ?? [];
-        $defaultLocale  = $parameters['default_locale'] ?? config('app.locale');
-        $locales        = $parameters['allowed_locales'] ?? [$defaultLocale];
+        $parameters = $parameters ?? [];
+        $defaultLocale = $parameters['default_locale'] ?? config('app.locale');
+        $locales = $parameters['allowed_locales'] ?? [$defaultLocale];
 
         $makeLabels = function ($value) use ($locales) {
             $labels = [];

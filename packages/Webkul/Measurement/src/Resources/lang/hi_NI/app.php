@@ -8,26 +8,26 @@ return [
 
     'measurement' => [
         'index' => [
-            'create'   => 'मापन परिवार बनाएँ',
-            'code'     => 'कोड',
-            'standard' => 'मानक इकाई कोड',
-            'symbol'   => 'प्रतीक',
-            'save'     => 'सहेजें',
+            'create'                => 'मापन परिवार बनाएँ',
+            'code'                  => 'कोड',
+            'standard'              => 'मानक इकाई कोड',
+            'symbol'                => 'प्रतीक',
+            'save'                  => 'सहेजें',
             'conversion_operation'  => 'Conversion operation',
             'add_new_operation'     => 'Add New Operation',
         ],
 
         'edit' => [
-            'measurement_edit' => 'मापन परिवार संपादित करें',
-            'back'             => 'वापस',
-            'save'             => 'सहेजें',
+            'measurement_edit'      => 'मापन परिवार संपादित करें',
+            'back'                  => 'वापस',
+            'save'                  => 'सहेजें',
             'conversion_operation'  => 'Conversion operation',
             'add_new_operation'     => 'Add New Operation',
-            'general'          => 'सामान्य',
-            'code'             => 'कोड',
-            'label'            => 'लेबल',
-            'units'            => 'इकाइयाँ',
-            'create_units'     => 'इकाइयाँ बनाएँ',
+            'general'               => 'सामान्य',
+            'code'                  => 'कोड',
+            'label'                 => 'लेबल',
+            'units'                 => 'इकाइयाँ',
+            'create_units'          => 'इकाइयाँ बनाएँ',
         ],
 
         'unit' => [

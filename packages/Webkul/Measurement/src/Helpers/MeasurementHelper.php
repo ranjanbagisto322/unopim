@@ -68,7 +68,7 @@ class MeasurementHelper
         if (! $attributeMeasurement || ! $attributeMeasurement->family) {
             return [
                 'value' => $value,
-                'unit' => $unit,
+                'unit'  => $unit,
             ];
         }
 
@@ -78,13 +78,13 @@ class MeasurementHelper
         return [
             '<all_channels>' => [
                 '<all_locales>' => [
-                    'unit' => $unit,
-                    'amount' => $value,
-                    'family' => $attributeMeasurement->family_code,
+                    'unit'      => $unit,
+                    'amount'    => $value,
+                    'family'    => $attributeMeasurement->family_code,
                     'base_data' => $baseValue,
                     'base_unit' => $family->standard_unit,
-                ]
-            ]
+                ],
+            ],
         ];
     }
 }

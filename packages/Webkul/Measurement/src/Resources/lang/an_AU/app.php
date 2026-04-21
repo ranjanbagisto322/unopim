@@ -8,26 +8,26 @@ return [
 
     'measurement' => [
         'index' => [
-            'create'   => 'Creyar familia de medidas',
-            'code'     => 'Codigo',
-            'standard' => 'Codigo d’a unidat estandar',
-            'symbol'   => 'Símbolo',
-            'save'     => 'Alzar',
+            'create'                => 'Creyar familia de medidas',
+            'code'                  => 'Codigo',
+            'standard'              => 'Codigo d’a unidat estandar',
+            'symbol'                => 'Símbolo',
+            'save'                  => 'Alzar',
             'conversion_operation'  => 'Conversion operation',
             'add_new_operation'     => 'Add New Operation',
         ],
 
         'edit' => [
-            'measurement_edit' => 'Editar familia de medidas',
-            'back'             => 'Tornar',
-            'save'             => 'Alzar',
+            'measurement_edit'      => 'Editar familia de medidas',
+            'back'                  => 'Tornar',
+            'save'                  => 'Alzar',
             'conversion_operation'  => 'Conversion operation',
             'add_new_operation'     => 'Add New Operation',
-            'general'          => 'Cheneral',
-            'code'             => 'Codigo',
-            'label'            => 'Etiqueta',
-            'units'            => 'Unidatz',
-            'create_units'     => 'Creyar unidatz',
+            'general'               => 'Cheneral',
+            'code'                  => 'Codigo',
+            'label'                 => 'Etiqueta',
+            'units'                 => 'Unidatz',
+            'create_units'          => 'Creyar unidatz',
         ],
 
         'unit' => [
