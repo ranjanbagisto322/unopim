@@ -70,10 +70,10 @@ it('should fetch attributes for bulk edit modal', function () {
     $this->assertTrue($options->where('code', 'sku')->isEmpty(), 'SKU should be excluded from bulk edit attributes');
 });
 
-it('fires catalog.product.bulk.edit.after once with all processed product IDs', function () {
+it('fires catalog.product.update.after for every product saved by bulk edit', function () {
     $products = Product::factory()->count(2)->create();
 
-    Event::fake(['catalog.product.bulk.edit.after']);
+    Event::fake(['catalog.product.update.after', 'catalog.product.bulk.edit.after']);
 
     // Sync queue in the test env runs BulkProductUpdate inline, so the event
     // fires within this request. Payload mirrors what the bulk-edit Vue
@@ -85,6 +85,8 @@ it('fires catalog.product.bulk.edit.after once with all processed product IDs', 
 
     $this->postJson(route('admin.catalog.products.bulk-edit.save'), ['data' => $payload])
         ->assertOk();
+
+    Event::assertDispatched('catalog.product.update.after', count($products));
 
     // One bulk event is dispatched carrying all processed product IDs.
     // The payload is ['ids' => [...]], matching how call_user_func_array passes it.

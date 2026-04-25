@@ -1710,6 +1710,8 @@ return [
                         'title-info'                => 'Konfigurera AI-agentchatt, autonoma berikningsarbetsflöden och kvalitetsövervakning. Dessa funktioner möjliggör konversationsbaserad produkthantering och proaktivt katalogunderhåll.',
                         'enabled'                   => 'Aktivera AI-agentchatt',
                         'enabled-info'              => 'Aktivera den flytande AI-chattwidgeten för konversationsbaserad produkthantering med över 27 verktygsåtgärder.',
+                        'open-by-default'           => 'Öppna chattpanelen vid sidladdning',
+                        'open-by-default-info'      => 'När detta är aktiverat öppnas AI-agentens chattpanel automatiskt första gången en administratör kommer till en sida. Användare kan fortfarande stänga den manuellt — inställningen kommer ihåg under resten av webbläsarsessionen.',
                         'max-steps'                 => 'Max agentsteg per tur',
                         'max-steps-info'            => 'Maximalt antal verktygsanropsiterationer som AI-agenten kan utföra per användarmeddelande. Högre värden tillåter mer komplexa flerstegsoperationer.',
                         'daily-token-budget'        => 'Daglig tokenbudget',
@@ -1931,12 +1933,14 @@ return [
                 'update-success'           => 'Plattform uppdaterad framgångsrikt.',
                 'delete-success'           => 'Plattform raderad framgångsrikt.',
                 'delete-fail'              => 'Radering av plattform misslyckades.',
+                'not-found'                => 'Den valda plattformen finns inte längre. Uppdatera sidan och försök igen.',
                 'cannot-delete-default'    => 'Kan inte radera den enda standardplattformen.',
                 'set-default-success'      => 'Plattform angiven som standard framgångsrikt.',
                 'test-success'             => 'Anslutning verifierad framgångsrikt!',
                 'test-fail'                => 'Anslutningstest misslyckades',
                 'no-test-model'            => 'Välj minst en textkapabel modell för att köra anslutningstestet.',
                 'custom-api-url-required'  => 'API URL krävs för anpassade leverantörer så att anslutningstestet når din egen slutpunkt.',
+                'api-key-corrupted'        => 'Den lagrade API-nyckeln kunde inte dekrypteras (:error). Applikationens krypteringsnyckel kan ha ändrats. Ange din API-nyckel på nytt och spara.',
                 'fetch-models-fail'        => 'Kunde inte hämta modeller',
                 'invalid-model-names'      => 'Ogiltiga modellnamn: :names. Modellnamn måste börja med en bokstav eller siffra och får bara innehålla bokstäver, siffror, bindestreck, punkter, kolon och snedstreck.',
                 'default-requires-enabled' => 'En inaktiverad plattform kan inte markeras som standard. Aktivera plattformen först.',
@@ -2107,6 +2111,7 @@ return [
         'media' => [
             'images' => [
                 'add-image-btn'      => 'Lägg Till Bild',
+                'add-media-btn'      => 'Lägg Till Media',
                 'generate-with-ai'   => 'Generera med AI',
                 'upload-from-device' => 'Ladda upp från enhet',
                 'cancel'             => 'Avbryt',
@@ -2188,6 +2193,7 @@ return [
                 'vicuna'                 => 'Vicuna',
                 'llava'                  => 'LLaVA',
                 'default-prompt'         => 'Standardprompt',
+                'select-prompt-template' => '-- Välj en promptmall --',
             ],
         ],
     ],
@@ -2273,7 +2279,7 @@ return [
         '403' => [
             'description' => 'Oops! Denna sida är begränsad. Det verkar som att du inte har behörighet att se detta innehåll.',
             'title'       => '403 Förbjuden',
-            'message'     => 'Du har inte behörighet att komma åt den här sidan. Kontakta din administratör om du tror att detta är ett fel.',
+            'message'     => 'Du har inte behörighet att komma åt den här sidan. Kontakta din administratör om du anser att detta är ett fel.',
         ],
         '413' => [
             'description' => 'Oops! Det verkar som att du försöker ladda upp en för stor fil. Om du vill ladda upp den, vänligen uppdatera PHP-konfigurationen.',

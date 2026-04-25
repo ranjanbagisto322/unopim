@@ -1710,6 +1710,8 @@ return [
                         'title-info'                => 'Konfigurasikan obrolan agen AI, alur kerja pengayaan otonom, dan pemantauan kualitas. Fitur-fitur ini memungkinkan manajemen produk percakapan dan pemeliharaan katalog proaktif.',
                         'enabled'                   => 'Aktifkan obrolan agen AI',
                         'enabled-info'              => 'Aktifkan widget obrolan AI mengambang untuk manajemen produk percakapan dengan 27+ tindakan alat.',
+                        'open-by-default'           => 'Buka Panel Obrolan saat Halaman Dimuat',
+                        'open-by-default-info'      => 'Saat diaktifkan, panel obrolan Agen AI otomatis terbuka saat pertama kali admin mengakses sebuah halaman. Pengguna masih dapat menutupnya secara manual — preferensi akan diingat selama sisa sesi peramban.',
                         'max-steps'                 => 'Langkah maks. agen per giliran',
                         'max-steps-info'            => 'Jumlah maksimum iterasi panggilan alat yang dapat dilakukan agen AI per pesan pengguna. Nilai yang lebih tinggi memungkinkan operasi multi-langkah yang lebih kompleks.',
                         'daily-token-budget'        => 'Anggaran token harian',
@@ -1931,12 +1933,14 @@ return [
                 'update-success'           => 'Platform berhasil diperbarui.',
                 'delete-success'           => 'Platform berhasil dihapus.',
                 'delete-fail'              => 'Gagal menghapus platform.',
+                'not-found'                => 'Platform yang dipilih tidak lagi ada. Silakan muat ulang dan coba lagi.',
                 'cannot-delete-default'    => 'Tidak dapat menghapus satu-satunya platform default.',
                 'set-default-success'      => 'Platform berhasil ditetapkan sebagai default.',
                 'test-success'             => 'Koneksi berhasil diverifikasi!',
                 'test-fail'                => 'Uji koneksi gagal',
                 'no-test-model'            => 'Pilih setidaknya satu model yang mendukung teks untuk menjalankan uji koneksi.',
                 'custom-api-url-required'  => 'API URL diperlukan untuk penyedia kustom agar uji koneksi dapat mencapai endpoint Anda sendiri.',
+                'api-key-corrupted'        => 'Kunci API yang tersimpan tidak dapat didekripsi (:error). Kunci enkripsi aplikasi mungkin telah berubah. Silakan masukkan kembali kunci API Anda dan simpan.',
                 'fetch-models-fail'        => 'Tidak dapat mengambil model',
                 'invalid-model-names'      => 'Nama model tidak valid: :names. Nama model harus dimulai dengan huruf atau angka dan hanya berisi huruf, angka, tanda hubung, titik, titik dua, dan garis miring.',
                 'default-requires-enabled' => 'Platform yang nonaktif tidak dapat dijadikan default. Aktifkan platform terlebih dahulu.',
@@ -2107,6 +2111,7 @@ return [
         'media' => [
             'images' => [
                 'add-image-btn'      => 'Menambahkan gambar',
+                'add-media-btn'      => 'Menambahkan media',
                 'generate-with-ai'   => 'Hasilkan dengan AI',
                 'upload-from-device' => 'Unggah dari Perangkat',
                 'cancel'             => 'Batalkan',
@@ -2188,6 +2193,7 @@ return [
                 'vicuna'                 => 'Vicuna',
                 'llava'                  => 'Lava',
                 'default-prompt'         => 'Permintaan default',
+                'select-prompt-template' => '-- Pilih templat prompt --',
             ],
         ],
     ],
@@ -2273,7 +2279,7 @@ return [
         '403' => [
             'description' => 'Ups!Halaman ini terlarang.Tampaknya Anda tidak \'t have the required permissions to view this content.',
             'title'       => '403 dilarang',
-            'message'     => 'Anda tidak memiliki izin untuk mengakses halaman ini. Silakan hubungi administrator Anda jika Anda merasa ini adalah kesalahan.',
+            'message'     => 'Anda tidak memiliki izin untuk mengakses halaman ini. Hubungi administrator Anda jika Anda yakin ini adalah kesalahan.',
         ],
         '413' => [
             'description' => 'Ups!Sepertinya Anda mencoba mengunggah file yang terlalu besar.Jika Anda ingin mengunggah yang sama, harap perbarui konfigurasi PHP yang sesuai.',

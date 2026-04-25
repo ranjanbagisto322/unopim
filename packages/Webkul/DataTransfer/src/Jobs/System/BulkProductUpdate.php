@@ -212,6 +212,8 @@ class BulkProductUpdate implements ShouldQueue
             $product->values = $values;
             $product->save();
 
+            Event::dispatch('catalog.product.update.after', $product);
+
             $processed++;
 
             if ($processed % 10 === 0) {
