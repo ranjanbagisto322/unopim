@@ -72,5 +72,8 @@ class MeasurementServiceProvider extends ServiceProvider
             ->group(__DIR__.'/../Routes/api.php');
 
         $this->mergeConfigFrom(dirname(__DIR__).'/Config/menu.php', 'menu.admin');
+        $this->mergeConfigFrom(
+            dirname(__DIR__) . '/Config/acl.php', 'acl'
+        );
     }
 }
